@@ -454,6 +454,9 @@ class _DiscountScreenState extends State<DiscountScreen> {
             }
           } else {
             print("failed transaction");
+            String errorMsg = transactionDetails?["paymentResult"]?["responseMessage"] ?? "Transaction failed";
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: AppText(text: errorMsg, txtColor: primaryWhite, size: 12)));
           }
           insurancePdfController.isPaymentSuccess.value = true;
         } else if (event["status"] == "error") {

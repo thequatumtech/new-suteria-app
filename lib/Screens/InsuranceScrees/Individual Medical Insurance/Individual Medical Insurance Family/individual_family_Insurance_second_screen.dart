@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -122,6 +123,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                       AppText(text: weightkg, size: 12),
                     ],
                   ),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       SizedBox(
@@ -134,7 +136,8 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                               },
                               hint: height,
                               lable: height,
-                              keyboardType: TextInputType.number)),
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))])),
                       const SizedBox(width: 60),
                       SizedBox(
                         width: 120,
@@ -145,7 +148,8 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                             },
                             hint: weight,
                             lable: weight,
-                            keyboardType: TextInputType.number),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))]),
                       ),
                     ],
                   ),

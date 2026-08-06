@@ -52,10 +52,8 @@ class _NewUploadDocumentsCommonScreenState extends State<NewUploadDocumentsCommo
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                        height: 70,
-                        width: 76,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
                         child: CachedNetworkImage(
                             height: 70,
                             width: 76,
@@ -68,7 +66,7 @@ class _NewUploadDocumentsCommonScreenState extends State<NewUploadDocumentsCommo
                     ),
                     Positioned(
                       top: 0,
-                      right: 16,
+                      right: 25,
                       child: InkWell(
                         onTap: () {
                           widget.removeDocumentFunction(index);

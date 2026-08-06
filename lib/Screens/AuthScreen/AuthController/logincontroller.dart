@@ -10,6 +10,7 @@ import 'package:soperia_user/app_utils/api_set_up/service_locator.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/app_utils/utils.dart';
 
 class LoginController extends GetxController {
   TextEditingController phoneno = TextEditingController();
@@ -79,10 +80,13 @@ class LoginController extends GetxController {
   }*/
   loginValidation(BuildContext context) {
     isLoading.value = true;
-    if (phoneno.text == "" && emailController.text == "") {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterPhoneNoOrEmail, txtColor: primaryWhite, size: 12)));
+    if (emailController.text.trim().isEmpty && phoneno.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterYourEmailID, txtColor: primaryWhite, size: 12)));
       isLoading.value = false;
-    } else if (passwordController.text == ""&&phoneno.text == "") {
+    } else if (emailController.text.isNotEmpty && !Utils.isValidEmail(emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterValidEmailId, txtColor: primaryWhite, size: 12)));
+      isLoading.value = false;
+    } else if (passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterPassword, txtColor: primaryWhite, size: 12)));
       isLoading.value = false;
     } else if (check.value == false) {
@@ -91,7 +95,6 @@ class LoginController extends GetxController {
     } else {
       loginApi(context);
       return true;
-      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePageBottomNav()), (route) => false);
     }
   }
 }

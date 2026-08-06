@@ -35,7 +35,7 @@ class ProfileController extends GetxController {
   String? selectedGender;
   String? selectedMaritalStatus;
   String? selectLanguage;
-  RxList<String> languages = ['English', 'Arbic'].obs;
+  RxList<String> languages = ['English', 'Arabic'].obs;
   Rx<TextEditingController> firstNameController = TextEditingController().obs;
   Rx<TextEditingController> secondNameController = TextEditingController().obs;
   Rx<TextEditingController> thirdNameController = TextEditingController().obs;

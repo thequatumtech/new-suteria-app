@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -244,7 +245,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             children: [
               Expanded(
                   child: AppTextfield(
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                 hint: height,
                 lable: height,
                 controller: familyMedicalInsuranceController.memberHeightController[widget.index],
@@ -252,7 +254,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               const SizedBox(width: 10),
               Expanded(
                   child: AppTextfield(
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                 hint: weight,
                 lable: weight,
                 controller: familyMedicalInsuranceController.memberWeightController[widget.index],

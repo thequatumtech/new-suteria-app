@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 
@@ -28,6 +29,8 @@ class AppTextfieldCircular extends StatefulWidget {
   Radius? onlyRedius;
   TextEditingController? controller;
   TextInputType? keyboardType;
+  TextInputAction? textInputAction;
+  List<TextInputFormatter>? inputFormatters;
   bool? hidePassword;
   Color? sufixColor;
   Color? preFixColor;
@@ -47,6 +50,8 @@ class AppTextfieldCircular extends StatefulWidget {
       required this.lable,
       this.controller,
       this.keyboardType,
+      this.textInputAction,
+      this.inputFormatters,
       this.redius,
       this.maxLine,
       this.prefixicon,
@@ -113,6 +118,14 @@ class _AppTextfieldCircularState extends State<AppTextfieldCircular> {
                 obscureText: widget.hidePassword ?? false,
                 readOnly: widget.isReadOnly ?? false,
                 keyboardType: widget.keyboardType,
+                textInputAction: widget.textInputAction ?? TextInputAction.done,
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                onEditingComplete: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                inputFormatters: widget.inputFormatters,
                 maxLines: widget.maxLine ?? 1,
                 controller: widget.controller,
                 decoration: InputDecoration(
@@ -171,6 +184,8 @@ class AppTextfield extends StatelessWidget {
   String lable;
   TextEditingController? controller;
   TextInputType? keyboardType;
+  TextInputAction? textInputAction;
+  List<TextInputFormatter>? inputFormatters;
   int? maxLength;
   bool? readOnly;
   bool? obscureText;
@@ -194,6 +209,8 @@ class AppTextfield extends StatelessWidget {
       this.hintSize,
       this.maxLength,
       this.keyboardType,
+      this.textInputAction,
+      this.inputFormatters,
       this.prefixicon,
       this.sufixicon,
       this.ontap,
@@ -215,12 +232,20 @@ class AppTextfield extends StatelessWidget {
         onTap: () {
           if (ontap != null) ontap!();
         },
+        onTapOutside: (event) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        onEditingComplete: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         onChanged: (value) {
           onChange != null ? onChange!() : '';
           // if (onChange != null) onChange!(value);
         },
         maxLength: maxLength,
         keyboardType: keyboardType,
+        textInputAction: textInputAction ?? TextInputAction.done,
+        inputFormatters: inputFormatters,
         controller: controller,
         readOnly: readOnly ?? false,
         obscureText: obscureText ?? false,

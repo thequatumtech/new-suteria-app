@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -116,13 +117,15 @@ class DraftPdfController extends GetxController {
   addStoreTransactionApi(context, String screenTitle, String pdfUrl, var paymentData) async {
     isLoadingStoreTransaction.value = true;
     try {
+      var tranData = (paymentData is Map && paymentData.containsKey('data')) ? paymentData['data'] : paymentData;
+
       Map<String, dynamic> data = {
-        'purchase_id': postInsuranceModel.value.data!.purchaseId ?? 0,
-        'transaction_id': paymentData['data']['transactionReference'],
-        'amount': paymentData['data']['tran_total'],
-        'payment_type': paymentData['data']['paymentInfo']['payment_method'],
-        'payment_status': 1,
-        'full_responce': {paymentData},
+        'purchase_id': postInsuranceModel.value.data?.purchaseId ?? 0,
+        'transaction_id': tranData['transactionReference'] ?? '',
+        'amount': tranData['tranTotal'] ?? tranData['cartAmount'] ?? tranData['tran_total'] ?? 0,
+        'payment_type': tranData['paymentInfo']?['payment_method'] ?? tranData['paymentInfo']?['cardScheme'] ?? "Paytabs",
+        'payment_status': (tranData['isSuccess'] == true) ? 1 : 0,
+        'full_responce': jsonEncode(paymentData),
       };
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: addStoreTransaction, body: (data), options: Options(headers: header));

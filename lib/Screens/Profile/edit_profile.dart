@@ -12,6 +12,8 @@ import 'package:soperia_user/app_utils/custom_dropdown_button.dart';
 import 'package:soperia_user/model_class/get_nationality_model.dart';
 import 'package:soperia_user/model_class/get_occupation_modelClass.dart';
 
+import 'package:soperia_user/app_utils/utils.dart';
+
 import 'profile_controller/profile_controller.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -284,14 +286,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     txtColor: primaryWhite,
                                     size: 12,
                                   )));
-                                } else if (profileController.emailController.value.text.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: AppText(
-                                    text: pleaseEnterYourEmailID,
-                                    txtColor: primaryWhite,
-                                    size: 12,
-                                  )));
-                                } else if (profileController.mobileController.value.text.isEmpty) {
+                                 } else if (profileController.emailController.value.text.trim().isEmpty) {
+                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                       content: AppText(
+                                     text: pleaseEnterYourEmailID,
+                                     txtColor: primaryWhite,
+                                     size: 12,
+                                   )));
+                                 } else if (!Utils.isValidEmail(profileController.emailController.value.text)) {
+                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                       content: AppText(
+                                     text: pleaseEnterValidEmailId,
+                                     txtColor: primaryWhite,
+                                     size: 12,
+                                   )));
+                                 } else if (profileController.mobileController.value.text.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: AppText(
                                     text: pleaseEnterYourMobileNo,
