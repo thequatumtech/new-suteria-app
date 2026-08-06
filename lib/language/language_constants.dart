@@ -1,0 +1,130 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soperia_user/app_utils/app_constrint.dart';
+
+const String LAGUAGE_CODE = 'LAGUAGE_CODE';
+
+const String ENGLISH = 'en';
+const String ARBIC = 'ar';
+
+Future<Locale> setLocale(String languageCode) async {
+  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  await _prefs.setString(LAGUAGE_CODE, languageCode);
+  return getLangFromCode(languageCode== "en" ? 'en' : 'ar');
+}
+
+Future<String> getLocale() async {
+  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  String languageCode = _prefs.getString(LAGUAGE_CODE) ?? "en";
+  return languageCode;
+}
+
+Locale getLangFromCode(String languageCode) {
+  switch (languageCode) {
+    case ENGLISH:
+      return const Locale(ENGLISH, 'US');
+    case ARBIC:
+      return const Locale(ARBIC, "ARE");
+    default:
+      return const Locale(ENGLISH, 'US');
+  }
+}
+
+
+late Map<String, String> _localizedValues;
+
+Future<void> loadLangs() async {
+  String jsonStringValues = await rootBundle.loadString('lib/language/$languageCode.json');
+  Map<String, dynamic> mappedJson = json.decode(jsonStringValues);
+  _localizedValues = mappedJson.map((key, value) => MapEntry(key, value.toString()));
+}
+
+String? getTranslated(BuildContext context, String key) {
+  return _localizedValues[key];
+}
+
+const PROFILE_PAGE = [
+  {
+    'title': "edit_profile",
+    'icon': "assets/images/edit.png"
+  },
+  {
+    'title': "change_password",
+    'icon': "assets/images/edit.png"
+  },
+  {
+    'title': "language",
+    'icon': "assets/images/language.png"
+  },
+  {
+    'title': "noon_shop",
+    'icon': "assets/images/purchase.png"
+  },
+  {
+    'title': "delete_acc",
+    'icon': "assets/images/delete_account.png"
+  },
+  {
+    'title': "privacy_policy",
+    'icon': "assets/images/privacy.png"
+  },
+  {
+    'title': "device_manager",
+    'icon': "assets/images/mobile_manager.png"
+  },
+  {
+    'title': "notebook",
+    'icon': "assets/images/notebook.png"
+  },
+  {
+    'title': "feedback_just",
+    'icon': "assets/images/feedback.png"
+  },
+  {
+    'title': "logout",
+    'icon': "assets/images/logout.png"
+  }
+];
+
+const BOTTOM_SHEET_PAGE = [
+  {
+    'title': "feed_app_problem",
+    'icon': "assets/images/setting_icon.png"
+  },
+  {
+    'title': "feed_video_problem",
+    'icon': "assets/images/video.png"
+  },
+  {
+    'title': "feed_text_problem",
+    'icon': "assets/images/text.png"
+  },
+  {
+    'title': "feed_homework_problem",
+    'icon': "assets/images/exercise.png"
+  },
+  {
+    'title': "feed_chapter_problem",
+    'icon': "assets/images/chapter.png"
+  },
+  {
+    'title': "feed_exam_problem",
+    'icon': "assets/images/exam.png"
+  },
+  {
+    'title': "feed_general_problem",
+    'icon': "assets/images/global.png"
+  },
+];
+
+const LANGUAGE_PAGE = [
+  {
+    'title': "English",
+  },
+  {
+    'title': "اَلْعَرَبِيَّةُ",
+  },
+];

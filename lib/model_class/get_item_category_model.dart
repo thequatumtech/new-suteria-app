@@ -1,0 +1,59 @@
+class GetItemCategoryModel {
+  bool? status;
+  int? statusCode;
+  String? message;
+  List<ItemCategory>? data;
+
+  GetItemCategoryModel({this.status, this.statusCode, this.message, this.data});
+
+  GetItemCategoryModel.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    statusCode = json['status_code'];
+    message = json['message'];
+    if (json['data'] != null) {
+      data = <ItemCategory>[];
+      json['data'].forEach((v) {
+        data!.add(new ItemCategory.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['status_code'] = this.statusCode;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class ItemCategory {
+  int? id;
+  String? name;
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
+
+  ItemCategory({this.id, this.name, this.createdAt, this.updatedAt, this.deletedAt});
+
+  ItemCategory.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
+    return data;
+  }
+}
