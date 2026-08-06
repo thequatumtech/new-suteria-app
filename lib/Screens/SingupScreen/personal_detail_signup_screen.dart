@@ -11,6 +11,7 @@ import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/app_utils/custom_dropdown_button.dart';
 import 'package:soperia_user/app_utils/custome.dart';
+import 'package:soperia_user/app_utils/utils.dart';
 import 'package:soperia_user/model_class/get_nationality_model.dart';
 
 import 'sign_up_controller.dart';
@@ -259,16 +260,20 @@ class _SingupScreenState extends State<SingupScreen> {
                             txtColor: primaryWhite,
                             size: 12,
                           )));
-                        } else if (signUpController.emailController.value.text.isEmpty) {
+                        } else if (signUpController.emailController.value.text.trim().isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: AppText(
                             text: pleaseEnterYourEmailID,
                             txtColor: primaryWhite,
                             size: 12,
                           )));
-                        } else if (signUpController.emailController.value.text.isNotEmpty &&
-                            !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(signUpController.emailController.value.text)) {
-                          showToast(pleaseEnterValidEmailId, context);
+                        } else if (!Utils.isValidEmail(signUpController.emailController.value.text)) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: AppText(
+                            text: pleaseEnterValidEmailId,
+                            txtColor: primaryWhite,
+                            size: 12,
+                          )));
                         } else if (signUpController.mobileController.value.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: AppText(

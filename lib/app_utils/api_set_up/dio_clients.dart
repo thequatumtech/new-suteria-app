@@ -1,5 +1,16 @@
+import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
+
+void logPrintFull(Object? object) {
+  final str = object.toString();
+  log(str);
+  const int chunkSize = 1000;
+  for (int i = 0; i < str.length; i += chunkSize) {
+    debugPrint(str.substring(i, i + chunkSize > str.length ? str.length : i + chunkSize));
+  }
+}
 
 class DioClient {
   final Dio _dio;
@@ -7,8 +18,8 @@ class DioClient {
   DioClient(this._dio) {
     _dio
       ..options.baseUrl = baseURL
-      ..options.connectTimeout = Duration(seconds: 25)
-      ..options.receiveTimeout =  Duration(seconds: 25)
+      ..options.connectTimeout = const Duration(seconds: 25)
+      ..options.receiveTimeout = const Duration(seconds: 25)
       ..options.responseType = ResponseType.json
       ..interceptors.add(LogInterceptor(
         request: true,
@@ -16,6 +27,7 @@ class DioClient {
         requestBody: true,
         responseHeader: true,
         responseBody: true,
+        logPrint: logPrintFull,
       ));
   }
 

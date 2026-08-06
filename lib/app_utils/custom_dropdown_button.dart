@@ -20,7 +20,9 @@ class _CustomDropDownState extends State<CustomDropDown> {
     return SizedBox(
       width: double.infinity,
       child: DropdownButton<String>(
-        value: widget.selectedValue,
+        value: (widget.selectedValue.isNotEmpty && widget.items.contains(widget.selectedValue))
+            ? widget.selectedValue
+            : null,
         onChanged: (newValue) {
           // widget.selectedValue = newValue!;
 
@@ -29,7 +31,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
           print('Selected value: ${widget.selectedValue}');
         },
         isExpanded: true,
-        items: widget.items.map((String value) {
+        items: widget.items.toSet().toList().map((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value, style: const TextStyle()),
@@ -91,7 +93,9 @@ class _CustomDropDownBorderState extends State<CustomDropDownBorder> {
               // style: const TextStyle(color: skyBlueShade3),
               iconEnabledColor: deepBluedark,
               icon: const Icon(Icons.keyboard_arrow_down_outlined, color: primaryBlack),
-              value: widget.selectedValue,
+              value: (widget.selectedValue != null && widget.items.contains(widget.selectedValue))
+                  ? widget.selectedValue
+                  : null,
               hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
               onChanged: (newValue) {
                 // widget.selectedValue = newValue!;
@@ -104,7 +108,7 @@ class _CustomDropDownBorderState extends State<CustomDropDownBorder> {
 
               isExpanded: true,
               padding: const EdgeInsets.only(left: 10, right: 10),
-              items: widget.items.map((String value) {
+              items: widget.items.toSet().toList().map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -167,14 +171,16 @@ class _CustomDropDownBorderStringDisableState extends State<CustomDropDownBorder
             child: DropdownButton<String>(
               /* style: const TextStyle(color: skyBlueShade3),*/
               icon: const Icon(Icons.keyboard_arrow_down_outlined /*,color: primaryBlack,*/),
-              value: widget.selectedValue,
+              value: (widget.selectedValue != null && widget.items.contains(widget.selectedValue))
+                  ? widget.selectedValue
+                  : null,
               hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
               onChanged: null,
               // iconSize: 40,
 
               isExpanded: true,
               padding: const EdgeInsets.only(left: 10, right: 10),
-              items: widget.items.map((String value) {
+              items: widget.items.toSet().toList().map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(
@@ -262,7 +268,9 @@ class _CustomDropDownBorder1State extends State<CustomDropDownBorder1> {
                   Icons.keyboard_arrow_down_outlined,
                   color: primaryBlack,
                 ),
-                value: widget.selectedValue,
+                value: (widget.selectedValue != null && widget.items.any((item) => item.value == widget.selectedValue))
+                    ? widget.selectedValue
+                    : null,
                 hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
                 onChanged: (newValue) {
                   // widget.selectedValue = newValue!;
@@ -354,7 +362,9 @@ class _CustomDropDownBorderDisableState extends State<CustomDropDownBorderDisabl
                 ignoring: true, // disable real dropdown completely
                 child: DropdownButton(
                   icon: const Icon(Icons.keyboard_arrow_down_outlined),
-                  value: widget.selectedValue,
+                  value: (widget.selectedValue != null && widget.items.any((item) => item.value == widget.selectedValue))
+                      ? widget.selectedValue
+                      : null,
                   hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
                   onChanged: null,
                   // disabled

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -71,7 +72,8 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                         lifeInsuranceController.isShowHWValidationMsg.value =
                                             Utils.heightWeightValidation(height: lifeInsuranceController.heightController.value.text, weight: lifeInsuranceController.weightController.value.text);
                                       },
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                                       hint: height,
                                       lable: height,
                                       controller: lifeInsuranceController.heightController.value,
@@ -91,7 +93,8 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                         lifeInsuranceController.isShowHWValidationMsg.value =
                                             Utils.heightWeightValidation(height: lifeInsuranceController.heightController.value.text, weight: lifeInsuranceController.weightController.value.text);
                                       },
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                                       hint: weight,
                                       lable: weight,
                                       controller: lifeInsuranceController.weightController.value),
@@ -475,9 +478,9 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                               } else if (lifeInsuranceController.selectInsurancePeriod.value?.id == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectInsurancePeriod1, txtColor: primaryWhite, size: 12)));
                               } else if (lifeInsuranceController.photoDoc.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDocuments, txtColor: primaryWhite, size: 12)));
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadFrontAndBackSideOfPassport, txtColor: primaryWhite, size: 12)));
                               } else if (lifeInsuranceController.familyBookDoc.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectFamilyBookDocument, txtColor: primaryWhite, size: 12)));
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectRecentPersonalPhoto, txtColor: primaryWhite, size: 12)));
                               }
                               /*else if (lifeInsuranceController.insuredDoc.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectInsuranceDocument, txtColor: primaryWhite, size: 12)));

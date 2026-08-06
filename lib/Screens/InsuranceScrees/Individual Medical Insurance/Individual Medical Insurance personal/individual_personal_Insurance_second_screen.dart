@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -121,7 +122,8 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                                     height: individualMedicalInsuranceController.heightController.value.text, weight: individualMedicalInsuranceController.weightController.value.text);
                               }
                             },
-                            keyboardType: TextInputType.number,
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                             lable: height,
                             controller: individualMedicalInsuranceController.heightController.value),
                       ],
@@ -142,7 +144,8 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                                     height: individualMedicalInsuranceController.heightController.value.text, weight: individualMedicalInsuranceController.weightController.value.text);
                               }
                             },
-                            keyboardType: TextInputType.number,
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                             lable: weight,
                             controller: individualMedicalInsuranceController.weightController.value),
                       ],

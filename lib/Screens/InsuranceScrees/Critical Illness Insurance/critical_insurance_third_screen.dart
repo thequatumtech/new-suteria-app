@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/Critical%20Illness%20Insurance/critical_illness_insurance_controller.dart';
@@ -39,12 +40,14 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                     AppText(text: weightkg, size: 12),
                   ],
                 ),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     SizedBox(
                         width: 120,
                         child: AppTextfield(
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                           hint: height,
                           lable: height,
                           controller: criticalIllnessInsuranceController.heightController.value,
@@ -57,7 +60,8 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                     SizedBox(
                       width: 120,
                       child: AppTextfield(
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
                         hint: weight,
                         lable: weight,
                         controller: criticalIllnessInsuranceController.weightController.value,

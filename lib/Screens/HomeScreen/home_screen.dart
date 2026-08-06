@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -126,9 +127,23 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             children: [
                               Container(
-                                height: 20,
-                                width: 20,
-                                decoration: const BoxDecoration(image: DecorationImage(image: AssetImage(splashImg))),
+                                height: 35,
+                                width: 35,
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: (getProfileModelGlobal.data?.profilePic != null && getProfileModelGlobal.data!.profilePic!.isNotEmpty)
+                                      ? CachedNetworkImage(
+                                          height: 35,
+                                          width: 35,
+                                          imageUrl: "$imgBaseUrl/${getProfileModelGlobal.data?.profilePic}",
+                                          placeholder: (context, url) => const CircularProgressIndicator(strokeWidth: 2),
+                                          errorWidget: (context, url, error) => Image.asset(splashImg, height: 35, width: 35, fit: BoxFit.cover),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.asset(splashImg, height: 35, width: 35, fit: BoxFit.cover),
+                                ),
                               ),
                               const SizedBox(width: 10),
                               Text("$welcome, ${getProfileModelGlobal.data?.firstName ?? ""}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),

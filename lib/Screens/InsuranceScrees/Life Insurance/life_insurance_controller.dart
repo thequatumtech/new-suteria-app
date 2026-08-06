@@ -9,6 +9,7 @@ import 'package:soperia_user/Screens/AuthScreen/admin_basic_all_api_controller/a
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
+import 'package:soperia_user/app_utils/api_set_up/dio_clients.dart';
 import 'package:soperia_user/app_utils/api_set_up/header_file.dart';
 import 'package:soperia_user/app_utils/api_set_up/service_locator.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
@@ -445,6 +446,14 @@ class LifeInsuranceController extends GetxController {
   void getInsurancePeriodApiYear() async {
     try {
       final dio = Dio();
+      dio.interceptors.add(LogInterceptor(
+        request: true,
+        requestHeader: true,
+        requestBody: true,
+        responseHeader: true,
+        responseBody: true,
+        logPrint: logPrintFull,
+      ));
 
       final Map<String, String> header = await getHeader();
 

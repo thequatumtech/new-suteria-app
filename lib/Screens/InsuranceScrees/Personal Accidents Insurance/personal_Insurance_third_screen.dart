@@ -289,11 +289,11 @@ class _PersonalInsuranceThirdScreenState extends State<PersonalInsuranceThirdScr
                       } else if (personalInsuranceController.selectInsurancePeriod.value.id == null) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectInsurancePeriod, txtColor: primaryWhite, size: 12)));
                       } else if (personalInsuranceController.documents1.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectFirstDocument, txtColor: primaryWhite, size: 12)));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectFrontSideIdDocument, txtColor: primaryWhite, size: 12)));
                       } else if (personalInsuranceController.documents2.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectSecondDocument, txtColor: primaryWhite, size: 12)));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectBackSideIdDocument, txtColor: primaryWhite, size: 12)));
                       } else if (personalInsuranceController.documents3.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectThirdDocument, txtColor: primaryWhite, size: 12)));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectOccupationalDocument, txtColor: primaryWhite, size: 12)));
                       } else {
                         widget.onNext();
                       }
