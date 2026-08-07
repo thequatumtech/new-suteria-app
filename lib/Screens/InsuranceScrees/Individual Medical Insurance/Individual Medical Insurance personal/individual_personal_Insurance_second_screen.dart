@@ -194,6 +194,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                   onChanged: (value) {
                     setState(() {
                       individualMedicalInsuranceController.selectedChronicDisease = value!;
+                      individualMedicalInsuranceController.selectedChronicDiseasesList.value = [];
                     });
                   },
                 ),
@@ -222,8 +223,17 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                   ),
                 ),
                 onConfirm: (List<GetChronicDiseasesList> selectedValues) {
-                  individualMedicalInsuranceController.selectedChronicDiseasesList.value = selectedValues;
+                  setState(() {
+                    individualMedicalInsuranceController.selectedChronicDiseasesList.value = selectedValues;
+                  });
                 },
+                chipDisplay: MultiSelectChipDisplay(
+                  onTap: (value) {
+                    setState(() {
+                      individualMedicalInsuranceController.selectedChronicDiseasesList.remove(value);
+                    });
+                  },
+                ),
                 initialValue: individualMedicalInsuranceController.selectedChronicDiseasesList.value,
               ),
             ],

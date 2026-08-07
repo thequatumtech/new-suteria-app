@@ -151,13 +151,14 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                         onChanged: (value) {
                           setState(() {
                             lifeInsuranceController.selectedChronicDisease = value!;
+                            lifeInsuranceController.selectedChronicDiseasesList.value = [];
                           });
                         },
                       ),
                       const Text(noTxt),
                     ],
                   ),
-                  if (lifeInsuranceController.selectedChronicDisease == yesTxt) ...[
+                  if (lifeInsuranceController.selectedChronicDisease != null && lifeInsuranceController.selectedChronicDisease == yesTxt) ...[
                     MultiSelectDialogField<GetChronicDiseasesList>(
                       items: lifeInsuranceController.getChronicDiseasesList.map((e) => MultiSelectItem<GetChronicDiseasesList>(e, e.name ?? '')).toList(),
                       title: const Text(selectchodiseases),
@@ -178,8 +179,17 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                         ),
                       ),
                       onConfirm: (List<GetChronicDiseasesList> selectedValues) {
-                        lifeInsuranceController.selectedChronicDiseasesList.value = selectedValues;
+                        setState(() {
+                          lifeInsuranceController.selectedChronicDiseasesList.value = selectedValues;
+                        });
                       },
+                      chipDisplay: MultiSelectChipDisplay(
+                        onTap: (value) {
+                          setState(() {
+                            lifeInsuranceController.selectedChronicDiseasesList.remove(value);
+                          });
+                        },
+                      ),
                       initialValue: lifeInsuranceController.selectedChronicDiseasesList.value,
                     ),
                   ],
@@ -451,6 +461,8 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterHeight, txtColor: primaryWhite, size: 12)));
                               } else if (lifeInsuranceController.weightController.value.text.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterWeight, txtColor: primaryWhite, size: 12)));
+                              } else if ((lifeInsuranceController.selectedChronicDisease ?? '').isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectChronicDiseases, txtColor: primaryWhite, size: 12)));
                               } else if (lifeInsuranceController.selectedChronicDisease == yesTxt && lifeInsuranceController.selectedChronicDiseasesList.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectChronicDiseases, txtColor: primaryWhite, size: 12)));
                               } else if (lifeInsuranceController.selectedAnyOperation == '') {

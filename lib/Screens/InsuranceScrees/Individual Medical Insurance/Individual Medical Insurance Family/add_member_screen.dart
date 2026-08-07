@@ -284,6 +284,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               onChanged: (value) {
                 setState(() {
                   familyMedicalInsuranceController.memberChronicOption[widget.index] = value!;
+                  familyMedicalInsuranceController.selectMemberChronicDiseases[widget.index] = <GetChronicDiseasesList>[];
+                  familyMedicalInsuranceController.selectMemberChronicDiseases.refresh();
                 });
               },
             ),
@@ -313,9 +315,19 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             ),
           ),
           onConfirm: (List<GetChronicDiseasesList> selectedValues) {
-            familyMedicalInsuranceController.selectMemberChronicDiseases[widget.index] = selectedValues;
-            familyMedicalInsuranceController.selectMemberChronicDiseases.refresh();
+            setState(() {
+              familyMedicalInsuranceController.selectMemberChronicDiseases[widget.index] = selectedValues;
+              familyMedicalInsuranceController.selectMemberChronicDiseases.refresh();
+            });
           },
+          chipDisplay: MultiSelectChipDisplay(
+            onTap: (value) {
+              setState(() {
+                (familyMedicalInsuranceController.selectMemberChronicDiseases[widget.index] as List).remove(value);
+                familyMedicalInsuranceController.selectMemberChronicDiseases.refresh();
+              });
+            },
+          ),
           initialValue: familyMedicalInsuranceController.selectMemberChronicDiseases[widget.index],
         ),
 

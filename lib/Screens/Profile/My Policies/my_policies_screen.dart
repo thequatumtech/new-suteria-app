@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:soperia_user/Screens/Profile/My%20Policies/get_policy_details_model.dart';
@@ -8,11 +7,11 @@ import 'package:soperia_user/Screens/Profile/My%20Policies/policy_details_screen
 import 'package:soperia_user/app_utils/app_button.dart';
 
 
-import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
+import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
 
 class MyPolicies extends StatefulWidget {
   const MyPolicies({super.key});
@@ -378,7 +377,9 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
                       child: AppBtnWithColorShades(
                         textSize: 12,
                         paddingSize: 8,
-                        onTap: () {},
+                        onTap: () {
+                          renewPolicy(context, policyItem);
+                        },
                         btnTxt: renew,
                         color1: darkBlue2,
                         color2: darkBlue1,
