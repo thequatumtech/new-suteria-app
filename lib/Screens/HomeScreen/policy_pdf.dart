@@ -62,34 +62,48 @@ class _PolicyPdfState extends State<PolicyPdf> {
     final PermissionStatus status = await Permission.notification.request();
   }
 
-  downloadPdf(String path) async {
-    var status = await Permission.storage.status;
-
-    bool permissionStatus;
-    final deviceInfo = await DeviceInfoPlugin().androidInfo;
-
-    if (deviceInfo.version.sdkInt > 32) {
-      permissionStatus = await Permission.photos.request().isGranted;
-      await download(path, "InsuranceFile");
-    } else {
-      permissionStatus = await Permission.storage.request().isGranted;
-      await download(path, "InsuranceFile");
+  Future<Directory> getStorageDirectory() async {
+    if (Platform.isAndroid) {
+      final externalDir = await getExternalStorageDirectory();
+      if (externalDir != null) {
+        return externalDir;
+      }
     }
+    return await getApplicationDocumentsDirectory();
+  }
+
+  downloadPdf(String path) async {
+    if (Platform.isAndroid) {
+      int sdkInt = 0;
+      try {
+        final deviceInfo = await DeviceInfoPlugin().androidInfo;
+        sdkInt = deviceInfo.version.sdkInt;
+      } catch (e) {
+        debugPrint('Error getting androidInfo: $e');
+      }
+
+      if (sdkInt > 32) {
+        await Permission.photos.request();
+      } else {
+        await Permission.storage.request();
+      }
+    }
+    await download(path, "InsuranceFile");
   }
 
   Future download(String url, String filename) async {
     try {
       Random random = Random();
       int randomNumber = random.nextInt(100);
-      final baseStorage = await getExternalStorageDirectory();
+      final baseStorage = await getStorageDirectory();
       fileName = '$filename$randomNumber.${url.split(".").last}';
       setState(() {});
       final taskId = await FlutterDownloader.enqueue(
         url: url,
         headers: {},
-        savedDir: baseStorage!.path,
+        savedDir: baseStorage.path,
         fileName: fileName,
-        saveInPublicStorage: true,
+        saveInPublicStorage: Platform.isAndroid,
         showNotification: true,
         openFileFromNotification: true,
         requiresStorageNotLow: true,
@@ -113,71 +127,60 @@ class _PolicyPdfState extends State<PolicyPdf> {
       isLoadingPrint = true;
     });
     await requestNotificationPermissions();
-    var status = await Permission.storage.status;
 
-    bool permissionStatus;
-    final deviceInfo = await DeviceInfoPlugin().androidInfo;
-
-    if (deviceInfo.version.sdkInt > 32) {
-      permissionStatus = await Permission.photos.request().isGranted;
+    if (Platform.isAndroid) {
+      int sdkInt = 0;
       try {
-        Random random = Random();
-        int randomNumber = random.nextInt(100);
-        final baseStorage = await getExternalStorageDirectory();
-        fileName = 'InsuranceFile$randomNumber.${pdfPath.split(".").last}';
-        setState(() {});
-        final taskId = await FlutterDownloader.enqueue(
-          url: pdfPath,
-          headers: {},
-          savedDir: baseStorage!.path,
-          fileName: fileName,
-          saveInPublicStorage: true,
-          showNotification: true,
-          openFileFromNotification: true,
-          requiresStorageNotLow: true,
-        );
-        print('task id $taskId');
-      } on Exception catch (e) {
-        setState(() {
-          isLoadingPrint = false;
-        });
-        print(e);
+        final deviceInfo = await DeviceInfoPlugin().androidInfo;
+        sdkInt = deviceInfo.version.sdkInt;
+      } catch (e) {
+        debugPrint('Error getting androidInfo: $e');
       }
-    } else {
-      permissionStatus = await Permission.storage.request().isGranted;
-      try {
-        Random random = Random();
-        int randomNumber = random.nextInt(100);
-        final baseStorage = await getExternalStorageDirectory();
-        fileName = 'InsuranceFile$randomNumber.${pdfPath.split(".").last}';
-        setState(() {});
-        final taskId = await FlutterDownloader.enqueue(
-          url: pdfPath,
-          headers: {},
-          savedDir: baseStorage!.path,
-          fileName: fileName,
-          saveInPublicStorage: true,
-          showNotification: true,
-          openFileFromNotification: true,
-          requiresStorageNotLow: true,
-        );
-        print('task id $taskId');
-      } on Exception catch (e) {
-        setState(() {
-          isLoadingPrint = false;
-        });
-        print(e);
+
+      if (sdkInt > 32) {
+        await Permission.photos.request();
+      } else {
+        await Permission.storage.request();
       }
     }
+
+    try {
+      Random random = Random();
+      int randomNumber = random.nextInt(100);
+      final baseStorage = await getStorageDirectory();
+      fileName = 'InsuranceFile$randomNumber.${pdfPath.split(".").last}';
+      setState(() {});
+      final taskId = await FlutterDownloader.enqueue(
+        url: pdfPath,
+        headers: {},
+        savedDir: baseStorage.path,
+        fileName: fileName,
+        saveInPublicStorage: Platform.isAndroid,
+        showNotification: true,
+        openFileFromNotification: true,
+        requiresStorageNotLow: true,
+      );
+      print('task id $taskId');
+    } on Exception catch (e) {
+      setState(() {
+        isLoadingPrint = false;
+      });
+      print(e);
+    }
+
     await Future.delayed(const Duration(seconds: 2));
     sharePdf();
   }
 
   sharePdf() async {
     try {
-      final dir = await getExternalStorageDirectory();
-      final file = File('${dir!.path}/$fileName');
-      Share.shareXFiles([XFile(file.path)]);
+      final dir = await getStorageDirectory();
+      final file = File('${dir.path}/$fileName');
+      if (await file.exists()) {
+        Share.shareXFiles([XFile(file.path)]);
+      } else {
+        debugPrint('File does not exist at ${file.path}');
+      }
       print('OOOOOOOOOOOOOOOOOOOOOOO');
       setState(() {
         isLoadingPrint = false;

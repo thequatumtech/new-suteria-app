@@ -62,7 +62,7 @@ class _AutomotiveInsuranceFourthScreenState extends State<AutomotiveInsuranceFou
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: buttonColorApp,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(0),
                     ),
                     child: AppText(
                       txtAlign: TextAlign.center,
