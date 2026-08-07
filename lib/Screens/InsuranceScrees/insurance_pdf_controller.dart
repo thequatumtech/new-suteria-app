@@ -7,4 +7,8 @@ class InsurancePdfController extends GetxController {
   RxBool isTermConditionsDraf = false.obs;
   RxBool isPaymentSuccess = false.obs;
 
+  void resetTerms() {
+    isTermConditions.value = false;
+    isTermConditionsDraf.value = false;
+  }
 }

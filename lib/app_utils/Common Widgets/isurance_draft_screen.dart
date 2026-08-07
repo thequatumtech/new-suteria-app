@@ -33,22 +33,33 @@ class _InsuranceDraftPdfScreenState extends State<InsuranceDraftPdfScreen> {
     draftPdfController.postInsuranceModel.value = PostInsuranceModel();
     draftPdfController.postInsuranceApi(context, widget.data, widget.apiUrl);
     draftPdfController.apiMethod(context);
-    insurancePdfController.isTermConditions.value = false;
-    insurancePdfController.isTermConditionsDraf.value = false;
+    insurancePdfController.resetTerms();
     super.initState();
   }
 
   @override
+  void dispose() {
+    insurancePdfController.resetTerms();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(Icons.keyboard_backspace_outlined)),
-        title: AppText(text: "${widget.screenTitle} Draft Policy", size: 18, fontWeight: FontWeight.bold),
-      ),
+    return WillPopScope(
+      onWillPop: () async {
+        insurancePdfController.resetTerms();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: InkWell(
+              onTap: () {
+                insurancePdfController.resetTerms();
+                Navigator.pop(context);
+              },
+              child: const Icon(Icons.keyboard_backspace_outlined)),
+          title: AppText(text: "${widget.screenTitle} Draft Policy", size: 18, fontWeight: FontWeight.bold),
+        ),
       body: Obx(() {
         return draftPdfController.isButtonLoading.value
             ? const Center(child: CircularProgressIndicator())
@@ -188,6 +199,7 @@ class _InsuranceDraftPdfScreenState extends State<InsuranceDraftPdfScreen> {
                   )
                 : Padding(padding: const EdgeInsets.all(15.0), child: AppText(text: "${draftPdfController.statusMsg.value}", size: 20, txtColor: Colors.red, fontWeight: FontWeight.w600));
       }),
+      ),
     );
   }
 

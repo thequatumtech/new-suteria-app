@@ -25,16 +25,34 @@ class _InsurancePdfScreenState extends State<InsurancePdfScreen> {
   InsurancePdfController insurancePdfController = Get.put(InsurancePdfController());
 
   @override
+  void initState() {
+    insurancePdfController.isTermConditions.value = false;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    insurancePdfController.isTermConditions.value = false;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(Icons.keyboard_backspace_outlined)),
-        title: AppText(text: "${widget.screenTitle} $termsConditionsPolicy", size: 14, fontWeight: FontWeight.bold),
-      ),
+    return WillPopScope(
+      onWillPop: () async {
+        insurancePdfController.isTermConditions.value = false;
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: InkWell(
+              onTap: () {
+                insurancePdfController.isTermConditions.value = false;
+                Navigator.pop(context);
+              },
+              child: const Icon(Icons.keyboard_backspace_outlined)),
+          title: AppText(text: "${widget.screenTitle} $termsConditionsPolicy", size: 14, fontWeight: FontWeight.bold),
+        ),
       body: Obx(
         () {
           return Column(
@@ -100,6 +118,7 @@ class _InsurancePdfScreenState extends State<InsurancePdfScreen> {
           );
         },
       ),
-    );
-  }
+    ),
+  );
+}
 }

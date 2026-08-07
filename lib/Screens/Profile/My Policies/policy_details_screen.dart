@@ -6,6 +6,9 @@ import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:soperia_user/app_utils/app_button.dart';
+import 'package:soperia_user/app_utils/app_string.dart';
+import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
 
 class PolicyDetailsScreen extends StatefulWidget {
   final PolicyData policyData;
@@ -206,6 +209,20 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
                                   });
                                 },
                               ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppBtnWithColorShades(
+                    textSize: 14,
+                    paddingSize: 12,
+                    onTap: () {
+                      renewPolicy(context, widget.policyData);
+                    },
+                    btnTxt: renew,
+                    color1: darkBlue2,
+                    color2: darkBlue1,
                   ),
                 ),
                 const SizedBox(height: 20),

@@ -111,6 +111,7 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                   onChanged: (value) {
                     setState(() {
                       criticalIllnessInsuranceController.selectedChronicDisease = value!;
+                      criticalIllnessInsuranceController.selectedChronicDiseasesList.value = [];
                     });
                   },
                 ),
@@ -138,8 +139,17 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                   ),
                 ),
                 onConfirm: (List<GetChronicDiseasesList> selectedValues) {
-                  criticalIllnessInsuranceController.selectedChronicDiseasesList.value = selectedValues;
+                  setState(() {
+                    criticalIllnessInsuranceController.selectedChronicDiseasesList.value = selectedValues;
+                  });
                 },
+                chipDisplay: MultiSelectChipDisplay(
+                  onTap: (value) {
+                    setState(() {
+                      criticalIllnessInsuranceController.selectedChronicDiseasesList.remove(value);
+                    });
+                  },
+                ),
                 initialValue: criticalIllnessInsuranceController.selectedChronicDiseasesList.value,
               ),
             ],
@@ -251,10 +261,11 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterHeight, txtColor: primaryWhite, size: 12)));
                       } else if (criticalIllnessInsuranceController.weightController.value.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterWeight, txtColor: primaryWhite, size: 12)));
+                      } else if ((criticalIllnessInsuranceController.selectedChronicDisease ?? '').isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectChronicDiseases, txtColor: primaryWhite, size: 12)));
+                      } else if (criticalIllnessInsuranceController.selectedChronicDisease == yesTxt && criticalIllnessInsuranceController.selectedChronicDiseasesList.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectChronicDiseases, txtColor: primaryWhite, size: 12)));
                       }
-                      /*else if (criticalIllnessInsuranceController.selectChronicDiseases.value.name == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectChronicDiseases, txtColor: primaryWhite, size: 12)));
-                }*/
                       else {
                         widget.onNext();
                       }

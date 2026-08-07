@@ -177,6 +177,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                   onChanged: (value) {
                     setState(() {
                       familyMedicalInsuranceController.selectedChronicDisease = value!;
+                      familyMedicalInsuranceController.selectedChronicDiseasesList.value = [];
                     });
                   },
                 ),
@@ -205,8 +206,17 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                   ),
                 ),
                 onConfirm: (List<GetChronicDiseasesList> selectedValues) {
-                  familyMedicalInsuranceController.selectedChronicDiseasesList.value = selectedValues;
+                  setState(() {
+                    familyMedicalInsuranceController.selectedChronicDiseasesList.value = selectedValues;
+                  });
                 },
+                chipDisplay: MultiSelectChipDisplay(
+                  onTap: (value) {
+                    setState(() {
+                      familyMedicalInsuranceController.selectedChronicDiseasesList.remove(value);
+                    });
+                  },
+                ),
                 initialValue: familyMedicalInsuranceController.selectedChronicDiseasesList.value,
               ),
             ],
@@ -922,10 +932,15 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterMembersWeight, txtColor: primaryWhite, size: 12)));
         return true;
       }
-      /*else if (familyMedicalInsuranceController.selectMemberChronicDiseases[i].id == null) {
+      else if (familyMedicalInsuranceController.memberChronicOption[i].isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectMembersChronicDiseases, txtColor: primaryWhite, size: 12)));
         return true;
-      }*/
+      } else if (familyMedicalInsuranceController.memberChronicOption[i] == yesTxt &&
+          (familyMedicalInsuranceController.selectMemberChronicDiseases[i] == null ||
+           (familyMedicalInsuranceController.selectMemberChronicDiseases[i] is List && (familyMedicalInsuranceController.selectMemberChronicDiseases[i] as List).isEmpty))) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectMembersChronicDiseases, txtColor: primaryWhite, size: 12)));
+        return true;
+      }
       else if (familyMedicalInsuranceController.memberSelectedPreviousOperationsOption[i].isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectMembersPreviousOperationsOption, txtColor: primaryWhite, size: 12)));
         return true;
