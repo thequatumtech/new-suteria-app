@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:soperia_user/Screens/Profile/My%20Policies/get_policy_details_model.dart';
 import 'package:soperia_user/Screens/Profile/My%20Policies/my_policies_controller.dart';
+import 'package:soperia_user/Screens/Profile/My%20Policies/policy_details_screen.dart';
 import 'package:soperia_user/app_utils/app_button.dart';
+
+
 import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
@@ -101,252 +105,303 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
   }
 
   Widget activeData() {
+    List<PolicyData> activeList = (myPoliciesController.getPolicyDetailsModel.value.data ?? [])
+        .where((element) => !isActiveOrExpiredDataCheck(element.expiryDate ?? ''))
+        .toList();
+
+    if (activeList.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 50),
+        child: Center(
+          child: AppText(
+            text: noActivePoliciesFound,
+            size: 16,
+            fontWeight: FontWeight.w600,
+            txtColor: primaryGrayShade,
+          ),
+        ),
+      );
+    }
+
     return ListView.builder(
-      itemCount: myPoliciesController.getPolicyDetailsModel.value.data!.length,
+      itemCount: activeList.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        return !isActiveOrExpiredDataCheck(myPoliciesController.getPolicyDetailsModel.value.data![index].expiryDate ?? '')
-            ? Container(
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: primaryWhite,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryGray.withOpacity(0.5),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                    ),
-                  ],
+        final policyItem = activeList[index];
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PolicyDetailsScreen(policyData: policyItem),
+              ),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: primaryWhite,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryGray.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 5,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(top: 14, bottom: 14, left: 20, right: 10),
-                      decoration: const BoxDecoration(
-                        color: deepBluedark,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                      ),
-                      child: AppText(text: '$policyNo ${myPoliciesController.getPolicyDetailsModel.value.data![index].policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16, bottom: 20, left: 16, right: 16),
-                      child: Column(
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(top: 14, bottom: 14, left: 20, right: 10),
+                  decoration: const BoxDecoration(
+                    color: deepBluedark,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                  ),
+                  child: AppText(text: '$policyNo ${policyItem.policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 20, left: 16, right: 16),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppText(text: policyType, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
-                                    const SizedBox(height: 2),
-                                    AppText(text: myPoliciesController.getPolicyDetailsModel.value.data![index].policyType.toString(), size: 15, fontWeight: FontWeight.w500),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppText(text: expiryDate, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
-                                    const SizedBox(height: 2),
-                                    AppText(text: commonDateFormat(myPoliciesController.getPolicyDetailsModel.value.data![index].expiryDate ?? ''), size: 15, fontWeight: FontWeight.w500),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(text: policyType, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
+                                const SizedBox(height: 2),
+                                AppText(text: policyItem.policyType.toString(), size: 15, fontWeight: FontWeight.w500),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppText(text: premiumPaid, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
-                                    const SizedBox(height: 2),
-                                    AppText(text: commonDateFormat(myPoliciesController.getPolicyDetailsModel.value.data![index].inceptionDate ?? ''), size: 15, fontWeight: FontWeight.w500),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppText(text: insuranceCompany, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
-                                    const SizedBox(height: 2),
-                                    AppText(text: myPoliciesController.getPolicyDetailsModel.value.data![index].companyName ?? '', size: 15, fontWeight: FontWeight.w500),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(text: expiryDate, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
+                                const SizedBox(height: 2),
+                                AppText(text: commonDateFormat(policyItem.expiryDate ?? ''), size: 15, fontWeight: FontWeight.w500),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                   /* Center(
-                      child: SizedBox(
-                        width: 120,
-                        child: AppBtnWithColorShades(
-                          textSize: 12,
-                          paddingSize: 8,
-                          onTap: () {},
-                          btnTxt: viewDetails,
-                          color1: darkBlue2,
-                          color2: darkBlue1,
-                        ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(text: premiumPaid, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
+                                const SizedBox(height: 2),
+                                AppText(text: commonDateFormat(policyItem.inceptionDate ?? ''), size: 15, fontWeight: FontWeight.w500),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(text: insuranceCompany, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
+                                const SizedBox(height: 2),
+                                AppText(text: policyItem.companyName ?? '', size: 15, fontWeight: FontWeight.w500),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),*/
-                    const SizedBox(height: 16),
-                  ],
+                    ],
+                  ),
                 ),
-              )
-            : const SizedBox();
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
 
   Widget expiredData() {
+    List<PolicyData> expiredList = (myPoliciesController.getPolicyDetailsModel.value.data ?? [])
+        .where((element) => isActiveOrExpiredDataCheck(element.expiryDate ?? ''))
+        .toList();
+
+    if (expiredList.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 50),
+        child: Center(
+          child: AppText(
+            text: noExpiredPoliciesFound,
+            size: 16,
+            fontWeight: FontWeight.w600,
+            txtColor: primaryGrayShade,
+          ),
+        ),
+      );
+    }
+
     return ListView.builder(
-      itemCount: myPoliciesController.getPolicyDetailsModel.value.data!.length,
+      itemCount: expiredList.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        return isActiveOrExpiredDataCheck(myPoliciesController.getPolicyDetailsModel.value.data![index].expiryDate ?? '')
-            ? Container(
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: primaryWhite,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryGray.withOpacity(0.5),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                    ),
-                  ],
+        final policyItem = expiredList[index];
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PolicyDetailsScreen(policyData: policyItem),
+              ),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: primaryWhite,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryGray.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 5,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(top: 14, bottom: 14, left: 20, right: 10),
-                      decoration: const BoxDecoration(
-                        color: deepBluedark,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                      ),
-                      child: AppText(text: '$policyNo ${myPoliciesController.getPolicyDetailsModel.value.data![index].policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16, bottom: 20, left: 16, right: 16),
-                      child: Column(
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(top: 14, bottom: 14, left: 20, right: 10),
+                  decoration: const BoxDecoration(
+                    color: deepBluedark,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                  ),
+                  child: AppText(text: '$policyNo ${policyItem.policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 20, left: 16, right: 16),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppText(text: policyType, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
-                                    const SizedBox(height: 2),
-                                    AppText(text: myPoliciesController.getPolicyDetailsModel.value.data![index].policyType.toString(), size: 15, fontWeight: FontWeight.w500),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppText(text: expiryDate, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
-                                    const SizedBox(height: 2),
-                                    AppText(text: commonDateFormat(myPoliciesController.getPolicyDetailsModel.value.data![index].expiryDate ?? ''), size: 15, fontWeight: FontWeight.w500),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(text: policyType, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
+                                const SizedBox(height: 2),
+                                AppText(text: policyItem.policyType.toString(), size: 15, fontWeight: FontWeight.w500),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppText(text: premiumPaid, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
-                                    const SizedBox(height: 2),
-                                    AppText(text: commonDateFormat(myPoliciesController.getPolicyDetailsModel.value.data![index].inceptionDate ?? ''), size: 15, fontWeight: FontWeight.w500),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppText(text: insuranceCompany, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
-                                    const SizedBox(height: 2),
-                                    AppText(text: myPoliciesController.getPolicyDetailsModel.value.data![index].companyName ?? '', size: 15, fontWeight: FontWeight.w500),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(text: expiryDate, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
+                                const SizedBox(height: 2),
+                                AppText(text: commonDateFormat(policyItem.expiryDate ?? ''), size: 15, fontWeight: FontWeight.w500),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 120,
-                          child: AppBtnWithColorShades(
-                            textSize: 12,
-                            paddingSize: 8,
-                            onTap: () {},
-                            btnTxt: viewDetails,
-                            color1: darkBlue2,
-                            color2: darkBlue1,
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(text: premiumPaid, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
+                                const SizedBox(height: 2),
+                                AppText(text: commonDateFormat(policyItem.inceptionDate ?? ''), size: 15, fontWeight: FontWeight.w500),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 14),
-                        SizedBox(
-                          width: 120,
-                          child: AppBtnWithColorShades(
-                            textSize: 12,
-                            paddingSize: 8,
-                            onTap: () {},
-                            btnTxt: renew,
-                            color1: darkBlue2,
-                            color2: darkBlue1,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AppText(text: insuranceCompany, size: 15, fontWeight: FontWeight.w500, txtColor: primaryGrayShade),
+                                const SizedBox(height: 2),
+                                AppText(text: policyItem.companyName ?? '', size: 15, fontWeight: FontWeight.w500),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      child: AppBtnWithColorShades(
+                        textSize: 12,
+                        paddingSize: 8,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PolicyDetailsScreen(policyData: policyItem),
+                            ),
+                          );
+                        },
+                        btnTxt: viewDetails,
+                        color1: darkBlue2,
+                        color2: darkBlue1,
+                      ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(width: 14),
+                    SizedBox(
+                      width: 120,
+                      child: AppBtnWithColorShades(
+                        textSize: 12,
+                        paddingSize: 8,
+                        onTap: () {},
+                        btnTxt: renew,
+                        color1: darkBlue2,
+                        color2: darkBlue1,
+                      ),
+                    ),
                   ],
                 ),
-              )
-            : const SizedBox();
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
 
   isActiveOrExpiredDataCheck(String date) {
+    if (date.isEmpty) return false;
     final now = DateTime.now();
     DateTime tempDate = DateFormat("yyyy-MM-dd").parse(date).add(const Duration(days: 1));
     final bool isExpired = tempDate.isBefore(now);
     return isExpired;
   }
 }
+
+

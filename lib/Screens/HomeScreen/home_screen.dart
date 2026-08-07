@@ -4,7 +4,9 @@ import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:soperia_user/Screens/HomeScreen/home_controller.dart';
+import 'package:soperia_user/model_class/get_banner_model.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/AutoMotiveInsurance/automotive_insurance_stepper.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/Critical%20Illness%20Insurance/critical_insurance_stepper.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/Dental%20Insurance/dental_insurance_stepper.dart';
@@ -31,6 +33,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int bottomBarCurrentIndex = 0;
   int sliderCurrentIndex = 0;
+
+  Future<void> _launchURL(String urlString) async {
+    if (urlString.isEmpty) return;
+    Uri uri = Uri.parse(urlString);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 
   List<String> imageUrls = [
     slider,
@@ -91,6 +101,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getPref();
     homeController.getProfile(context);
+    homeController.getBanners(context);
     super.initState();
   }
 
@@ -158,55 +169,134 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 200, // Set a fixed height for the CarouselSlider
-                          child: CarouselSlider.builder(
-                            itemCount: imageUrls.length,
-                            itemBuilder: (context, index, realIndex) {
-                              return Container(
-                                margin: const EdgeInsets.all(5.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  image: DecorationImage(
-                                    image: AssetImage(imageUrls[index]),
-                                    fit: BoxFit.cover,
+                        Builder(
+                          builder: (context) {
+                            List<BannerData> banners = homeController.getBannerModel.value.data ?? [];
+                            if (banners.isEmpty) {
+                              return Column(
+                                children: [
+                                  SizedBox(
+                                    height: 200,
+                                    child: CarouselSlider.builder(
+                                      itemCount: imageUrls.length,
+                                      itemBuilder: (context, index, realIndex) {
+                                        return Container(
+                                          margin: const EdgeInsets.all(5.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                            image: DecorationImage(
+                                              image: AssetImage(imageUrls[index]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      options: CarouselOptions(
+                                        height: 150.0,
+                                        enlargeCenterPage: true,
+                                        autoPlay: true,
+                                        aspectRatio: 16 / 9,
+                                        autoPlayCurve: Curves.fastOutSlowIn,
+                                        enableInfiniteScroll: true,
+                                        autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                                        viewportFraction: 1.0,
+                                        onPageChanged: (index, reason) {
+                                          setState(() {
+                                            sliderCurrentIndex = index;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(
+                                      imageUrls.length,
+                                      (index) => Container(
+                                        width: 8.0,
+                                        height: 8.0,
+                                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: sliderCurrentIndex == index ? Colors.blue : Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height: 200,
+                                  child: CarouselSlider.builder(
+                                    itemCount: banners.length,
+                                    itemBuilder: (context, index, realIndex) {
+                                      final banner = banners[index];
+                                      return InkWell(
+                                        onTap: () {
+                                          if (banner.redirectUrl != null && banner.redirectUrl!.isNotEmpty) {
+                                            _launchURL(banner.redirectUrl!);
+                                          }
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.all(5.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                            child: CachedNetworkImage(
+                                              imageUrl: banner.image ?? '',
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                              errorWidget: (context, url, error) => Image.asset(slider, fit: BoxFit.cover),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    options: CarouselOptions(
+                                      height: 150.0,
+                                      enlargeCenterPage: true,
+                                      autoPlay: banners.length > 1,
+                                      aspectRatio: 16 / 9,
+                                      autoPlayCurve: Curves.fastOutSlowIn,
+                                      enableInfiniteScroll: banners.length > 1,
+                                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                                      viewportFraction: 1.0,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          sliderCurrentIndex = index;
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
-                              );
-                            },
-                            options: CarouselOptions(
-                              height: 150.0,
-                              enlargeCenterPage: true,
-                              autoPlay: true,
-                              aspectRatio: 16 / 9,
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              enableInfiniteScroll: true,
-                              autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                              viewportFraction: 1.0,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  sliderCurrentIndex = index;
-                                });
-                              },
-                            ),
-                          ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    banners.length,
+                                    (index) => Container(
+                                      width: 8.0,
+                                      height: 8.0,
+                                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: sliderCurrentIndex == index ? Colors.blue : Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            imageUrls.length,
-                            (index) => Container(
-                              width: 8.0,
-                              height: 8.0,
-                              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: sliderCurrentIndex == index ? Colors.blue : Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
+
                         const SizedBox(height: 20),
                         Row(
                           children: [

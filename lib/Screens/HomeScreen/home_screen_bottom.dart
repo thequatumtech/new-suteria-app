@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soperia_user/Screens/Profile/My%20Policies/my_policies_screen.dart';
 import 'package:soperia_user/Screens/Profile/profile_screen.dart';
 import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
@@ -17,9 +18,10 @@ class _HomePageBottomNavState extends State<HomePageBottomNav> {
 
   List<Widget> screens = [
     HomePage(),
-    HomePage(),
+    const MyPolicies(),
     const ProfileScreen(),
   ];
+
 
   @override
   Widget build(BuildContext context) {

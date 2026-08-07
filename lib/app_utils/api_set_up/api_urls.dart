@@ -86,3 +86,5 @@ const String registerOtpSend ='register-otp-send';
 const String forgotPassword ='forgot-password';
 const String getDiscountAmount ='get-discount-amount';
 const String getDiscountCoupons ='get-discount-coupons';
+const String getBannerURL ='get-banner';
+

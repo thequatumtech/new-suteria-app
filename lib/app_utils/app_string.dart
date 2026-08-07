@@ -25,7 +25,10 @@ const String confirmpassword = 'Confirm Password';
 const String address = 'Address';
 const String editt = 'Edit';
 const String noActiveClaims = 'No Active Claims!';
+const String noActivePoliciesFound = 'No Active Policies Found';
+const String noExpiredPoliciesFound = 'No Expired Policies Found';
 const String youDonTHaveAnyPoliciesWithUsUet = 'You Don’t have any policies with us yet.';
+
 const String message = 'Message';
 const String passwordrule = 'Atleast 6 Characters';
 const String passwordalert = 'One special keyword';
