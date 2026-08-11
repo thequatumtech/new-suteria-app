@@ -6,6 +6,16 @@ import 'package:soperia_user/app_utils/color_constrint.dart';
 
 import 'app_text.dart';
 
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
+  }
+}
+
 class AppTextfieldCircular extends StatefulWidget {
   String? headerTxt;
   double width;
@@ -125,7 +135,26 @@ class _AppTextfieldCircularState extends State<AppTextfieldCircular> {
                 onEditingComplete: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
-                inputFormatters: widget.inputFormatters,
+                textCapitalization: ((widget.hidePassword == true) ||
+                        (widget.keyboardType == TextInputType.emailAddress) ||
+                        (widget.keyboardType == TextInputType.visiblePassword) ||
+                        widget.hint.toLowerCase().contains('email') ||
+                        widget.lable.toLowerCase().contains('email') ||
+                        widget.hint.toLowerCase().contains('password') ||
+                        widget.lable.toLowerCase().contains('password'))
+                    ? TextCapitalization.none
+                    : TextCapitalization.characters,
+                inputFormatters: [
+                  if (!((widget.hidePassword == true) ||
+                      (widget.keyboardType == TextInputType.emailAddress) ||
+                      (widget.keyboardType == TextInputType.visiblePassword) ||
+                      widget.hint.toLowerCase().contains('email') ||
+                      widget.lable.toLowerCase().contains('email') ||
+                      widget.hint.toLowerCase().contains('password') ||
+                      widget.lable.toLowerCase().contains('password')))
+                    UpperCaseTextFormatter(),
+                  ...?widget.inputFormatters,
+                ],
                 maxLines: widget.maxLine ?? 1,
                 controller: widget.controller,
                 decoration: InputDecoration(
@@ -245,7 +274,26 @@ class AppTextfield extends StatelessWidget {
         maxLength: maxLength,
         keyboardType: keyboardType,
         textInputAction: textInputAction ?? TextInputAction.done,
-        inputFormatters: inputFormatters,
+        textCapitalization: ((obscureText == true) ||
+                (keyboardType == TextInputType.emailAddress) ||
+                (keyboardType == TextInputType.visiblePassword) ||
+                hint.toLowerCase().contains('email') ||
+                lable.toLowerCase().contains('email') ||
+                hint.toLowerCase().contains('password') ||
+                lable.toLowerCase().contains('password'))
+            ? TextCapitalization.none
+            : TextCapitalization.characters,
+        inputFormatters: [
+          if (!((obscureText == true) ||
+              (keyboardType == TextInputType.emailAddress) ||
+              (keyboardType == TextInputType.visiblePassword) ||
+              hint.toLowerCase().contains('email') ||
+              lable.toLowerCase().contains('email') ||
+              hint.toLowerCase().contains('password') ||
+              lable.toLowerCase().contains('password')))
+            UpperCaseTextFormatter(),
+          ...?inputFormatters,
+        ],
         controller: controller,
         readOnly: readOnly ?? false,
         obscureText: obscureText ?? false,

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:soperia_user/Screens/Profile/Contact%20Us/contact_us_controller.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
+import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 
 class ContactUsMessageScreen extends StatefulWidget {
@@ -173,6 +174,8 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                                 Expanded(
                                   child: TextField(
                                     controller: contactUsController.messageController.value,
+                                    textCapitalization: TextCapitalization.characters,
+                                    inputFormatters: [UpperCaseTextFormatter()],
                                     decoration: const InputDecoration(
                                       hintText: enterMessage,
                                       hintStyle: TextStyle(color: deepBluedark, fontWeight: FontWeight.w500, fontSize: 16),

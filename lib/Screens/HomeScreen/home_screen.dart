@@ -130,45 +130,50 @@ class _HomePageState extends State<HomePage> {
             decoration: const BoxDecoration(color: Colors.transparent),
             child: homeController.isLoading.value
                 ? const Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 35,
-                                width: 35,
-                                alignment: Alignment.center,
-                                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: (getProfileModelGlobal.data?.profilePic != null && getProfileModelGlobal.data!.profilePic!.isNotEmpty)
-                                      ? CachedNetworkImage(
-                                          height: 35,
-                                          width: 35,
-                                          imageUrl: "$imgBaseUrl/${getProfileModelGlobal.data?.profilePic}",
-                                          placeholder: (context, url) => const CircularProgressIndicator(strokeWidth: 2),
-                                          errorWidget: (context, url, error) => Image.asset(splashImg, height: 35, width: 35, fit: BoxFit.cover),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.asset(splashImg, height: 35, width: 35, fit: BoxFit.cover),
+                : RefreshIndicator(
+                    color: deepBlue,
+                    onRefresh: () => homeController.refreshHome(context),
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 35,
+                                  width: 35,
+                                  alignment: Alignment.center,
+                                  decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: ((homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic) != null &&
+                                            (homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic)!.isNotEmpty)
+                                        ? CachedNetworkImage(
+                                            height: 35,
+                                            width: 35,
+                                            imageUrl: "$imgBaseUrl/${homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic}",
+                                            placeholder: (context, url) => const CircularProgressIndicator(strokeWidth: 2),
+                                            errorWidget: (context, url, error) => Image.asset(splashImg, height: 35, width: 35, fit: BoxFit.cover),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(splashImg, height: 35, width: 35, fit: BoxFit.cover),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text("$welcome, ${getProfileModelGlobal.data?.firstName ?? ""}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                              const Spacer(),
-                              /*const Icon(Icons.notifications_none_outlined),*/
-                              const SizedBox(width: 10),
-                              Container(
-                                width: 20,
-                                height: 20,
-                                decoration: const BoxDecoration(image: DecorationImage(image: AssetImage(translate))),
-                              ),
-                            ],
+                                const SizedBox(width: 10),
+                                Text("$welcome, ${homeController.rxGetProfileModel.value.data?.firstName ?? getProfileModelGlobal.data?.firstName ?? ""}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                const Spacer(),
+                                /*const Icon(Icons.notifications_none_outlined),*/
+                                const SizedBox(width: 10),
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: const BoxDecoration(image: DecorationImage(image: AssetImage(translate))),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
                         Builder(
                           builder: (context) {
                             List<BannerData> banners = homeController.getBannerModel.value.data ?? [];
@@ -344,6 +349,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
+                ),
           );
         }),
       ),
