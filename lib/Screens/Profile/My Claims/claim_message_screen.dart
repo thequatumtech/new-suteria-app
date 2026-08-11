@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:soperia_user/Screens/Profile/My%20Claims/claim_controller.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
+import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/model_class/get_claims_list_model.dart';
 
@@ -130,6 +131,8 @@ class _ClaimMessageScreenState extends State<ClaimMessageScreen> with SingleTick
                                 Expanded(
                                   child: TextField(
                                     controller: claimController.claimMessageController.value,
+                                    textCapitalization: TextCapitalization.characters,
+                                    inputFormatters: [UpperCaseTextFormatter()],
                                     decoration: const InputDecoration(
                                       hintText: enterMessage,
                                       hintStyle: TextStyle(color: deepBluedark, fontWeight: FontWeight.w500, fontSize: 16),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:soperia_user/Screens/HomeScreen/home_screen_bottom.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
+import 'package:soperia_user/app_utils/api_set_up/header_file.dart';
 import 'package:soperia_user/app_utils/api_set_up/service_locator.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
@@ -25,12 +27,30 @@ class LoginController extends GetxController {
   loginApi(BuildContext context) async {
     try {
       isLoading.value = true;
+      try {
+        List<InternetAddress> addresses = await InternetAddress.lookup('kre8consultancy.com');
+        if (addresses.isNotEmpty) {
+          print("SERVER DOMAIN IP: ${addresses.first.address}");
+        }
+      } catch (e) {
+        print("DOMAIN IP LOOKUP FAILED: $e");
+      }
+
+      Map<String, String> header = await getHeader();
+      header['Accept'] = 'application/json';
+
       Map<String, dynamic> data = {
         emailKey: emailController.value.text,
         mobileNoKey: phoneno.value.text,
         passwordKey: passwordController.value.text,
       };
-      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequest(context: context, endpoint: loginURL, body: data);
+      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(
+        context: context,
+        endpoint: loginURL,
+        body: data,
+        options: Options(headers: header),
+      );
+      print("LOGIN RESPONSE: $response");
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString(tokenKey, response[tokenKey]);
@@ -38,18 +58,22 @@ class LoginController extends GetxController {
       } else {
         isLoading.value = false;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
-        // customSnackBar(context,response[messageKey].toString(),AnimatedSnackBarType.error);
       }
       isLoading.value = false;
-    } on DioError catch (e) {
+    } catch (e) {
       isLoading.value = false;
+      print("LOGIN ERROR: $e");
+      String errorMsg = "Something went wrong";
+      if (e is DioException && e.response != null) {
+        print("LOGIN DIO RESPONSE: ${e.response?.data}");
+        errorMsg = e.response?.data?[messageKey]?.toString() ?? e.response?.statusMessage ?? errorMsg;
+      }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: AppText(
-        text: e.response!.statusMessage!,
+        text: errorMsg,
         txtColor: primaryWhite,
         size: 12,
       )));
-      // customSnackBar(context,e.response!.statusMessage!,AnimatedSnackBarType.error);
     }
   }
 

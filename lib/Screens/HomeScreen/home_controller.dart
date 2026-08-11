@@ -14,34 +14,56 @@ class HomeController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isBannerLoading = false.obs;
   Rx<GetBannerModel> getBannerModel = GetBannerModel().obs;
+  Rx<GetProfileModel> rxGetProfileModel = GetProfileModel().obs;
 
-  getProfile(context) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    isLoading.value = true;
+  Future<void> getProfile(context, {bool showLoading = true}) async {
+    if (showLoading) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      isLoading.value = true;
+    }
     try {
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: getProfileURL, options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         getProfileModelGlobal = GetProfileModel.fromJson(response);
+        rxGetProfileModel.value = getProfileModelGlobal;
       }
-      isLoading.value = false;
+      if (showLoading) {
+        isLoading.value = false;
+      }
     } catch (e) {
-      isLoading.value = false;
+      if (showLoading) {
+        isLoading.value = false;
+      }
     }
   }
 
-  getBanners(context) async {
-    isBannerLoading.value = true;
+  Future<void> getBanners(context, {bool showLoading = true}) async {
+    if (showLoading) {
+      isBannerLoading.value = true;
+    }
     try {
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: getBannerURL, options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         getBannerModel.value = GetBannerModel.fromJson(response);
       }
-      isBannerLoading.value = false;
+      if (showLoading) {
+        isBannerLoading.value = false;
+      }
     } catch (e) {
-      isBannerLoading.value = false;
+      if (showLoading) {
+        isBannerLoading.value = false;
+      }
     }
   }
+
+  Future<void> refreshHome(context) async {
+    await Future.wait([
+      getProfile(context, showLoading: false),
+      getBanners(context, showLoading: false),
+    ]);
+  }
 }
+
 
