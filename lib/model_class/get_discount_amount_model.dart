@@ -33,10 +33,12 @@ class Data {
   double? fees;
   double? stamps;
   double? salesTax;
+  dynamic cbj;
+  dynamic salesTaxCbj;
 
   double? totalNetPremium;
 
-  Data({this.couponId, this.couponCode, this.netPremium, this.fees, this.stamps, this.salesTax, this.totalNetPremium});
+  Data({this.couponId, this.couponCode, this.netPremium, this.fees, this.stamps, this.salesTax, this.cbj, this.salesTaxCbj, this.totalNetPremium});
 
   Data.fromJson(Map<String, dynamic> json) {
     couponId = json['coupon_id'];
@@ -45,6 +47,8 @@ class Data {
     fees = json['fees'] != null ? double.parse(json['fees'].toString()) : 0;
     stamps = json['stamps'] != null ? double.parse(json['stamps'].toString()) : 0;
     salesTax = json['sales_tax'] != null ? double.parse(json['sales_tax'].toString()) : 0;
+    cbj = json['cbj'] != null ? json['cbj'].toString() : "0";
+    salesTaxCbj = json['sales_tax_cbj'] != null ? json['sales_tax_cbj'].toString() : "0";
     totalNetPremium = json['total_net_premium'] != null ? double.parse(json['total_net_premium'].toString()) : 0;
   }
 
@@ -56,6 +60,8 @@ class Data {
     data['fees'] = this.fees;
     data['stamps'] = this.stamps;
     data['sales_tax'] = this.salesTax;
+    data['cbj'] = this.cbj;
+    data['sales_tax_cbj'] = this.salesTaxCbj;
     data['total_net_premium'] = this.totalNetPremium;
     return data;
   }

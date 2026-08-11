@@ -50,6 +50,7 @@ class IndividualMedicalInsuranceController extends GetxController {
   Rx<TextEditingController> insuranceCompanyNameController = TextEditingController().obs;
   Rx<TextEditingController> detailsAboutPreviousOperationsController = TextEditingController().obs;
 
+  String selectAmericanNationality = '';
   String? selectedGender;
   String? selectclass;
   String? insurancetypes;
@@ -170,6 +171,7 @@ class IndividualMedicalInsuranceController extends GetxController {
     selectedGender = null;
     selectedMaritalStatus = null;
     selectOccupation.value = OccuptionList();
+    selectAmericanNationality = '';
     selectCity.value = CityListModel();
     selectDistrict.value = DistrictList();
     streetNameController.value.clear();

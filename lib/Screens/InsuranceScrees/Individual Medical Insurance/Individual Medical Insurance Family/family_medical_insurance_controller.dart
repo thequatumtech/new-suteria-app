@@ -88,6 +88,7 @@ class FamilyMedicalInsuranceController extends GetxController {
   RxList<List<String>> selectedPersonalPicMember = <List<String>>[].obs;
   RxList<List<String>> selectedOtherDocumentsMember = <List<String>>[].obs;
 
+  String selectAmericanNationality = '';
   String? selectedGender;
   String? selectclass;
   String? insurancetypes;
@@ -252,6 +253,7 @@ class FamilyMedicalInsuranceController extends GetxController {
     selectedGender = null;
     selectedMaritalStatus = null;
     selectOccupation.value = OccuptionList();
+    selectAmericanNationality = '';
     selectCity.value = CityListModel();
     selectDistrict.value = DistrictList();
     streetNameController.value.clear();
@@ -302,7 +304,7 @@ class FamilyMedicalInsuranceController extends GetxController {
         isShowMessage.value = true;
       }
     }
-    if (selectedDangerousActivity == 'Yes') {
+    if (selectedDangerousActivity == 'Yes' && selectDangerousActivitiesList.isNotEmpty) {
       isShowMessage.value = true;
     }
   }

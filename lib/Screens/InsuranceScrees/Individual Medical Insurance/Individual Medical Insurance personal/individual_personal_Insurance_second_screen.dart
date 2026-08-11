@@ -402,7 +402,9 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                   ),
                 ),
                 onConfirm: (List<GetDangerousActivitiesList> selectedValues) {
-                  individualMedicalInsuranceController.selectDangerousActivitiesList.value = selectedValues;
+                  setState(() {
+                    individualMedicalInsuranceController.selectDangerousActivitiesList.value = selectedValues;
+                  });
                 },
                 initialValue: individualMedicalInsuranceController.selectDangerousActivitiesList,
               ),
@@ -511,7 +513,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
             ),
             // : const SizedBox(),
             const SizedBox(height: 20),
-            individualMedicalInsuranceController.selectDangerousActivity == yesTxt || individualMedicalInsuranceController.isShowHWValidationMsg.value
+            (individualMedicalInsuranceController.selectDangerousActivity == yesTxt && individualMedicalInsuranceController.selectDangerousActivitiesList.isNotEmpty) || individualMedicalInsuranceController.isShowHWValidationMsg.value
                 ? AppText(
                     text: sorryYourRequestTypeOfInsuranceCannotBeProcessedDueToTechnicalUnderwritingPleaseContactUsAnyClarification,
                     txtColor: Colors.red,
@@ -555,10 +557,9 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectMonth, txtColor: primaryWhite, size: 12)));
                       } else if (individualMedicalInsuranceController.selectDangerousActivity == null) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDangerousActivitiesOptions, txtColor: primaryWhite, size: 12)));
-                      }
-                      /*else if (individualMedicalInsuranceController.selectDangerousActivity == yesTxt && individualMedicalInsuranceController.selectDangerousActivitiesList.value.id == null) {
+                      } else if (individualMedicalInsuranceController.selectDangerousActivity == yesTxt && individualMedicalInsuranceController.selectDangerousActivitiesList.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDangerousActivitiesList, txtColor: primaryWhite, size: 12)));
-                      }*/
+                      }
                       else if (/*individualMedicalInsuranceController.selectDangerousActivity == noTxt &&*/ individualMedicalInsuranceController.selectedIdFrontSide.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadIdFrontSidePassport, txtColor: primaryWhite, size: 12)));
                       } else if (/*individualMedicalInsuranceController.selectDangerousActivity == noTxt && */ individualMedicalInsuranceController.selectedIdBackSide.isEmpty) {

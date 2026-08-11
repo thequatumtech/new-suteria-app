@@ -231,7 +231,9 @@ class _DiscountScreenState extends State<DiscountScreen> {
                                     children: [
                                       textWidget(netPremium, grayshad400),
                                       textWidget(issuanceFees, grayshad400),
-                                      textWidget(tax, grayshad400),
+                                      textWidget(salesTax, grayshad400),
+                                      textWidget(cbjTxt, grayshad400),
+                                      textWidget(salesTaxCbjTxt, grayshad400),
                                       textWidget(stamps, grayshad400),
                                       textWidget(totalPremium, grayshad400),
                                     ],
@@ -247,6 +249,12 @@ class _DiscountScreenState extends State<DiscountScreen> {
                                           deepBluedark),
                                       textWidget(
                                           draftPdfController.getDiscountAmountModel.value.data!.salesTax.toString(),
+                                          deepBluedark),
+                                      textWidget(
+                                          draftPdfController.getDiscountAmountModel.value.data!.cbj.toString(),
+                                          deepBluedark),
+                                      textWidget(
+                                          draftPdfController.getDiscountAmountModel.value.data!.salesTaxCbj.toString(),
                                           deepBluedark),
                                       textWidget(
                                           draftPdfController.getDiscountAmountModel.value.data!.stamps.toString(),
@@ -269,7 +277,9 @@ class _DiscountScreenState extends State<DiscountScreen> {
                                     children: [
                                       textWidget(netPremium, grayshad400),
                                       textWidget(issuanceFees, grayshad400),
-                                      textWidget(tax, grayshad400),
+                                      textWidget(salesTax, grayshad400),
+                                      textWidget(cbjTxt, grayshad400),
+                                      textWidget(salesTaxCbjTxt, grayshad400),
                                       textWidget(stamps, grayshad400),
                                       textWidget(totalPremium, grayshad400),
                                     ],
@@ -284,6 +294,10 @@ class _DiscountScreenState extends State<DiscountScreen> {
                                       textWidget(draftPdfController.postInsuranceModel.value.data?.fees.toString()??'',
                                           deepBluedark),
                                       textWidget(draftPdfController.postInsuranceModel.value.data?.salesTax.toString()??'',
+                                          deepBluedark),
+                                      textWidget(draftPdfController.postInsuranceModel.value.data?.cbj.toString()??'',
+                                          deepBluedark),
+                                      textWidget(draftPdfController.postInsuranceModel.value.data?.salesTaxCbj.toString()??'',
                                           deepBluedark),
                                       textWidget(draftPdfController.postInsuranceModel.value.data?.stamps.toString()??'',
                                           deepBluedark),

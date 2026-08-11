@@ -281,7 +281,8 @@ class _WorkDetailSingupScreenState extends State<WorkDetailSingupScreen> {
               ),
             ),
           ),
-        ));
+        )
+      );
   }
 
   bool residenceValidation() {

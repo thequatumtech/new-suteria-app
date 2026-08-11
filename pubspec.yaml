@@ -39,6 +39,7 @@ dependencies:
   flutter_svg: ^2.0.9
   intl_phone_field: ^3.2.0
   flutter_otp_text_field: ^1.1.1
+  sms_autofill: ^2.3.0
   intl:
   carousel_slider_plus: ^7.0.0
   image_picker: ^0.8.4+4

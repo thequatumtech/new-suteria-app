@@ -540,7 +540,7 @@
   "please_select_are_you_pregnant_option": "Please select are you pregnant option",
   "please_select_month": "Please select month",
   "please_select_dangerous_activities_options": "Please select dangerous activities options",
-  "please_select_dangerous_activities_list": "Please select dangerous activities list",
+  "please_select_dangerous_activities_list": "Please select dangerous activity",
   "please_upload_id_front_side_passport": "Please upload i.d. (front Side) / passport",
   "please_upload_id_back_side_passport": "Please upload i.d. (back Side) / passport",
   "please_upload_family_book": "Please upload family book",
@@ -688,6 +688,8 @@
   "please_select_departure_from": "Please select departure from",
   "please_select_destination": "Please select destination",
   "please_select_additional_destination": "Please select additional destination",
+  "please_select_multiple_destination_if_any": "Please select multiple destination if any",
+  "please_select_multiple_destination_option": "Please select multiple destination option",
   "please_select_geographical_area": "Please select geographical area",
   "please_enter_number_of_total_days": "Please enter number of total days",
   "please_accept_all_terms_and_conditions": "Please Agree on the Draft Policy Wording",
@@ -731,5 +733,8 @@
   "successfully_register": "Successfully Register",
   "please_upload_residence_card_front_side_passport_documents": "Please Upload Residence Card (Front Side) / Passport documents",
   "please_upload_residence_card_back_side_passport_documents": "Please Upload Residence Card (Back Side) / Passport documents",
-  "please_select_occupancy_type_of_work": "Please select occupancy / type of work"
+  "please_select_occupancy_type_of_work": "Please select occupancy / type of work",
+  "sales_tax": "Sales Tax",
+  "cbj": "CBJ",
+  "sales_tax_cbj": "Sales Tax CBJ"
 }

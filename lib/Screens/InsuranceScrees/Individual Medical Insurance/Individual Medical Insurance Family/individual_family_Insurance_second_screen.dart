@@ -613,10 +613,9 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectMonth, txtColor: primaryWhite, size: 12)));
                         } else if (familyMedicalInsuranceController.selectedDangerousActivity == null) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDangerousActivitiesOptions, txtColor: primaryWhite, size: 12)));
-                        }
-                        /* else if (familyMedicalInsuranceController.selectedDangerousActivity == yesTxt && familyMedicalInsuranceController.selectDangerousActivitiesList.value.id == null) {
+                        } else if (familyMedicalInsuranceController.selectedDangerousActivity == yesTxt && familyMedicalInsuranceController.selectDangerousActivitiesList.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDangerousActivitiesList, txtColor: primaryWhite, size: 12)));
-                        } */
+                        }
                         else if (/*familyMedicalInsuranceController.selectedDangerousActivity == noTxt &&*/ familyMedicalInsuranceController.selectedIdFrontSide.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadIdFrontSidePassport, txtColor: primaryWhite, size: 12)));
                         } else if (/*familyMedicalInsuranceController.selectedDangerousActivity == noTxt &&*/ familyMedicalInsuranceController.selectedIdBackSide.isEmpty) {

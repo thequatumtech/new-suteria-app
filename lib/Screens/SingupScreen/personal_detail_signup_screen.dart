@@ -40,13 +40,12 @@ class _SingupScreenState extends State<SingupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
         body: SingleChildScrollView(
           child: Obx(() => Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+                    padding: const EdgeInsets.only(top: 88, left: 25, right: 25, bottom: 25),
                     child: Row(
                       children: [
                         InkWell(
@@ -60,7 +59,7 @@ class _SingupScreenState extends State<SingupScreen> {
                           ),
                         ),
                         const SizedBox(
-                          width: 5,
+                          width: 10,
                         ),
                         AppText(text: personaldetails, size: 25),
                         const SizedBox(
@@ -300,8 +299,7 @@ class _SingupScreenState extends State<SingupScreen> {
                 ],
               )),
         ),
-      ),
-    );
+      );
   }
 
   startDateDialog() async {

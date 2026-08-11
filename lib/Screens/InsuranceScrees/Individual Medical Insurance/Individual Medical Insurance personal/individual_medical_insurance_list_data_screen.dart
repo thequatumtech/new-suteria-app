@@ -125,6 +125,7 @@ class _IndividualMedicalInsuranceListDataScreenState extends State<IndividualMed
                                       'no_of_visits_id': individualMedicalInsuranceController.selectNoOfVisits.value.id ?? '',
                                       'insurance_limit': individualMedicalInsuranceController.selectedInsuranceLimit.value.limit ?? 0,
                                       'plan_id': individualMedicalInsuranceController.planDd ?? 0,
+                                      'american_notionality_status': individualMedicalInsuranceController.selectAmericanNationality == 'Yes' ? 2 : 1,
                                       'insurance_type_status': 1,
                                       'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
                                     },

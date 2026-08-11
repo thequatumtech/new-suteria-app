@@ -22,7 +22,7 @@ class AuthController extends GetxController {
   RxBool isLoadingSendOtp = false.obs;
   RxBool isLoadingForgotPassword = false.obs;
 
-  forgotOtpSendPostApi({required BuildContext context, required bool isResend, required bool isFromSignup}) async {
+  Future<bool> forgotOtpSendPostApi({required BuildContext context, required bool isResend, required bool isFromSignup}) async {
     isLoadingSendOtp.value = true;
     Map<String, dynamic> data = {'phone': mobileNoController.value.text};
 
@@ -33,17 +33,23 @@ class AuthController extends GetxController {
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         forgotOtpSendModel.value = ForgotOtpSendModel.fromJson(response);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
+        isLoadingSendOtp.value = false;
+        return true;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
+        isLoadingSendOtp.value = false;
+        return false;
       }
-      isLoadingSendOtp.value = false;
     } on DioError catch (e) {
       isLoadingSendOtp.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      String errorMsg = e.response?.statusMessage ?? "Network error";
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: errorMsg, txtColor: primaryWhite, size: 12)));
+      return false;
     } catch (f) {
       print(f);
       isLoadingSendOtp.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));
+      return false;
     }
   }
 

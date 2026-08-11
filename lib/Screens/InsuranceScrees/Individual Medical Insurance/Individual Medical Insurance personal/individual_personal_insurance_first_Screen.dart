@@ -224,15 +224,57 @@ class _IndividualPersonalInsuranceFirstScreenState extends State<IndividualPerso
                         ],
                       ),
 
-                  const SizedBox(height: 20), // Added space
-                  AppBtnWithColorShades(
-                    onTap: () {
-                      widget.onNext();
-                    },
-                    btnTxt: next,
-                    color1: darkBlue2,
-                    color2: darkBlue1,
+                  const SizedBox(height: 20),
+                  AppText(text: americanNationality, size: 15, txtAlign: TextAlign.start),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: <Widget>[
+                      Radio(
+                        value: yesTxt,
+                        groupValue: individualMedicalInsuranceController.selectAmericanNationality,
+                        onChanged: (value) {
+                          setState(() {
+                            individualMedicalInsuranceController.selectAmericanNationality = value!;
+                          });
+                        },
+                      ),
+                      const Text(yesTxt),
+                      Radio(
+                        value: noTxt,
+                        groupValue: individualMedicalInsuranceController.selectAmericanNationality,
+                        onChanged: (value) {
+                          setState(() {
+                            individualMedicalInsuranceController.selectAmericanNationality = value!;
+                          });
+                        },
+                      ),
+                      const Text(noTxt),
+                    ],
                   ),
+                  individualMedicalInsuranceController.selectAmericanNationality == yesTxt
+                      ? AppText(
+                          text: lifeerror,
+                          size: 14,
+                          txtColor: Colors.red,
+                        )
+                      : const SizedBox(),
+                  individualMedicalInsuranceController.selectAmericanNationality == yesTxt
+                      ? const SizedBox()
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: AppBtnWithColorShades(
+                            onTap: () {
+                              if (individualMedicalInsuranceController.selectAmericanNationality == '') {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectNationality, txtColor: primaryWhite, size: 12)));
+                              } else {
+                                widget.onNext();
+                              }
+                            },
+                            btnTxt: next,
+                            color1: darkBlue2,
+                            color2: darkBlue1,
+                          ),
+                        ),
                   const SizedBox(height: 20),
                 ],
               ),

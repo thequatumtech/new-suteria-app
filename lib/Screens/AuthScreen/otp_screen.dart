@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:get/get.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:soperia_user/Screens/AuthScreen/AuthController/auth_controller.dart';
-import 'package:soperia_user/Screens/AuthScreen/account_created.dart';
 import 'package:soperia_user/Screens/AuthScreen/update_password_screen.dart';
 import 'package:soperia_user/Screens/SingupScreen/sign_up_controller.dart';
 import 'package:soperia_user/app_utils/app_button.dart';
@@ -14,51 +14,91 @@ import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 
 class OtpScreen extends StatefulWidget {
-  bool isFromSignup;
-  String mobileNo;
+  final bool isFromSignup;
+  final String mobileNo;
 
-  OtpScreen({super.key, required this.isFromSignup, required this.mobileNo});
+  const OtpScreen({super.key, required this.isFromSignup, required this.mobileNo});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _OtpScreenState extends State<OtpScreen> with CodeAutoFill {
   AuthController authController = Get.put(AuthController());
   SignUpController signUpController = Get.put(SignUpController());
   Timer? _timer;
-  int duration = 60;
+  int duration = 30;
   String otp = "";
+  List<TextEditingController?> otpControllers = [];
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
+    listenForCode();
+    Future.delayed(Duration.zero, () async {
       if (mounted) {
         authController.mobileNoController.value.text = widget.mobileNo;
-        authController.forgotOtpSendPostApi(context: context, isResend: false, isFromSignup: widget.isFromSignup);
-        startTimer();
+        bool success = await authController.forgotOtpSendPostApi(context: context, isResend: false, isFromSignup: widget.isFromSignup);
+        if (success) {
+          startTimer();
+        }
       }
     });
     super.initState();
   }
 
-  startTimer() {
-    duration = 60;
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      duration--;
-
-      if (duration < 1) {
-        _timer?.cancel();
+  @override
+  void codeUpdated() {
+    if (code != null && code!.isNotEmpty) {
+      otp = code!;
+      for (int i = 0; i < otpControllers.length && i < otp.length; i++) {
+        otpControllers[i]?.text = otp[i];
       }
-
       if (mounted) {
         setState(() {});
+      }
+      submitOTP();
+    }
+  }
+
+  void startTimer() {
+    _timer?.cancel();
+    duration = 30;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (duration > 0) {
+        duration--;
+        if (mounted) {
+          setState(() {});
+        }
+      } else {
+        _timer?.cancel();
+        if (mounted) {
+          setState(() {});
+        }
       }
     });
   }
 
+  Future<void> resendOtp() async {
+    if (duration <= 0 && !authController.isLoadingSendOtp.value) {
+      listenForCode();
+      for (var controller in otpControllers) {
+        controller?.clear();
+      }
+      otp = "";
+      bool success = await authController.forgotOtpSendPostApi(
+        context: context,
+        isResend: true,
+        isFromSignup: widget.isFromSignup,
+      );
+      if (success) {
+        startTimer();
+      }
+    }
+  }
+
   @override
   void dispose() {
+    cancel();
     _timer?.cancel();
     super.dispose();
   }
@@ -124,7 +164,12 @@ class _OtpScreenState extends State<OtpScreen> {
                               borderRadius: BorderRadius.circular(5),
                               borderColor: Colors.white,
                               showFieldAsBox: true,
-                              onCodeChanged: (String code) {},
+                              handleControllers: (controllers) {
+                                otpControllers = controllers;
+                              },
+                              onCodeChanged: (String code) {
+                                otp = code;
+                              },
                               onSubmit: (String val) {
                                 otp = val;
                                 submitOTP();
@@ -137,24 +182,27 @@ class _OtpScreenState extends State<OtpScreen> {
                           Row(
                             children: [
                               InkWell(
-                                onTap: () async {
-                                  if (duration <= 0) {
-                                    await authController.forgotOtpSendPostApi(context: context, isResend: true, isFromSignup: widget.isFromSignup);
-                                    startTimer();
-                                  }
-                                },
-                                child: const Text.rich(
+                                onTap: (duration <= 0 && !authController.isLoadingSendOtp.value)
+                                    ? () => resendOtp()
+                                    : null,
+                                child: Text.rich(
                                     maxLines: 3,
-                                    style: TextStyle(fontSize: 10),
+                                    style: const TextStyle(fontSize: 12),
                                     TextSpan(children: [
-                                      TextSpan(
+                                      const TextSpan(
                                         text: didnTReceiveTheCode,
                                       ),
-                                      TextSpan(text: resend, style: TextStyle(color: Colors.blue)),
+                                      TextSpan(
+                                        text: resend,
+                                        style: TextStyle(
+                                          color: duration <= 0 ? Colors.blue : Colors.grey,
+                                          fontWeight: duration <= 0 ? FontWeight.bold : FontWeight.normal,
+                                        ),
+                                      ),
                                     ])),
                               ),
                               const Spacer(),
-                              if (duration > 1)
+                              if (duration > 0)
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10),
                                   child: Row(
@@ -220,3 +268,4 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 }
+

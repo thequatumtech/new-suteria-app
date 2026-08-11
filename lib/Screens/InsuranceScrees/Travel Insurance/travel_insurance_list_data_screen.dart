@@ -146,12 +146,12 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
                                   const SizedBox(height: 5),
                                   AppText(text: travelInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
 
-                                  /*     travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null &&travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!='' ? AppText(
+                                  travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null && travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!='' ? AppText(
                                       text:
                                           "The Quote is: ${travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit ?? ''} ",//Term Plan
                                       txtColor: deepBlue,
                                       fontWeight: FontWeight.bold,
-                                      size: 15):const SizedBox(),*/
+                                      size: 15):const SizedBox(),
                                   // AppText(text: "Starting from ₹${travelInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

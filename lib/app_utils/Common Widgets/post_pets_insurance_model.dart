@@ -36,9 +36,11 @@ class Data {
   String? netPremium; ///remove comment
   String? fees;
   String? salesTax;///remove comment double all
+  String? cbj;
+  String? salesTaxCbj;
   String? stamps;///remove comment
 
-  Data({this.id,this.purchaseId, this.url,this.planName,this.grossPremium,this.netPremium,this.fees,this.salesTax,this.stamps});
+  Data({this.id,this.purchaseId, this.url,this.planName,this.grossPremium,this.netPremium,this.fees,this.salesTax,this.cbj,this.salesTaxCbj,this.stamps});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -50,6 +52,8 @@ class Data {
     netPremium = json['net_premium']!= null ? json['net_premium'].toString() : "0";
     fees = json['fees']!= null ? json['fees'].toString() : "0";
     salesTax = json['sales_tax']!= null ? json['sales_tax'].toString() : "0";
+    cbj = json['cbj']!= null ? json['cbj'].toString() : "0";
+    salesTaxCbj = json['sales_tax_cbj']!= null ? json['sales_tax_cbj'].toString() : "0";
     stamps = json['stamps']!= null ? json['stamps'].toString() : "0";
   }
 
@@ -63,6 +67,8 @@ class Data {
     data['net_premium'] = this.netPremium;
     data['fees'] = this.fees;
     data['sales_tax'] = this.salesTax;
+    data['cbj'] = this.cbj;
+    data['sales_tax_cbj'] = this.salesTaxCbj;
     data['stamps'] = this.stamps;
     return data;
   }

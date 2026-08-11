@@ -149,6 +149,7 @@ class _FamilyMedicalInsuranceListDataScreenState extends State<FamilyMedicalInsu
                                       'no_of_visits_id': familyMedicalInsuranceController.selectNoOfVisits.value.id ?? "",
                                       'insurance_limit': familyMedicalInsuranceController.selectedInsuranceLimit.value.limit ?? 0,
                                       'plan_id': familyMedicalInsuranceController.planDd ?? 0,
+                                      'american_notionality_status': familyMedicalInsuranceController.selectAmericanNationality == 'Yes' ? 2 : 1,
                                       'insurance_type_status': 2,
                                       'members': members,
                                       'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
