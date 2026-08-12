@@ -126,7 +126,7 @@ class _LifeInsuranceListDataScreenState extends State<LifeInsuranceListDataScree
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: lifeInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "The Quote is: JOD ${lifeInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  AppText(text: "The Quote is: ${lifeInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                  // AppText(text: "Starting from ₹${lifeInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

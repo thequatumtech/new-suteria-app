@@ -197,6 +197,9 @@ class CriticalIllnessInsuranceController extends GetxController {
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: "$getCriticalIllnessInsurancePlan$planName", options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         homeInsurancePlaneModel.value = HomeInsurancePlaneModel.fromJson(response);
+        if (homeInsurancePlaneModel.value.data == null || homeInsurancePlaneModel.value.data!.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: noInsurancePlanFound, txtColor: primaryWhite, size: 12)));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: AppText(
@@ -333,9 +336,21 @@ class CriticalIllnessInsuranceController extends GetxController {
     }*/
 
     inceptionDateController.value.text = commonDateFormat(DateFormat("yyyy-MM-dd").format(initialDate.value));
-    expireDateController.value.text =
-        commonDateFormat(DateFormat("yyyy-MM-dd").format(DateTime.parse(DateTime.parse(DateFormat("yyyy-MM-dd").format(initialDate.value)).add(const Duration(days: 364)).toString())));
+    updateExpireDate(initialDate.value);
     isLoading.value = false;
+  }
+
+  void updateExpireDate([DateTime? customInceptionDate]) {
+    int days = selectedInsurancePlan.value.policyPeriod ?? 364;
+    DateTime baseDate = customInceptionDate ?? initialDate.value;
+    if (customInceptionDate == null && inceptionDateController.value.text.isNotEmpty) {
+      try {
+        baseDate = DateFormat("yyyy-MM-dd").parse(commonApiDateFormat(inceptionDateController.value.text));
+      } catch (_) {}
+    }
+    expireDateController.value.text = commonDateFormat(
+      DateFormat("yyyy-MM-dd").format(baseDate.add(Duration(days: days))),
+    );
   }
 
   getCountryMethod(context) async {

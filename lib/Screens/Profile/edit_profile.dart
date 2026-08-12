@@ -29,7 +29,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final picker = ImagePicker();
 
   Future getImageFromCamera() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     setState(() {
       if (pickedFile != null) {
@@ -40,7 +40,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future getImageFromGallery() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {

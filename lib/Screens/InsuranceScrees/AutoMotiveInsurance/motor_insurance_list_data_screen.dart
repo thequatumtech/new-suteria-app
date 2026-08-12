@@ -136,15 +136,15 @@ class _MotorInsuranceListDataScreenState extends State<MotorInsuranceListDataScr
                                   const SizedBox(height: 5),
                                   AppText(text: motorInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                   AppText(
-                                      text: "₹ ${motorInsuranceController.homeInsurancePlaneModel.value.data?[index].limit ?? ''} Term Plan",
+                                      text: "The Quote is: ${motorInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD",
                                       txtColor: deepBlue,
                                       fontWeight: FontWeight.bold,
                                       size: 15),
-                                  AppText(
-                                      text: "Starting from ₹${motorInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month",
-                                      txtColor: gold,
-                                      fontWeight: FontWeight.bold,
-                                      size: 12),
+                                  // AppText(
+                                  //     text: "Starting from ₹${motorInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month",
+                                  //     txtColor: gold,
+                                  //     fontWeight: FontWeight.bold,
+                                  //     size: 12),
                                 ],
                               ),
                             ),

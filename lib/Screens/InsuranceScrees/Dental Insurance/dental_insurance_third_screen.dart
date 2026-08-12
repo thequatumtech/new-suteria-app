@@ -70,12 +70,13 @@ class _DentalInsuranceThirdScreenState extends State<DentalInsuranceThirdScreen>
                           dropdownTitle: '$selectYour $insurancelimit',
                         ),
                         CustomDropDownBorder1(
-                          onchage: (newValue) {
-                            setState(() {
-                              PlanName cdl = dentalInsuranceController.insurancePlanList.firstWhere((element) => element.planName == newValue);
-                              dentalInsuranceController.selectedInsurancePlan.value = cdl;
-                            });
-                          },
+                            onchage: (newValue) {
+                              setState(() {
+                                PlanName cdl = dentalInsuranceController.insurancePlanList.firstWhere((element) => element.planName == newValue);
+                                dentalInsuranceController.selectedInsurancePlan.value = cdl;
+                                dentalInsuranceController.updateExpireDate();
+                              });
+                            },
                           items: dentalInsuranceController.insurancePlanList
                               .map((item) => DropdownMenuItem(value: item.planName ?? '', child: Text(item.planName.toString() ?? '0', style: const TextStyle(fontSize: 15, color: primaryBlack))))
                               .toList(),
@@ -218,8 +219,7 @@ class _DentalInsuranceThirdScreenState extends State<DentalInsuranceThirdScreen>
       dentalInsuranceController.initialDate.value = pickedDate;
       setState(() {
         dentalInsuranceController.effectiveDateController.value.text = commonDateFormat(formattedDate);
-        dentalInsuranceController.expiryDateController.value.text = commonDateFormat(DateFormat("yyyy-MM-dd").format(
-            DateTime.parse(DateTime.parse(DateFormat("yyyy-MM-dd").format(pickedDate)).add(Duration(days: dentalInsuranceController.selectedInsurancePlan.value.policyPeriod ?? 364)).toString())));
+        dentalInsuranceController.updateExpireDate(pickedDate);
       });
     } else {
       print("Date is not selected");

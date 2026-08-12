@@ -22,7 +22,7 @@ class ImageHelper {
     // required CropStyle cropStyle,
     required String title,
   }) async {
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.camera);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
     var file = File(pickedFile!.path);
     return file;
   }

@@ -37,9 +37,9 @@ class _PetInsuranceListDataScreenState extends State<PetInsuranceListDataScreen>
         body: Obx(() {
           return petInsuranceController.isLoadingPetsInsurancePlan.value
               ? const Center(child: CircularProgressIndicator())
-              : petInsuranceController.homeInsurancePlaneModel.value.data == null
+              : (petInsuranceController.homeInsurancePlaneModel.value.data == null || petInsuranceController.homeInsurancePlaneModel.value.data!.isEmpty)
                   ? Center(
-                      child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
+                      child: AppText(text: noInsurancePlanFound, size: 20, fontWeight: FontWeight.w600),
                     )
                   : ListView.builder(
                       itemCount: petInsuranceController.homeInsurancePlaneModel.value.data?.length ?? 0,
@@ -104,7 +104,7 @@ class _PetInsuranceListDataScreenState extends State<PetInsuranceListDataScreen>
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: petInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "The Quote is: ${petInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''} ", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  AppText(text: "The Quote is: ${petInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD ", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                   //AppText(text: "Starting from ₹${petInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

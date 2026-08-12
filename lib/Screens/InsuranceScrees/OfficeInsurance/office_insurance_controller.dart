@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_dropdown/models/value_item.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:soperia_user/Screens/AuthScreen/admin_basic_all_api_controller/all_api_controller.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
@@ -107,8 +107,8 @@ class OfficeInsuranceController extends GetxController {
   RxList<String> selectedPracticeCertificateDocument = <String>[].obs;
   RxList<String> selectedCompanyTaxCertificateDocument = <String>[].obs;
 
-  List<ValueItem<int>> selectProtectionSystemList = [];
-  List<ValueItem<int>> protectionSystemListDrop = [];
+  List<DropdownItem<int>> selectProtectionSystemList = [];
+  List<DropdownItem<int>> protectionSystemListDrop = [];
   Rx<InsuranceLimitListData> selectedInsuranceLimit = InsuranceLimitListData().obs;
   RxList<InsuranceLimitListData> insuranceLimitList = <InsuranceLimitListData>[].obs;
   Rx<InsuranceLimitModel> insuranceLimitModel = InsuranceLimitModel().obs;
@@ -350,7 +350,7 @@ class OfficeInsuranceController extends GetxController {
       protectionSystemList.addAll(adminBasicAllApiController.getProtectionSystemModelClass.value.data ?? []);
 
       for (int i = 0; i < protectionSystemList.length; i++) {
-        protectionSystemListDrop.add(ValueItem(label: protectionSystemList[i].name ?? '', value: protectionSystemList.value[i].id));
+        protectionSystemListDrop.add(DropdownItem(label: protectionSystemList[i].name ?? '', value: protectionSystemList[i].id ?? 0));
       }
     } on DioError catch (e) {
     } catch (f) {}
@@ -364,6 +364,9 @@ class OfficeInsuranceController extends GetxController {
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: "$getOfficeInsurancePlan$planName", options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         officeInsurancePlanModel.value = OfficeInsurancePlanModel.fromJson(response);
+        if (officeInsurancePlanModel.value.data == null || officeInsurancePlanModel.value.data!.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: noInsurancePlanFound, txtColor: primaryWhite, size: 12)));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }

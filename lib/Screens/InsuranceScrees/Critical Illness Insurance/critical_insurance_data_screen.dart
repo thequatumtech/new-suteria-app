@@ -126,8 +126,8 @@ class _CriticalInsuranceDataScreenState extends State<CriticalInsuranceDataScree
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: criticalIllnessInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "₹ ${criticalIllnessInsuranceController.homeInsurancePlaneModel.value.data?[index].limit ?? ''} Term Plan", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "Starting from ₹${criticalIllnessInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
+                                  AppText(text: "The Quote is: ${criticalIllnessInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  // AppText(text: "Starting from ₹${criticalIllnessInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),
                             ),
@@ -135,7 +135,7 @@ class _CriticalInsuranceDataScreenState extends State<CriticalInsuranceDataScree
                         );
                       },
                     )
-                  : Center(child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.bold));
+                  : Center(child: AppText(text: noInsurancePlanFound, size: 20, fontWeight: FontWeight.bold));
         }));
   }
 }

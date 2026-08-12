@@ -38,9 +38,9 @@ class _OfficeInsuranceListDataScreenState extends State<OfficeInsuranceListDataS
         body: Obx(() {
           return officeInsuranceController.isLoadingOfficeInsurancePlan.value
               ? const Center(child: CircularProgressIndicator())
-              : officeInsuranceController.officeInsurancePlanModel.value.data == null
+              : (officeInsuranceController.officeInsurancePlanModel.value.data == null || officeInsuranceController.officeInsurancePlanModel.value.data!.isEmpty)
                   ? Center(
-                      child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
+                      child: AppText(text: noInsurancePlanFound, size: 20, fontWeight: FontWeight.w600),
                     )
                   : ListView.builder(
                       itemCount: officeInsuranceController.officeInsurancePlanModel.value.data?.length ?? 0,
@@ -100,7 +100,7 @@ class _OfficeInsuranceListDataScreenState extends State<OfficeInsuranceListDataS
                                       'provious_insurance_policy': officeInsuranceController.selectedAuthorizedIsStated == 'Yes' ? 2 : 1,
                                       'insurance_declined_issue_status': officeInsuranceController.selectedOfficeInsurancePolicyBefore == 'Yes' ? 2 : 1,
                                       'claims_5_year_status': officeInsuranceController.selectedClaimsAndAccidentsYears == 'Yes' ? 2 : 1,
-                                      'protection_system': officeInsuranceController.selectProtectionSystemList,
+                                      'protection_system': officeInsuranceController.selectProtectionSystemList.isNotEmpty ? officeInsuranceController.selectProtectionSystemList.first.label : '',
                                       'insurance_limit': officeInsuranceController.selectedInsuranceLimit.value.limit ?? 0,
                                       'insurance_plan': officeInsuranceController.selectedInsurancePlan.value.planName ?? '',
                                       'inception_date': commonApiDateFormat(officeInsuranceController.inceptionDateController.value.text),
@@ -140,7 +140,7 @@ class _OfficeInsuranceListDataScreenState extends State<OfficeInsuranceListDataS
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: officeInsuranceController.officeInsurancePlanModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "The Quote is: ${officeInsuranceController.officeInsurancePlanModel.value.data?[index].netPremium ?? ''} ", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  AppText(text: "The Quote is: ${officeInsuranceController.officeInsurancePlanModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                  // AppText(text: "Starting from ₹${officeInsuranceController.officeInsurancePlanModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

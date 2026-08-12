@@ -145,8 +145,7 @@ class _PetInsuranceSecondScreenState extends State<PetInsuranceSecondScreen> {
                             setState(() {
                               PlanName cdl = petInsuranceController.insurancePlanList.firstWhere((element) => element.planName == newValue);
                               petInsuranceController.selectedInsurancePlan.value = cdl;
-
-                            //  petInsuranceController.getInsuranceLimit(context, petInsuranceController.selectedInsurancePlan.value.toString());
+                              petInsuranceController.updateExpireDate();
                             });
                           },
                           items: petInsuranceController.insurancePlanList.map((item) => DropdownMenuItem(value: item.planName ?? '', child: Text(item.planName.toString() ?? '0', style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
@@ -528,10 +527,10 @@ class _PetInsuranceSecondScreenState extends State<PetInsuranceSecondScreen> {
     );
     if (pickedDate != null) {
       print(pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
-      String formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
 
       petInsuranceController.inceptionDateController.value.text = commonDateFormat(formattedDate);
-      petInsuranceController.expiryDateController.value.text = commonDateFormat(DateFormat("yyyy-MM-dd").format(DateTime.parse(DateTime.parse(DateFormat("yyyy-MM-dd").format(pickedDate)).add(const Duration(days: 364)).toString())));
+      petInsuranceController.updateExpireDate(pickedDate);
       setState(() {});
     } else {
       print("Date is not selected");

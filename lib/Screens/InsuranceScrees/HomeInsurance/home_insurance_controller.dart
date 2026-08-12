@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:soperia_user/Screens/AuthScreen/admin_basic_all_api_controller/all_api_controller.dart';
 import 'package:soperia_user/app_utils/Common%20Widgets/draft_pdf_controller.dart';
 import 'package:soperia_user/app_utils/Common%20Widgets/post_pets_insurance_model.dart';
@@ -72,8 +72,8 @@ class HomeInsuranceController extends GetxController {
   Rx<CityListModel> selectCompanyCity = CityListModel().obs;
   RxList<CityListModel> companyCityList = <CityListModel>[].obs;
   RxList<ProtectionSystemList> protectionSystemList = <ProtectionSystemList>[].obs;
-  RxList<ValueItem> selectProtectionSystemList = <ValueItem>[].obs;
-  RxList<ValueItem<int>> protectionSystemListDrop = <ValueItem<int>>[].obs;
+  RxList<DropdownItem<int>> selectProtectionSystemList = <DropdownItem<int>>[].obs;
+  RxList<DropdownItem<int>> protectionSystemListDrop = <DropdownItem<int>>[].obs;
   final controller = MultiSelectController<int>();
   Rx<OccuptionList> selectOccupation = OccuptionList().obs;
   RxList<OccuptionList> occupationList = <OccuptionList>[].obs;
@@ -187,7 +187,7 @@ class HomeInsuranceController extends GetxController {
     planDd = '';
     effectiveDateController.value.clear();
     expiryDateController.value.clear();
-    controller.clearAllSelection();
+    controller.clearAll();
     draftPdfController.postInsuranceModel.value = PostInsuranceModel();
   }
 
@@ -365,7 +365,7 @@ class HomeInsuranceController extends GetxController {
       protectionSystemList.addAll(adminBasicAllApiController.getProtectionSystemModelClass.value.data ?? []);
 
       for (int i = 0; i < protectionSystemList.length; i++) {
-        protectionSystemListDrop.add(ValueItem(label: protectionSystemList[i].name ?? '', value: protectionSystemList[i].id));
+        protectionSystemListDrop.add(DropdownItem(label: protectionSystemList[i].name ?? '', value: protectionSystemList[i].id ?? 0));
       }
     } on DioError catch (e) {
     } catch (f) {}
@@ -412,6 +412,9 @@ class HomeInsuranceController extends GetxController {
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: "$getHomeInsurancePlan$planName", options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         homeInsurancePlaneModel.value = HomeInsurancePlaneModel.fromJson(response);
+        if (homeInsurancePlaneModel.value.data == null || homeInsurancePlaneModel.value.data!.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: noInsurancePlanFound, txtColor: primaryWhite, size: 12)));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }

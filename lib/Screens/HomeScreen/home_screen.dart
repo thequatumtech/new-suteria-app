@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import 'package:soperia_user/Screens/HomeScreen/home_controller.dart';
 import 'package:soperia_user/model_class/get_banner_model.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/AutoMotiveInsurance/automotive_insurance_stepper.dart';
@@ -33,6 +35,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int bottomBarCurrentIndex = 0;
   int sliderCurrentIndex = 0;
+  final CarouselSliderController _bannerCarouselController = CarouselSliderController();
+  Timer? _bannerAutoScrollTimer;
+
+  void _startAutoScrollTimer(List<BannerData> banners) {
+    _bannerAutoScrollTimer?.cancel();
+    if (banners.length <= 1) return;
+
+    if (sliderCurrentIndex < banners.length && banners[sliderCurrentIndex].isVideo) {
+      // Do not auto-scroll while playing a video banner
+      return;
+    }
+
+    _bannerAutoScrollTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted && banners.length > 1) {
+        _bannerCarouselController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _bannerAutoScrollTimer?.cancel();
+    super.dispose();
+  }
 
   Future<void> _launchURL(String urlString) async {
     if (urlString.isEmpty) return;
@@ -232,14 +261,42 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               );
                             }
+                            if (_bannerAutoScrollTimer == null && banners.length > 1) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _startAutoScrollTimer(banners);
+                              });
+                            }
                             return Column(
                               children: [
                                 SizedBox(
                                   height: 200,
                                   child: CarouselSlider.builder(
+                                    controller: _bannerCarouselController,
                                     itemCount: banners.length,
                                     itemBuilder: (context, index, realIndex) {
                                       final banner = banners[index];
+                                      final bool isCurrentPage = (sliderCurrentIndex == index);
+
+                                      if (banner.isVideo && banner.image != null && banner.image!.isNotEmpty) {
+                                        return VideoBannerWidget(
+                                          videoUrl: banner.image!,
+                                          isCurrentPage: isCurrentPage,
+                                          onVideoCompleted: () {
+                                            if (banners.length > 1) {
+                                              _bannerCarouselController.nextPage(
+                                                duration: const Duration(milliseconds: 500),
+                                                curve: Curves.easeInOut,
+                                              );
+                                            }
+                                          },
+                                          onTap: () {
+                                            if (banner.redirectUrl != null && banner.redirectUrl!.isNotEmpty) {
+                                              _launchURL(banner.redirectUrl!);
+                                            }
+                                          },
+                                        );
+                                      }
+
                                       return InkWell(
                                         onTap: () {
                                           if (banner.redirectUrl != null && banner.redirectUrl!.isNotEmpty) {
@@ -267,16 +324,16 @@ class _HomePageState extends State<HomePage> {
                                     options: CarouselOptions(
                                       height: 150.0,
                                       enlargeCenterPage: true,
-                                      autoPlay: banners.length > 1,
+                                      autoPlay: false,
                                       aspectRatio: 16 / 9,
                                       autoPlayCurve: Curves.fastOutSlowIn,
                                       enableInfiniteScroll: banners.length > 1,
-                                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
                                       viewportFraction: 1.0,
                                       onPageChanged: (index, reason) {
                                         setState(() {
                                           sliderCurrentIndex = index;
                                         });
+                                        _startAutoScrollTimer(banners);
                                       },
                                     ),
                                   ),
@@ -519,4 +576,170 @@ class TriangleClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(TriangleClipper oldClipper) => false;
+}
+
+class VideoBannerWidget extends StatefulWidget {
+  final String videoUrl;
+  final bool isCurrentPage;
+  final VoidCallback onVideoCompleted;
+  final VoidCallback? onTap;
+
+  const VideoBannerWidget({
+    super.key,
+    required this.videoUrl,
+    required this.isCurrentPage,
+    required this.onVideoCompleted,
+    this.onTap,
+  });
+
+  @override
+  State<VideoBannerWidget> createState() => _VideoBannerWidgetState();
+}
+
+class _VideoBannerWidgetState extends State<VideoBannerWidget> {
+  late VideoPlayerController _controller;
+  bool _isInitialized = false;
+  bool _hasError = false;
+  bool _isCompleted = false;
+  bool _isMuted = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+  }
+
+  void _initializeVideo() async {
+    try {
+      print("Initializing video banner: ${widget.videoUrl}");
+      _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
+      await _controller.initialize();
+      _controller.setLooping(false);
+      _controller.setVolume(_isMuted ? 0.0 : 1.0);
+      _controller.addListener(_videoListener);
+
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+        });
+        if (widget.isCurrentPage) {
+          _controller.play();
+        }
+      }
+    } catch (e, stack) {
+      print("Error initializing video banner ($e): $stack");
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+        });
+      }
+    }
+  }
+
+  void _videoListener() {
+    if (_isInitialized && !_isCompleted && _controller.value.isInitialized) {
+      final position = _controller.value.position;
+      final duration = _controller.value.duration;
+      if (duration > Duration.zero && (position >= duration - const Duration(milliseconds: 300) || position == duration)) {
+        _isCompleted = true;
+        print("Video banner completed playing. Scrolling to next.");
+        widget.onVideoCompleted();
+      }
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant VideoBannerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_isInitialized) {
+      if (widget.isCurrentPage && !oldWidget.isCurrentPage) {
+        _isCompleted = false;
+        _controller.seekTo(Duration.zero);
+        _controller.play();
+      } else if (!widget.isCurrentPage && oldWidget.isCurrentPage) {
+        _controller.pause();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_isInitialized) {
+      _controller.removeListener(_videoListener);
+      _controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_hasError) {
+      return GestureDetector(
+        onTap: widget.onTap,
+        child: Container(
+          margin: const EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: Colors.black12,
+          ),
+          child: const Center(child: Icon(Icons.videocam_off, color: Colors.grey, size: 40)),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        margin: const EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.black,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: _isInitialized
+              ? Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox.expand(
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: SizedBox(
+                          width: _controller.value.size.width > 0 ? _controller.value.size.width : 16,
+                          height: _controller.value.size.height > 0 ? _controller.value.size.height : 9,
+                          child: VideoPlayer(_controller),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isMuted = !_isMuted;
+                            _controller.setVolume(_isMuted ? 0.0 : 1.0);
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            _isMuted ? Icons.volume_off : Icons.volume_up,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : const Center(child: CircularProgressIndicator()),
+        ),
+      ),
+    );
+  }
 }

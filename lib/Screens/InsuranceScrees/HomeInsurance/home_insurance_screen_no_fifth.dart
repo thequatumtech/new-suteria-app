@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/HomeInsurance/home_insurance_controller.dart';
 import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
@@ -147,25 +147,30 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                                 txtAlign: TextAlign.start,
                               ),
                             ),
-                            MultiSelectDropDown<int>(
+                            MultiDropdown<int>(
                               controller: homeInsuranceController.controller,
-                              onOptionSelected: (List<ValueItem> selectedOptions) {
-                                homeInsuranceController.selectProtectionSystemList.value = selectedOptions;
-                                print(homeInsuranceController.controller.selectedOptions);
+                              onSelectionChange: (List<int> selectedOptions) {
+                                homeInsuranceController.selectProtectionSystemList.value = homeInsuranceController.protectionSystemListDrop.where((element) => selectedOptions.contains(element.value)).toList();
                                 setState(() {});
                               },
-                              options: homeInsuranceController.protectionSystemListDrop,
-                              focusedBorderColor: skyBlueShade1,
-                              borderColor: skyBlueShade1,
-                              borderWidth: 1,
-                              selectionType: SelectionType.multi,
-                              hint: pleaseChooseFromTheList,
-                              /*borderColor: Colors.black,*/
-
-                              chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                              dropdownHeight: 200,
-                              optionTextStyle: const TextStyle(fontSize: 16),
-                              selectedOptionIcon: const Icon(Icons.check_circle),
+                              items: homeInsuranceController.protectionSystemListDrop,
+                              fieldDecoration: FieldDecoration(
+                                hintText: pleaseChooseFromTheList,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(color: skyBlueShade1, width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(color: skyBlueShade1, width: 1),
+                                ),
+                              ),
+                              dropdownDecoration: const DropdownDecoration(
+                                maxHeight: 200,
+                              ),
+                              chipDecoration: const ChipDecoration(
+                                wrap: true,
+                              ),
                             ),
                           ],
                         ),

@@ -322,6 +322,9 @@ class TravelInsuranceController extends GetxController {
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: "$getTravelInsurancePlan$planName", options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         homeInsurancePlaneModel.value = HomeInsurancePlaneModel.fromJson(response);
+        if (homeInsurancePlaneModel.value.data == null || homeInsurancePlaneModel.value.data!.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: noInsurancePlanFound, txtColor: primaryWhite, size: 12)));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }
