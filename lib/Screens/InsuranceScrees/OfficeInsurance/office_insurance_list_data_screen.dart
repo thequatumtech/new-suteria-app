@@ -38,9 +38,9 @@ class _OfficeInsuranceListDataScreenState extends State<OfficeInsuranceListDataS
         body: Obx(() {
           return officeInsuranceController.isLoadingOfficeInsurancePlan.value
               ? const Center(child: CircularProgressIndicator())
-              : officeInsuranceController.officeInsurancePlanModel.value.data == null
+              : (officeInsuranceController.officeInsurancePlanModel.value.data == null || officeInsuranceController.officeInsurancePlanModel.value.data!.isEmpty)
                   ? Center(
-                      child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
+                      child: AppText(text: noInsurancePlanFound, size: 20, fontWeight: FontWeight.w600),
                     )
                   : ListView.builder(
                       itemCount: officeInsuranceController.officeInsurancePlanModel.value.data?.length ?? 0,
@@ -140,7 +140,7 @@ class _OfficeInsuranceListDataScreenState extends State<OfficeInsuranceListDataS
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: officeInsuranceController.officeInsurancePlanModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "The Quote is: ${officeInsuranceController.officeInsurancePlanModel.value.data?[index].netPremium ?? ''} ", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  AppText(text: "The Quote is: ${officeInsuranceController.officeInsurancePlanModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                  // AppText(text: "Starting from ₹${officeInsuranceController.officeInsurancePlanModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

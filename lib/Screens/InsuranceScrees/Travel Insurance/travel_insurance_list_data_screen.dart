@@ -50,9 +50,9 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
         body: Obx(() {
           return travelInsuranceController.isLoadingInsurancePlan.value
               ? const Center(child: CircularProgressIndicator())
-              : travelInsuranceController.homeInsurancePlaneModel.value.data == null
+              : (travelInsuranceController.homeInsurancePlaneModel.value.data == null || travelInsuranceController.homeInsurancePlaneModel.value.data!.isEmpty)
                   ? Center(
-                      child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
+                      child: AppText(text: noInsurancePlanFound, size: 20, fontWeight: FontWeight.w600),
                     )
                   : ListView.builder(
                       itemCount: travelInsuranceController.homeInsurancePlaneModel.value.data?.length ?? 0,

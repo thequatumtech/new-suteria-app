@@ -225,6 +225,14 @@ class CustomDropDownBorder1 extends StatefulWidget {
 class _CustomDropDownBorder1State extends State<CustomDropDownBorder1> {
   @override
   Widget build(BuildContext context) {
+    final uniqueItems = <DropdownMenuItem>[];
+    final seenValues = <dynamic>{};
+    for (var item in widget.items) {
+      if (seenValues.add(item.value)) {
+        uniqueItems.add(item);
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -240,19 +248,12 @@ class _CustomDropDownBorder1State extends State<CustomDropDownBorder1> {
           const SizedBox(height: 4),
           InkWell(
             onTap: () {
-              if (widget.items.isEmpty) {
+              if (uniqueItems.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-
                     SnackBar(
                         duration: const Duration(seconds: 2), // SHORT TIME
                         behavior: SnackBarBehavior.fixed,
-
                         content: AppText(text: noDataAvailable, txtColor: primaryWhite, size: 12)));
-                /*
-                Fluttertoast.showToast(
-                  msg: "No data available",
-                  toastLength: Toast.LENGTH_SHORT,
-                );*/
               }
             },
             child: Container(
@@ -262,29 +263,24 @@ class _CustomDropDownBorder1State extends State<CustomDropDownBorder1> {
                   borderRadius: const BorderRadius.all(Radius.circular(12)),
                   border: Border.all(width: 0.5, color: skyBlueShade1)),
               child: DropdownButton(
-                /*style: const TextStyle(color: skyBlueShade3),*/
                 iconEnabledColor: deepBluedark,
                 icon: const Icon(
                   Icons.keyboard_arrow_down_outlined,
                   color: primaryBlack,
                 ),
-                value: (widget.selectedValue != null && widget.items.any((item) => item.value == widget.selectedValue))
+                value: (widget.selectedValue != null && uniqueItems.any((item) => item.value == widget.selectedValue))
                     ? widget.selectedValue
                     : null,
                 hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
                 onChanged: (newValue) {
-                  // widget.selectedValue = newValue!;
-
                   widget.onchage(newValue);
 
                   print('Selected value: ${widget.selectedValue}');
                 },
-                // iconSize: 40,
-
                 isExpanded: true,
-                padding: EdgeInsets.only(left: 10, right: 10),
-                items: widget.items,
-                underline: SizedBox(),
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                items: uniqueItems,
+                underline: const SizedBox(),
               ),
             ),
           ),
@@ -319,6 +315,14 @@ class CustomDropDownBorderDisable extends StatefulWidget {
 class _CustomDropDownBorderDisableState extends State<CustomDropDownBorderDisable> {
   @override
   Widget build(BuildContext context) {
+    final uniqueItems = <DropdownMenuItem>[];
+    final seenValues = <dynamic>{};
+    for (var item in widget.items) {
+      if (seenValues.add(item.value)) {
+        uniqueItems.add(item);
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -336,19 +340,12 @@ class _CustomDropDownBorderDisableState extends State<CustomDropDownBorderDisabl
           /// WRAP WITH InkWell FOR TAP DETECTION
           InkWell(
             onTap: () {
-              if (widget.items.isEmpty) {
+              if (uniqueItems.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-
                     SnackBar(
                         duration: const Duration(seconds: 2), // SHORT TIME
                         behavior: SnackBarBehavior.floating,
-
                         content: AppText(text: noDataAvailable, txtColor: primaryWhite, size: 12)));
-                /*
-                Fluttertoast.showToast(
-                  msg: "No data available",
-                  toastLength: Toast.LENGTH_SHORT,
-                );*/
               }
             },
             child: Container(
@@ -362,7 +359,7 @@ class _CustomDropDownBorderDisableState extends State<CustomDropDownBorderDisabl
                 ignoring: true, // disable real dropdown completely
                 child: DropdownButton(
                   icon: const Icon(Icons.keyboard_arrow_down_outlined),
-                  value: (widget.selectedValue != null && widget.items.any((item) => item.value == widget.selectedValue))
+                  value: (widget.selectedValue != null && uniqueItems.any((item) => item.value == widget.selectedValue))
                       ? widget.selectedValue
                       : null,
                   hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
@@ -370,7 +367,7 @@ class _CustomDropDownBorderDisableState extends State<CustomDropDownBorderDisabl
                   // disabled
                   isExpanded: true,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  items: widget.items,
+                  items: uniqueItems,
                   underline: const SizedBox(),
                 ),
               ),

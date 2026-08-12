@@ -112,13 +112,14 @@ class _CriticalInsuranceFourthScreenState extends State<CriticalInsuranceFourthS
                       setState(() {
                         PlanName cdl = criticalIllnessInsuranceController.insurancePlanList.firstWhere((element) => element.planName == newValue);
                         criticalIllnessInsuranceController.selectedInsurancePlan.value = cdl;
+                        criticalIllnessInsuranceController.updateExpireDate();
                       });
                     },
                     items: criticalIllnessInsuranceController.insurancePlanList
                         .map((item) => DropdownMenuItem(value: item.planName ?? '', child: Text(item.planName.toString() ?? '0', style: const TextStyle(fontSize: 15, color: primaryBlack))))
                         .toList(),
                     selectedValue: criticalIllnessInsuranceController.insurancePlanList.any((element) => element.planName == criticalIllnessInsuranceController.selectedInsurancePlan.value.planName)
-                        ? criticalIllnessInsuranceController.selectedInsurancePlan.value.planName ?? 0
+                        ? criticalIllnessInsuranceController.selectedInsurancePlan.value.planName ?? ''
                         : null,
                     dropdownTitle: linsuranceplan,
                   ),
@@ -291,8 +292,7 @@ class _CriticalInsuranceFourthScreenState extends State<CriticalInsuranceFourthS
 
       setState(() {
         criticalIllnessInsuranceController.inceptionDateController.value.text = commonDateFormat(formattedDate);
-        criticalIllnessInsuranceController.expireDateController.value.text = commonDateFormat(DateFormat("yyyy-MM-dd").format(DateTime.parse(
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(pickedDate)).add(Duration(days: criticalIllnessInsuranceController.selectedInsurancePlan.value.policyPeriod ?? 364)).toString())));
+        criticalIllnessInsuranceController.updateExpireDate(pickedDate);
       });
     } else {
       print("Date is not selected");

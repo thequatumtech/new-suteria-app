@@ -12,6 +12,19 @@ void logPrintFull(Object? object) {
   }
 }
 
+String _formatBody(dynamic data) {
+  if (data == null) return "null";
+  if (data is FormData) {
+    final Map<String, dynamic> fields = {};
+    for (var element in data.fields) {
+      fields[element.key] = element.value;
+    }
+    final List<String> files = data.files.map((e) => "${e.key}: ${e.value.filename}").toList();
+    return "FormData(fields: $fields, files: $files)";
+  }
+  return data.toString();
+}
+
 class DioClient {
   final Dio _dio;
 
@@ -21,14 +34,40 @@ class DioClient {
       ..options.connectTimeout = const Duration(seconds: 25)
       ..options.receiveTimeout = const Duration(seconds: 25)
       ..options.responseType = ResponseType.json
-      ..interceptors.add(LogInterceptor(
-        request: true,
-        requestHeader: true,
-        requestBody: true,
-        responseHeader: true,
-        responseBody: true,
-        logPrint: logPrintFull,
-      ));
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            logPrintFull("==================== API REQUEST ====================");
+            logPrintFull("--> ${options.method.toUpperCase()} ${options.uri}");
+            logPrintFull("Headers: ${options.headers}");
+            final mergedQueryParams = {
+              ...options.uri.queryParameters,
+              ...options.queryParameters,
+            };
+            logPrintFull("Query Parameters: ${mergedQueryParams.isNotEmpty ? mergedQueryParams : 'None'}");
+            logPrintFull("Request Body/Data: ${_formatBody(options.data)}");
+            logPrintFull("=====================================================");
+            return handler.next(options);
+          },
+          onResponse: (response, handler) {
+            logPrintFull("==================== API RESPONSE ====================");
+            logPrintFull("<-- [${response.statusCode}] ${response.requestOptions.method.toUpperCase()} ${response.requestOptions.uri}");
+            logPrintFull("Response Body: ${response.data}");
+            logPrintFull("======================================================");
+            return handler.next(response);
+          },
+          onError: (DioException err, handler) {
+            logPrintFull("==================== API ERROR ====================");
+            logPrintFull("<-- ERROR [${err.response?.statusCode}] ${err.requestOptions.method.toUpperCase()} ${err.requestOptions.uri}");
+            logPrintFull("Error Message: ${err.message}");
+            if (err.response != null) {
+              logPrintFull("Error Response: ${err.response?.data}");
+            }
+            logPrintFull("===================================================");
+            return handler.next(err);
+          },
+        ),
+      );
   }
 
   // Get:-----------------------------------------------------------------------

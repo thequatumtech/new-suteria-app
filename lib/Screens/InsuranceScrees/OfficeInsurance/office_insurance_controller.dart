@@ -364,6 +364,9 @@ class OfficeInsuranceController extends GetxController {
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: "$getOfficeInsurancePlan$planName", options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         officeInsurancePlanModel.value = OfficeInsurancePlanModel.fromJson(response);
+        if (officeInsurancePlanModel.value.data == null || officeInsurancePlanModel.value.data!.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: noInsurancePlanFound, txtColor: primaryWhite, size: 12)));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }

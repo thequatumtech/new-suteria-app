@@ -37,9 +37,9 @@ class _DentalInsuranceListDataState extends State<DentalInsuranceListData> {
         body: Obx(() {
           return dentalInsuranceController.isLoading.value
               ? const Center(child: CircularProgressIndicator())
-              : dentalInsuranceController.homeInsurancePlaneModel.value.data == null
+              : (dentalInsuranceController.homeInsurancePlaneModel.value.data == null || dentalInsuranceController.homeInsurancePlaneModel.value.data!.isEmpty)
                   ? Center(
-                      child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
+                      child: AppText(text: noInsurancePlanFound, size: 20, fontWeight: FontWeight.w600),
                     )
                   : ListView.builder(
                       itemCount: dentalInsuranceController.homeInsurancePlaneModel.value.data?.length ?? 0,
@@ -110,7 +110,7 @@ class _DentalInsuranceListDataState extends State<DentalInsuranceListData> {
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: dentalInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "The Quate: JOD ${dentalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit ?? ''}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  AppText(text: "The Quate: ${dentalInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                   // AppText(text: "Starting from ₹${dentalInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

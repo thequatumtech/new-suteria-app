@@ -160,8 +160,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                     onChanged: (value) {
                       setState(() {
                         marineInsuranceController.selectedDangerousActivity = value!;
-                       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));
-
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));
                       });
                     },
                   ),
@@ -172,63 +171,14 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                     onChanged: (value) {
                       setState(() {
                         marineInsuranceController.selectedDangerousActivity = value!;
-
-                       /* if(marineInsuranceController.selectedDangerousActivity ==yesTxt){
-                        }*/
-
                       });
                     },
                   ),
                   const Text(noTxt),
                 ],
               ),
-             /* marineInsuranceController.selectedDangerousActivity == yesTxt
-                  ? *//*MultiSelectDialogField<GetDangerousActivitiesList>(
-                items: marineInsuranceController.getDangerousActivitiesList
-                    .map((e) => MultiSelectItem<GetDangerousActivitiesList>(e, e.name ?? ''))
-                    .toList(),
-                title: const Text(dangerousActivities),
-                selectedColor: blueShade1,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: blueShade1),
-                ),
-                buttonIcon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Colors.black,
-                ),
-                buttonText: const Text(
-                  dangerousActivities,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-                onConfirm: (List<GetDangerousActivitiesList> selectedValues) {
-                  marineInsuranceController.selectedDangerousActivitiesList.value = selectedValues;
-                },
-                initialValue: marineInsuranceController.selectedDangerousActivitiesList.value,
-              )*//*
-              AppText(
-                text: dangerousGoodsErrorMSG,
-                size: 14,
-                txtColor: redShade2,
-              )
 
-              *//*AppTextfield(
-                *//**//*ontap: () {
-                  effectiveDateDialog();
-                },*//**//*
-                controller: marineInsuranceController.dangerousGoodsController.value,
-                width: 10,
-                hint: areYouShippingDangerousGoods,
-                lable: areYouShippingDangerousGoods,
-
-              )*//*
-
-
-                  : const SizedBox(),
-        const SizedBox(height: 10),*/
+              const SizedBox(height: 10),
 
 
 
@@ -273,6 +223,9 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                         setState(() {
                           ItemSubcategory cdl = marineInsuranceController.itemSubcategoryList.firstWhere((element) => element.name == newValue);
                           marineInsuranceController.selectedItemSubcategory.value = cdl;
+                          if (cdl.name != null && cdl.name!.toLowerCase().contains("flammable chemical")) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));
+                          }
                           marineInsuranceController.getInsuranceLimit(context, '11', marineInsuranceController.selectedTypeCover.value.id ?? 0, marineInsuranceController.selectedItemCategory.value.id ?? 0, marineInsuranceController.selectedItemSubcategory.value.id ?? 0);
                         });
                       },
@@ -287,6 +240,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                         setState(() {
                           InsuranceLimitListData cdl = marineInsuranceController.insuranceLimitList.firstWhere((element) => element.limit == newValue);
                           marineInsuranceController.selectedInsuranceLimit.value = cdl;
+                          marineInsuranceController.updateExpiryDate();
                         });
                       },
                       items: marineInsuranceController.insuranceLimitList.map((item) => DropdownMenuItem(value: item.limit ?? 0, child: Text(item.limit.toString() ?? '0', style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
@@ -459,23 +413,26 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                   ],
                 ),
               const SizedBox(height: 20),
-             /* marineInsuranceController.selectedDangerousActivity == yesTxt||marineInsuranceController.selectedExistingInsurancePolicyOption == yesTxt
-                  ?  AppText(
-                text: dangerousGoodsErrorMSG,
-                size: 25,
-                txtColor: redShade2,
-              ):*/AppBtnWithColorShades(
-                onTap: () {
-                  if (checkValidations()) {
-                   /* print("object  ?????????????");*/
-                  } else {
-                    widget.onNext(marineInsuranceController.selectedExistingInsurancePolicyOption == yesTxt);
-                  }
-                },
-                btnTxt: next,
-                color1: darkBlue2,
-                color2: darkBlue1,
-              ),
+              (marineInsuranceController.selectedDangerousActivity == yesTxt ||
+                      (marineInsuranceController.selectedItemSubcategory.value.name != null &&
+                          marineInsuranceController.selectedItemSubcategory.value.name!.toLowerCase().contains("flammable chemical")))
+                  ? AppText(
+                      text: dangerousGoodsErrorMSG,
+                      size: 14,
+                      txtColor: redShade2,
+                    )
+                  : AppBtnWithColorShades(
+                      onTap: () {
+                        if (checkValidations()) {
+                          /* print("object  ?????????????");*/
+                        } else {
+                          widget.onNext(marineInsuranceController.selectedExistingInsurancePolicyOption == yesTxt);
+                        }
+                      },
+                      btnTxt: next,
+                      color1: darkBlue2,
+                      color2: darkBlue1,
+                    ),
               const SizedBox(height: 20),
             ],
           ),
@@ -504,9 +461,9 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
     );
     if (pickedDate != null) {
       String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-      marineInsuranceController.initialDate.value=pickedDate;
+      marineInsuranceController.initialDate.value = pickedDate;
       marineInsuranceController.effectiveDateController.value.text = commonDateFormat(formattedDate);
-      marineInsuranceController.expiryDateController.value.text = commonDateFormat(DateFormat("yyyy-MM-dd").format(DateTime.parse(DateTime.parse(DateFormat("yyyy-MM-dd").format(pickedDate)).add(const Duration(days: 60)).toString())));
+      marineInsuranceController.updateExpiryDate();
       setState(() {});
     } else {
       print("Date is not selected");
@@ -523,22 +480,21 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
     }*/ else if (marineInsuranceController.selectFinalDestinationCountry.value.id == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectFinalDestinationCountry, txtColor: primaryWhite, size: 12)));
       return true;
-    }
-    else if (marineInsuranceController.selectedDangerousActivity==null) {
+    } else if (marineInsuranceController.selectedMultipleCountry == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectGoodsTransShippedThirdCountry, txtColor: primaryWhite, size: 12)));
+      return true;
+    } else if (marineInsuranceController.selectedMultipleCountry == yesTxt && marineInsuranceController.selectedMultiDestinationList.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectOneTransShipmentCountry, txtColor: primaryWhite, size: 12)));
+      return true;
+    } else if (marineInsuranceController.selectedDangerousActivity == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterShippingDGoods, txtColor: primaryWhite, size: 12)));
       return true;
-    }
-    else if (marineInsuranceController.selectTypeTransportation == null) {
+    } else if (marineInsuranceController.selectedDangerousActivity == yesTxt) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));
+      return true;
+    } else if (marineInsuranceController.selectTypeTransportation == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectTypeOfTransportation, txtColor: primaryWhite, size: 12)));
       return true;
-    }
-
-    else if (marineInsuranceController.selectedMultipleCountry == yesTxt) {
-     if(marineInsuranceController.selectedMultiDestinationList.isEmpty) {
-       ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: AppText(text: pleaseSelectOneTransShipmentCountry, txtColor: primaryWhite, size: 12)));
-       return true;
-     }
     }
 
     else if (marineInsuranceController.selectedTypeCover.value.name == null) {
@@ -549,6 +505,10 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
       return true;
     } else if (marineInsuranceController.selectedItemSubcategory.value.id == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectSubCategoryOfInsuredItem, txtColor: primaryWhite, size: 12)));
+      return true;
+    } else if (marineInsuranceController.selectedItemSubcategory.value.name != null &&
+        marineInsuranceController.selectedItemSubcategory.value.name!.toLowerCase().contains("flammable chemical")) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));
       return true;
     } else if (marineInsuranceController.selectedInsuranceLimit.value.limit == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectInsuredLimitCoverageAmount, txtColor: primaryWhite, size: 12)));

@@ -37,9 +37,9 @@ class _HomeInsuranceState extends State<HomeInsurance> {
         body: Obx(() {
           return homeInsuranceController.isLoadingInsurancePlan.value
               ? const Center(child: CircularProgressIndicator())
-              : homeInsuranceController.homeInsurancePlaneModel.value.data == null
+              : (homeInsuranceController.homeInsurancePlaneModel.value.data == null || homeInsuranceController.homeInsurancePlaneModel.value.data!.isEmpty)
                   ? Center(
-                      child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
+                      child: AppText(text: noInsurancePlanFound, size: 20, fontWeight: FontWeight.w600),
                     )
                   : ListView.builder(
                       itemCount: homeInsuranceController.homeInsurancePlaneModel.value.data?.length ?? 0,
@@ -122,7 +122,7 @@ class _HomeInsuranceState extends State<HomeInsurance> {
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: homeInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                 homeInsuranceController.homeInsurancePlaneModel.value.data?[index].limit !=null &&homeInsuranceController.homeInsurancePlaneModel.value.data?[index].limit !=""  ? AppText(text: "The Quote is: ${homeInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15):const SizedBox(),
+                                  homeInsuranceController.homeInsurancePlaneModel.value.data?[index].limit !=null &&homeInsuranceController.homeInsurancePlaneModel.value.data?[index].limit !=""  ? AppText(text: "The Quote is: ${homeInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15):const SizedBox(),
                                 //  AppText(text: "Starting from ₹${homeInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

@@ -200,6 +200,8 @@ class MarineInsuranceController extends GetxController {
     selectVoyage.value = GetCountryList();
     selectThroughCountry.value = GetCountryList();
     selectFinalDestinationCountry.value = GetCountryList();
+    selectedMultipleCountry = null;
+    selectedMultiDestinationList.clear();
     selectTypeTransportation = null;
     selectedTypeCover.value = TypeCover();
     selectedItemCategory.value = ItemCategory();
@@ -251,7 +253,22 @@ class MarineInsuranceController extends GetxController {
       initialDate.value = DateTime.now();
     }*/
     effectiveDateController.value.text = commonDateFormat(DateFormat("yyyy-MM-dd").format(initialDate.value));
-    expiryDateController.value.text = commonDateFormat(DateFormat("yyyy-MM-dd").format(DateTime.parse(DateTime.parse(DateFormat("yyyy-MM-dd").format(initialDate.value)).add(const Duration(days: 60)).toString())));
+    updateExpiryDate();
+  }
+
+  void updateExpiryDate() {
+    int days = 60;
+    if (selectedInsuranceLimit.value.planName != null && selectedInsuranceLimit.value.planName!.isNotEmpty) {
+      for (var plan in selectedInsuranceLimit.value.planName!) {
+        if (plan.policyPeriod != null && plan.policyPeriod! > 0) {
+          days = plan.policyPeriod!;
+          break;
+        }
+      }
+    }
+    expiryDateController.value.text = commonDateFormat(
+      DateFormat("yyyy-MM-dd").format(initialDate.value.add(Duration(days: days))),
+    );
   }
 
   getCityMethod(context,String id) async {
