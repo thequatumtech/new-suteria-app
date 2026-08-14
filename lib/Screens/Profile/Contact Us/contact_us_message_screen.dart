@@ -25,6 +25,12 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
     super.initState();
   }
 
+  @override
+  void dispose() {
+    contactUsController.stopPolling();
+    super.dispose();
+  }
+
   Future<void> _openFileUrl(String url) async {
     if (url.isEmpty) return;
     try {
@@ -33,7 +39,7 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
     } catch (e) {
-      print('Error launching file URL: $e');
+      debugPrint('Error launching file URL: $e');
     }
   }
 
@@ -148,9 +154,7 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
           }
 
           final liveMessages = contactUsController.chatMessagesList;
-          final legacyMessages = contactUsController.contactChatsListModel.value.data?.messages;
           final bool hasLiveMessages = liveMessages.isNotEmpty;
-          final bool hasLegacyMessages = legacyMessages != null && legacyMessages.isNotEmpty;
 
           return RefreshIndicator(
             key: contactUsController.refreshKey,
@@ -163,121 +167,29 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                     child: hasLiveMessages
                         ? SingleChildScrollView(
                             controller: contactUsController.listScrollController.value,
-                            child: ListView.builder(
-                              itemCount: liveMessages.length,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final ChatMessageItem item = liveMessages[index];
-                                final String currentDateLabel = contactUsController.formatDateLabel(item.createdAt);
-                                final String prevDateLabel = index > 0 ? contactUsController.formatDateLabel(liveMessages[index - 1].createdAt) : '';
-                                final bool showDateHeader = index == 0 || (currentDateLabel.isNotEmpty && currentDateLabel != prevDateLabel);
-                                final String timeLabel = contactUsController.formatTimeLabel(item.createdAt);
-
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (showDateHeader)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                        child: Center(
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.shade300,
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                            child: AppText(
-                                              text: currentDateLabel,
-                                              size: 12,
-                                              txtColor: primaryBlack,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
+                            child: Column(
+                              children: [
+                                if (contactUsController.isLoadingMore.value)
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Center(
+                                      child: SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
                                       ),
-                                    const SizedBox(height: 4),
-                                    item.isClientMessage
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(right: 5, left: 45, top: 4, bottom: 4),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                              children: [
-                                                Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: Container(
-                                                    decoration: const BoxDecoration(
-                                                      color: deepBluedark,
-                                                      borderRadius: BorderRadius.only(
-                                                        bottomLeft: Radius.circular(12),
-                                                        bottomRight: Radius.circular(12),
-                                                        topLeft: Radius.circular(12),
-                                                      ),
-                                                    ),
-                                                    padding: const EdgeInsets.all(12),
-                                                    child: _buildBubbleContent(item),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                  child: AppText(
-                                                    text: timeLabel,
-                                                    size: 11,
-                                                    txtColor: primaryGrayShade,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.only(left: 5, right: 45, top: 4, bottom: 4),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  decoration: const BoxDecoration(
-                                                    color: grayshad200,
-                                                    borderRadius: BorderRadius.only(
-                                                      bottomLeft: Radius.circular(12),
-                                                      bottomRight: Radius.circular(12),
-                                                      topRight: Radius.circular(12),
-                                                    ),
-                                                  ),
-                                                  padding: const EdgeInsets.all(12),
-                                                  child: _buildBubbleContent(item),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                  child: AppText(
-                                                    text: timeLabel,
-                                                    size: 11,
-                                                    txtColor: primaryGrayShade,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                  ],
-                                );
-                              },
-                            ),
-                          )
-                        : hasLegacyMessages
-                            ? SingleChildScrollView(
-                                controller: contactUsController.listScrollController.value,
-                                child: ListView.builder(
-                                  itemCount: legacyMessages.length,
+                                    ),
+                                  ),
+                                ListView.builder(
+                                  itemCount: liveMessages.length,
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    final msg = legacyMessages[index];
-                                    final bool isClient = int.tryParse(msg.sentBy ?? '0') != 0;
-                                    final String currentDateLabel = contactUsController.formatDateLabel(msg.createdAt ?? '');
-                                    final String prevDateLabel = index > 0 ? contactUsController.formatDateLabel(legacyMessages[index - 1].createdAt ?? '') : '';
+                                    final ChatMessageItem item = liveMessages[index];
+                                    final String currentDateLabel = contactUsController.formatDateLabel(item.createdAt);
+                                    final String prevDateLabel = index > 0 ? contactUsController.formatDateLabel(liveMessages[index - 1].createdAt) : '';
                                     final bool showDateHeader = index == 0 || (currentDateLabel.isNotEmpty && currentDateLabel != prevDateLabel);
-                                    final String timeLabel = contactUsController.formatTimeLabel(msg.createdAt ?? '');
+                                    final String timeLabel = contactUsController.formatTimeLabel(item.createdAt);
 
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,7 +214,7 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                                             ),
                                           ),
                                         const SizedBox(height: 4),
-                                        isClient
+                                        item.isClientMessage
                                             ? Padding(
                                                 padding: const EdgeInsets.only(right: 5, left: 45, top: 4, bottom: 4),
                                                 child: Column(
@@ -320,12 +232,7 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                                                           ),
                                                         ),
                                                         padding: const EdgeInsets.all(12),
-                                                        child: AppText(
-                                                          text: msg.message ?? '',
-                                                          size: 14,
-                                                          txtColor: primaryWhite,
-                                                          fontWeight: FontWeight.w500,
-                                                        ),
+                                                        child: _buildBubbleContent(item),
                                                       ),
                                                     ),
                                                     const SizedBox(height: 2),
@@ -355,12 +262,7 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                                                         ),
                                                       ),
                                                       padding: const EdgeInsets.all(12),
-                                                      child: AppText(
-                                                        text: msg.message ?? '',
-                                                        size: 14,
-                                                        txtColor: primaryBlack,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
+                                                      child: _buildBubbleContent(item),
                                                     ),
                                                     const SizedBox(height: 2),
                                                     Padding(
@@ -378,14 +280,16 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                                     );
                                   },
                                 ),
-                              )
-                            : Center(
-                                child: AppText(
-                                  text: 'No messages yet',
-                                  size: 14,
-                                  txtColor: primaryGrayShade,
-                                ),
-                              ),
+                              ],
+                            ),
+                          )
+                        : Center(
+                            child: AppText(
+                              text: 'No messages yet',
+                              size: 14,
+                              txtColor: primaryGrayShade,
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 10),
                   Container(

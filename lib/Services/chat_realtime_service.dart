@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:soperia_user/model_class/chat_model.dart';
 
 class ChatRealtimeService {
@@ -14,7 +15,7 @@ class ChatRealtimeService {
         _ref = FirebaseDatabase.instance.ref('chats/$chatId/messages');
       }
     } catch (e) {
-      print('ChatRealtimeService init error: $e');
+      debugPrint('ChatRealtimeService init error: $e');
     }
   }
 
@@ -29,7 +30,12 @@ class ChatRealtimeService {
       _subscription = _ref!.onChildAdded.listen((event) {
         try {
           if (event.snapshot.value != null && event.snapshot.value is Map) {
-            final data = Map<String, dynamic>.from(event.snapshot.value as Map);
+            final rawMap = event.snapshot.value as Map;
+            final data = <String, dynamic>{};
+            rawMap.forEach((key, value) {
+              data[key.toString()] = value;
+            });
+
             final id = data['id'] is int ? data['id'] : int.tryParse(data['id']?.toString() ?? '0') ?? 0;
             if (id != 0 && !_seenIds.contains(id)) {
               _seenIds.add(id);
@@ -38,11 +44,11 @@ class ChatRealtimeService {
             }
           }
         } catch (e) {
-          print('Firebase chat parse error: $e');
+          debugPrint('Firebase chat parse error: $e');
         }
       });
     } catch (e) {
-      print('Firebase listen error: $e');
+      debugPrint('Firebase listen error: $e');
     }
   }
 
@@ -64,7 +70,7 @@ class InboxRealtimeService {
         _ref = FirebaseDatabase.instance.ref('inbox/client/$clientId');
       }
     } catch (e) {
-      print('InboxRealtimeService init error: $e');
+      debugPrint('InboxRealtimeService init error: $e');
     }
   }
 
@@ -74,17 +80,27 @@ class InboxRealtimeService {
       _changeSubscription?.cancel();
       _changeSubscription = _ref!.onChildChanged.listen((event) {
         if (event.snapshot.value != null && event.snapshot.value is Map) {
-          onUpdate(Map<String, dynamic>.from(event.snapshot.value as Map));
+          final rawMap = event.snapshot.value as Map;
+          final data = <String, dynamic>{};
+          rawMap.forEach((key, value) {
+            data[key.toString()] = value;
+          });
+          onUpdate(data);
         }
       });
       _addSubscription?.cancel();
       _addSubscription = _ref!.onChildAdded.listen((event) {
         if (event.snapshot.value != null && event.snapshot.value is Map) {
-          onUpdate(Map<String, dynamic>.from(event.snapshot.value as Map));
+          final rawMap = event.snapshot.value as Map;
+          final data = <String, dynamic>{};
+          rawMap.forEach((key, value) {
+            data[key.toString()] = value;
+          });
+          onUpdate(data);
         }
       });
     } catch (e) {
-      print('InboxRealtimeService listen error: $e');
+      debugPrint('InboxRealtimeService listen error: $e');
     }
   }
 

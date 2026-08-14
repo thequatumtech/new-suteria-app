@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -14,33 +15,71 @@ import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/file_upload_gallary.dart';
 import 'package:soperia_user/model_class/chat_model.dart';
-import 'package:soperia_user/model_class/contact_us_list_model.dart';
 import 'package:dio/dio.dart' as m;
 
 class ContactUsController extends GetxController {
   final repo = getIt.get<ApiCall>();
-  RxBool isLoadingSendClaimsMessage = false.obs;
-  Rx<TextEditingController> messageController = TextEditingController().obs;
+
   RxBool isLoadingChatsList = false.obs;
+  RxBool isLoadingSendClaimsMessage = false.obs;
+  RxBool isLoadingMore = false.obs;
+
+  RxInt currentPage = 1.obs;
+  RxInt lastPage = 1.obs;
+  RxBool hasMorePages = false.obs;
+
+  Rx<TextEditingController> messageController = TextEditingController().obs;
 
   RxnInt activeChatId = RxnInt();
   RxList<ChatMessageItem> chatMessagesList = <ChatMessageItem>[].obs;
   final Set<int> seenMessageIds = {};
   final ChatRealtimeService _realtimeService = ChatRealtimeService();
+  Timer? _pollTimer;
 
-  Rx<ContactChatsListModel> contactChatsListModel = ContactChatsListModel().obs;
-  RxList dateList = [].obs;
   File selectedFileDocuments = File("");
   Rx<ScrollController> listScrollController = ScrollController().obs;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
+  void onInit() {
+    super.onInit();
+    setupScrollListener();
+  }
+
+  @override
   void onClose() {
+    stopPolling();
     _realtimeService.dispose();
     super.onClose();
   }
 
-  apiMethod(context) async {
+  void setupScrollListener() {
+    listScrollController.value.addListener(() {
+      if (listScrollController.value.position.pixels <= 80 &&
+          !isLoadingMore.value &&
+          hasMorePages.value &&
+          !isLoadingChatsList.value &&
+          activeChatId.value != null) {
+        loadMoreOlderMessages();
+      }
+    });
+  }
+
+  void startPolling() {
+    _pollTimer?.cancel();
+    _pollTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (activeChatId.value != null) {
+        pollNewMessages();
+      }
+    });
+  }
+
+  void stopPolling() {
+    _pollTimer?.cancel();
+    _pollTimer = null;
+  }
+
+  Future<void> apiMethod(BuildContext context) async {
     isLoadingChatsList.value = true;
     await startAndLoadChat(context);
     isLoadingChatsList.value = false;
@@ -48,21 +87,23 @@ class ContactUsController extends GetxController {
     scrollToBottom();
   }
 
-  Future<void> startAndLoadChat(context) async {
+  Future<void> startAndLoadChat(BuildContext context) async {
     try {
+      currentPage.value = 1;
+      hasMorePages.value = false;
       await startChatApi(context);
       if (activeChatId.value != null) {
-        await getChatMessagesApi(context);
+        await getChatMessagesApi(context, page: 1);
         await markChatAsReadApi(context);
-      } else {
-        await getContactChatsListApi(context);
+        startPolling();
       }
     } catch (e) {
-      await getContactChatsListApi(context);
+      debugPrint('startAndLoadChat error: $e');
     }
   }
 
-  Future<void> startChatApi(context, {int receiverId = 4, String receiverType = 'admin'}) async {
+  /// POST /api/chat/start
+  Future<void> startChatApi(BuildContext context, {int receiverId = 1, String receiverType = 'admin'}) async {
     try {
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequest(
@@ -71,18 +112,23 @@ class ContactUsController extends GetxController {
         body: {'receiver_id': receiverId, 'receiver_type': receiverType},
         options: Options(headers: header),
       );
-      if (response[statusCode] == 200 || response[statusCode] == 201) {
-        final chatData = response['chat'] ?? response['data'];
-        if (chatData != null && chatData['id'] != null) {
-          activeChatId.value = chatData['id'] is int ? chatData['id'] : int.tryParse(chatData['id'].toString());
-        }
+
+      debugPrint('startChatApi response: $response');
+
+      final chatData = response['chat'] ?? response['data'] ?? response;
+      if (chatData != null && chatData['id'] != null) {
+        activeChatId.value = chatData['id'] is int
+            ? chatData['id']
+            : int.tryParse(chatData['id'].toString());
+        debugPrint('activeChatId set to: ${activeChatId.value}');
       }
     } catch (e) {
-      print('startChatApi error: $e');
+      debugPrint('startChatApi error: $e');
     }
   }
 
-  Future<void> markChatAsReadApi(context) async {
+  /// POST /api/chat/{chatId}/mark-read
+  Future<void> markChatAsReadApi(BuildContext context) async {
     if (activeChatId.value == null) return;
     try {
       Map<String, String> header = await getHeader();
@@ -92,26 +138,37 @@ class ContactUsController extends GetxController {
         options: Options(headers: header),
       );
     } catch (e) {
-      print('markChatAsReadApi error: $e');
+      debugPrint('markChatAsReadApi error: $e');
     }
   }
 
-  Future<void> getChatMessagesApi(context) async {
-    if (activeChatId.value == null) {
-      await getContactChatsListApi(context);
-      return;
-    }
+  /// GET /api/chat/{chatId}/messages?page=1
+  Future<void> getChatMessagesApi(BuildContext context, {int page = 1}) async {
+    if (activeChatId.value == null) return;
     try {
-      dateList.clear();
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(
         context: context,
-        endpoint: getChatMessagesURL(activeChatId.value!),
+        endpoint: getChatMessagesURL(activeChatId.value!, page: page),
         options: Options(headers: header),
       );
-      if (response[statusCode] == 200 || response[statusCode] == 201 || response['data'] != null) {
-        final List listData = response['data'] ?? [];
+
+      debugPrint('getChatMessagesApi response: $response');
+
+      if (response['data'] != null) {
+        final List listData = response['data'] is List ? response['data'] : (response['data']?['data'] ?? []);
         final items = listData.map((e) => ChatMessageItem.fromJson(e)).toList();
+
+        // Extract last_page
+        int extractedLastPage = 1;
+        if (response['last_page'] != null) {
+          extractedLastPage = response['last_page'] is int ? response['last_page'] : int.tryParse(response['last_page'].toString()) ?? 1;
+        } else if (response['data'] is Map && response['data']['last_page'] != null) {
+          extractedLastPage = response['data']['last_page'] is int ? response['data']['last_page'] : int.tryParse(response['data']['last_page'].toString()) ?? 1;
+        }
+        lastPage.value = extractedLastPage;
+        currentPage.value = page;
+        hasMorePages.value = currentPage.value < lastPage.value;
 
         seenMessageIds.clear();
         for (var item in items) {
@@ -119,6 +176,7 @@ class ContactUsController extends GetxController {
         }
         chatMessagesList.value = items;
 
+        // Initialize Firebase listener
         _realtimeService.init(activeChatId.value!);
         _realtimeService.seedExistingIds(seenMessageIds.toList());
         _realtimeService.listenForNewMessages((newMsg) {
@@ -128,17 +186,115 @@ class ContactUsController extends GetxController {
             scrollToBottom();
           }
         });
-      } else {
-        await getContactChatsListApi(context);
       }
     } catch (e) {
-      print('getChatMessagesApi error: $e');
-      await getContactChatsListApi(context);
+      debugPrint('getChatMessagesApi error: $e');
     }
     scrollToBottom();
   }
 
-  sendContactMessageApi(context) async {
+  /// Pagination: Load older messages when user scrolls to top
+  Future<void> loadMoreOlderMessages() async {
+    if (isLoadingMore.value || !hasMorePages.value || activeChatId.value == null) return;
+    
+    isLoadingMore.value = true;
+    final nextPage = currentPage.value + 1;
+
+    try {
+      Map<String, String> header = await getHeader();
+      final BuildContext? currentContext = Get.context;
+      if (currentContext == null) return;
+
+      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(
+        context: currentContext,
+        endpoint: getChatMessagesURL(activeChatId.value!, page: nextPage),
+        options: Options(headers: header),
+      );
+
+      debugPrint('loadMoreOlderMessages page $nextPage response: $response');
+
+      if (response['data'] != null) {
+        final List listData = response['data'] is List ? response['data'] : (response['data']?['data'] ?? []);
+        final newItems = listData.map((e) => ChatMessageItem.fromJson(e)).toList();
+
+        int extractedLastPage = lastPage.value;
+        if (response['last_page'] != null) {
+          extractedLastPage = response['last_page'] is int ? response['last_page'] : int.tryParse(response['last_page'].toString()) ?? lastPage.value;
+        } else if (response['data'] is Map && response['data']['last_page'] != null) {
+          extractedLastPage = response['data']['last_page'] is int ? response['data']['last_page'] : int.tryParse(response['data']['last_page'].toString()) ?? lastPage.value;
+        }
+        lastPage.value = extractedLastPage;
+        currentPage.value = nextPage;
+        hasMorePages.value = currentPage.value < lastPage.value;
+
+        final List<ChatMessageItem> unreadOlderItems = [];
+        for (var item in newItems) {
+          if (!seenMessageIds.contains(item.id)) {
+            seenMessageIds.add(item.id);
+            unreadOlderItems.add(item);
+          }
+        }
+
+        if (unreadOlderItems.isNotEmpty) {
+          double oldMaxScroll = 0;
+          if (listScrollController.value.hasClients) {
+            oldMaxScroll = listScrollController.value.position.maxScrollExtent;
+          }
+
+          // Prepend older messages at the top of the chat list
+          chatMessagesList.insertAll(0, unreadOlderItems);
+
+          // Preserve exact scroll position so list doesn't jump
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (listScrollController.value.hasClients) {
+              double newMaxScroll = listScrollController.value.position.maxScrollExtent;
+              double scrollDelta = newMaxScroll - oldMaxScroll;
+              listScrollController.value.jumpTo(listScrollController.value.position.pixels + scrollDelta);
+            }
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('loadMoreOlderMessages error: $e');
+    } finally {
+      isLoadingMore.value = false;
+    }
+  }
+
+  /// Silent REST polling for background/fallback message updates
+  Future<void> pollNewMessages() async {
+    if (activeChatId.value == null) return;
+    try {
+      Map<String, String> header = await getHeader();
+      final BuildContext? currentContext = Get.context;
+      if (currentContext == null) return;
+
+      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(
+        context: currentContext,
+        endpoint: getChatMessagesURL(activeChatId.value!, page: 1),
+        options: Options(headers: header),
+      );
+
+      if (response['data'] != null) {
+        final List listData = response['data'] is List ? response['data'] : (response['data']?['data'] ?? []);
+        bool addedNew = false;
+        for (var e in listData) {
+          final item = ChatMessageItem.fromJson(e);
+          if (!seenMessageIds.contains(item.id)) {
+            seenMessageIds.add(item.id);
+            chatMessagesList.add(item);
+            addedNew = true;
+          }
+        }
+        if (addedNew) {
+          scrollToBottom();
+        }
+      }
+    } catch (_) {}
+  }
+
+  /// POST /api/chat/send
+  Future<void> sendContactMessageApi(BuildContext context) async {
     String textMsg = messageController.value.text.trim();
     bool hasFile = selectedFileDocuments.path.isNotEmpty;
 
@@ -151,82 +307,103 @@ class ContactUsController extends GetxController {
         await startChatApi(context);
       }
 
-      Map<String, String> header = await getHeader();
-
       if (activeChatId.value != null) {
-        Map<String, dynamic> bodyData = {
-          'chat_id': activeChatId.value,
-        };
-        if (textMsg.isNotEmpty) {
-          bodyData['message'] = textMsg;
-        }
+        Map<String, String> header = await getHeader();
+        Map<String, dynamic> response;
+
         if (hasFile) {
+          Map<String, dynamic> bodyData = {
+            'chat_id': activeChatId.value,
+          };
+          if (textMsg.isNotEmpty) {
+            bodyData['message'] = textMsg;
+          }
           bodyData['file'] = await m.MultipartFile.fromFile(selectedFileDocuments.path);
+
+          response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(
+            context: context,
+            endpoint: chatSendURL,
+            body: bodyData,
+            options: Options(headers: header),
+          );
+        } else {
+          Map<String, dynamic> bodyData = {
+            'chat_id': activeChatId.value,
+            'message': textMsg,
+          };
+
+          response = await ApiCall(dioClient: repo.dioClient).postRequest(
+            context: context,
+            endpoint: chatSendURL,
+            body: bodyData,
+            options: Options(headers: header),
+          );
         }
 
-        Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(
-          context: context,
-          endpoint: chatSendURL,
-          body: bodyData,
-          options: Options(headers: header),
-        );
+        debugPrint('sendContactMessageApi response: $response');
 
-        if (response[statusCode] == 200 || response[statusCode] == 201 || response['status'] == true) {
+        if (response['status'] == true || response['data'] != null || response[statusCode] == 200 || response[statusCode] == 201) {
           messageController.value.clear();
           selectedFileDocuments = File("");
 
-          if (response['data'] != null) {
+          if (response['data'] != null && response['data'] is Map) {
             final newMsg = ChatMessageItem.fromJson(response['data']);
             if (!seenMessageIds.contains(newMsg.id)) {
               seenMessageIds.add(newMsg.id);
               chatMessagesList.add(newMsg);
             }
-          } else {
-            await getChatMessagesApi(context);
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey]?.toString() ?? 'Failed to send message', txtColor: primaryWhite, size: 12)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: AppText(
+                text: response[messageKey]?.toString() ?? response['message']?.toString() ?? 'Failed to send message',
+                txtColor: primaryWhite,
+                size: 12,
+              ),
+            ),
+          );
         }
       } else {
-        Map<String, dynamic> data = {
-          'message': textMsg,
-          'file': hasFile ? await m.MultipartFile.fromFile(selectedFileDocuments.path) : '',
-        };
-        Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: sendContactMessage, body: data, options: Options(headers: header));
-        if (response[statusCode] == 200 || response[statusCode] == 201) {
-          messageController.value.clear();
-          selectedFileDocuments = File("");
-          getContactChatsListApi(context);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: AppText(
+              text: 'Unable to start chat session. Please try again.',
+              txtColor: primaryWhite,
+              size: 12,
+            ),
+          ),
+        );
       }
-      isLoadingSendClaimsMessage.value = false;
     } on DioException catch (e) {
-      isLoadingSendClaimsMessage.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response?.statusMessage ?? e.message ?? 'Error', txtColor: primaryWhite, size: 12)));
+      debugPrint('sendContactMessageApi DioException: ${e.response?.data ?? e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: AppText(
+            text: e.response?.data?['message']?.toString() ?? e.response?.statusMessage ?? e.message ?? 'Network error',
+            txtColor: primaryWhite,
+            size: 12,
+          ),
+        ),
+      );
     } catch (f) {
+      debugPrint('sendContactMessageApi error: $f');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: AppText(
+            text: "$f",
+            txtColor: primaryWhite,
+            size: 12,
+          ),
+        ),
+      );
+    } finally {
       isLoadingSendClaimsMessage.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));
     }
     scrollToBottom();
   }
 
-  getContactChatsListApi(context) async {
-    try {
-      dateList.clear();
-      Map<String, String> header = await getHeader();
-      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: contactChatsList, options: Options(headers: header));
-      if (response[statusCode] == 200 || response[statusCode] == 201) {
-        contactChatsListModel.value = ContactChatsListModel.fromJson(response);
-      }
-    } catch (f) {
-      isLoadingChatsList.value = false;
-    }
-    scrollToBottom();
-  }
-
-  showPicker(context) async {
+  showPicker(BuildContext context) async {
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
@@ -260,7 +437,7 @@ class ContactUsController extends GetxController {
     );
   }
 
-  scrollToBottom() {
+  void scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (listScrollController.value.hasClients) {
         final position = listScrollController.value.position.maxScrollExtent;
@@ -277,7 +454,7 @@ class ContactUsController extends GetxController {
     await startAndLoadChat(context);
   }
 
-  // Section 7 WhatsApp-style Date & Time Formatters
+  // WhatsApp-style Date & Time Formatters
   String formatDateLabel(String createdAt) {
     if (createdAt.isEmpty) return '';
     try {
