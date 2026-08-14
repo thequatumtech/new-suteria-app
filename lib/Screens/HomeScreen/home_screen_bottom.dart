@@ -53,7 +53,10 @@ class _HomePageBottomNavState extends State<HomePageBottomNav> {
           ),
         ],
       ),
-      body: screens[bottomBarCurrentIndex],
+      body: IndexedStack(
+        index: bottomBarCurrentIndex,
+        children: screens,
+      ),
     );
   }
 

@@ -772,6 +772,9 @@ const String pleaseEnterYourPetBirthDate = "Please enter your pet's birth date";
 const String pleaseSelectGender = "Please select gender";
 const String pleaseSelectTypeOfPet = "Please select type of pet";
 const String pleaseEnterNameOfBreed = "Please enter name of breed";
+const String selectPetBreed = "Select Breed";
+const String pleaseSelectPetBreed = "Please select pet breed";
+
 const String pleaseSelectVaccineBookDocuments = "Please select vaccine book documents";
 const String pleaseSelectPetsPicturesDocuments = "Please select pets pictures documents";
 const String dog = "Dog";

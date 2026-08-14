@@ -98,16 +98,17 @@ class PersonalInsuranceController extends GetxController {
   Rx<DateTime> initialDate = DateTime.now().obs;
 
   void init(context) async {
-    await getInsuranceLimit(context, '5');
     await getInsuranceCurrent(context);
-    await getCityMethod(context);
-    await getDistrictMethod(context);
-    await getInsurancePeriodApiMethod(context);
-    await getCountryMethod(context);
-    await getNationality(context);
-    await getOccupations(context);
-    await getDangerousActivities(context);
-
+    await Future.wait(<Future>[
+      getInsuranceLimit(context, '5'),
+      getCityMethod(context),
+      getDistrictMethod(context),
+      getInsurancePeriodApiMethod(context),
+      getCountryMethod(context),
+      getNationality(context),
+      getOccupations(context),
+      getDangerousActivities(context),
+    ]);
     await setTextData();
     isLoading.value = false;
   }

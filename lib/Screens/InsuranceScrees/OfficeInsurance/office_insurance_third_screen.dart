@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/OfficeInsurance/office_insurance_controller.dart';
 import 'package:soperia_user/app_utils/Common%20Widgets/image_controller.dart';
 import 'package:soperia_user/app_utils/Common%20Widgets/new_upload_documents_common_screen.dart';
@@ -287,22 +287,31 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                       ),
                     ),
                     const SizedBox(height: 8),
-                    MultiSelectDropDown<int>(
-                      onOptionSelected: (List<ValueItem<int>> selectedOptions) {
-                        officeInsuranceController.selectProtectionSystemList = selectedOptions;
-                        setState(() {}); // Keeps UI updated while on the same screen
+                    MultiDropdown<int>(
+                      onSelectionChange: (List<int> selectedValues) {
+                        officeInsuranceController.selectProtectionSystemList =
+                            officeInsuranceController.protectionSystemListDrop
+                                .where((item) => selectedValues.contains(item.value))
+                                .toList();
+                        setState(() {});
                       },
-                      options: officeInsuranceController.protectionSystemListDrop,
-                      selectedOptions: officeInsuranceController.selectProtectionSystemList, // 👈 Add this line
-                      focusedBorderColor: skyBlueShade1,
-                      borderColor: skyBlueShade1,
-                      borderWidth: 1,
-                      selectionType: SelectionType.multi,
-                      hint: pleaseChooseFromTheList,
-                      chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                      dropdownHeight: 200,
-                      optionTextStyle: const TextStyle(fontSize: 16),
-                      selectedOptionIcon: const Icon(Icons.check_circle),
+                      items: officeInsuranceController.protectionSystemListDrop,
+                      fieldDecoration: FieldDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: skyBlueShade1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: skyBlueShade1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        hintText: pleaseChooseFromTheList,
+                      ),
+                      chipDecoration: const ChipDecoration(wrap: true),
+                      dropdownDecoration: const DropdownDecoration(maxHeight: 200),
+                      dropdownItemDecoration: const DropdownItemDecoration(
+                        selectedIcon: Icon(Icons.check_circle),
+                      ),
                     ),
                     /* MultiSelectDropDown<int>(
                       onOptionSelected: (List<ValueItem> selectedOptions) {

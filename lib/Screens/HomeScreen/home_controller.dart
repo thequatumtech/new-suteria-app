@@ -17,8 +17,10 @@ class HomeController extends GetxController {
   Rx<GetProfileModel> rxGetProfileModel = GetProfileModel().obs;
 
   Future<void> getProfile(context, {bool showLoading = true}) async {
+    if (rxGetProfileModel.value.data != null || getProfileModelGlobal.data != null) {
+      showLoading = false;
+    }
     if (showLoading) {
-      await Future.delayed(const Duration(milliseconds: 200));
       isLoading.value = true;
     }
     try {
@@ -28,10 +30,9 @@ class HomeController extends GetxController {
         getProfileModelGlobal = GetProfileModel.fromJson(response);
         rxGetProfileModel.value = getProfileModelGlobal;
       }
-      if (showLoading) {
-        isLoading.value = false;
-      }
     } catch (e) {
+      print(e);
+    } finally {
       if (showLoading) {
         isLoading.value = false;
       }
@@ -39,6 +40,9 @@ class HomeController extends GetxController {
   }
 
   Future<void> getBanners(context, {bool showLoading = true}) async {
+    if (getBannerModel.value.data != null && getBannerModel.value.data!.isNotEmpty) {
+      showLoading = false;
+    }
     if (showLoading) {
       isBannerLoading.value = true;
     }
@@ -48,10 +52,9 @@ class HomeController extends GetxController {
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         getBannerModel.value = GetBannerModel.fromJson(response);
       }
-      if (showLoading) {
-        isBannerLoading.value = false;
-      }
     } catch (e) {
+      print(e);
+    } finally {
       if (showLoading) {
         isBannerLoading.value = false;
       }

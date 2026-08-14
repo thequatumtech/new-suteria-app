@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
@@ -25,6 +26,57 @@ String _formatBody(dynamic data) {
   return data.toString();
 }
 
+/// Automatically retries requests on transient network failures
+/// (connection reset, socket exception) with exponential backoff.
+class _RetryInterceptor extends Interceptor {
+  final Dio dio;
+  static const int _maxRetries = 3;
+
+  _RetryInterceptor({required this.dio});
+
+  bool _isRetriableError(DioException err) {
+    if (err.type == DioExceptionType.connectionError ||
+        err.type == DioExceptionType.receiveTimeout ||
+        err.type == DioExceptionType.sendTimeout ||
+        err.type == DioExceptionType.connectionTimeout) {
+      return true;
+    }
+    // Catch "connection reset by peer" socket errors
+    final inner = err.error;
+    if (inner is SocketException) {
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+    final extra = err.requestOptions.extra;
+    final retryCount = extra['retryCount'] as int? ?? 0;
+
+    if (_isRetriableError(err) && retryCount < _maxRetries) {
+      final nextRetry = retryCount + 1;
+      final delayMs = 500 * nextRetry; // 500ms, 1000ms, 1500ms
+      logPrintFull("🔄 Retry $nextRetry/$_maxRetries for ${err.requestOptions.uri} "
+          "(reason: ${err.message}) — waiting ${delayMs}ms");
+
+      await Future.delayed(Duration(milliseconds: delayMs));
+
+      final options = err.requestOptions;
+      options.extra['retryCount'] = nextRetry;
+
+      try {
+        final response = await dio.fetch(options);
+        return handler.resolve(response);
+      } on DioException catch (retryErr) {
+        return handler.next(retryErr);
+      }
+    }
+
+    return handler.next(err);
+  }
+}
+
 class DioClient {
   final Dio _dio;
 
@@ -33,6 +85,7 @@ class DioClient {
       ..options.baseUrl = baseURL
       ..options.connectTimeout = const Duration(seconds: 25)
       ..options.receiveTimeout = const Duration(seconds: 25)
+      ..options.sendTimeout = const Duration(seconds: 25)
       ..options.responseType = ResponseType.json
       ..interceptors.add(
         InterceptorsWrapper(
@@ -67,7 +120,8 @@ class DioClient {
             return handler.next(err);
           },
         ),
-      );
+      )
+      ..interceptors.add(_RetryInterceptor(dio: _dio));
   }
 
   // Get:-----------------------------------------------------------------------

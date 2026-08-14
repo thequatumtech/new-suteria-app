@@ -128,14 +128,15 @@ class LifeInsuranceController extends GetxController {
   Future<void> init(context) async {
     isLoading.value = true;
     await getInsuranceCurrent(context);
-    await getNationality(context);
-    await getOccupations(context);
-    await getChronicDiseases(context);
-    await getCityMethod(context);
-    await getDistrictMethod(context);
-    await getCountryMethod(context);
+    await Future.wait(<Future>[
+      getNationality(context),
+      getOccupations(context),
+      getChronicDiseases(context),
+      getCityMethod(context),
+      getDistrictMethod(context),
+      getCountryMethod(context),
+    ]);
     getInsurancePeriodApiYear();
-    /*await getInsurancePeriodApiMethod(context);*/
     await setTextData();
     isLoading.value = false;
   }

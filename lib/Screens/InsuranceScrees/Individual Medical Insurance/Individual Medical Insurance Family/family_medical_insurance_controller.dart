@@ -179,15 +179,17 @@ class FamilyMedicalInsuranceController extends GetxController {
   init(context) async {
     isLoading.value = true;
     await getInsuranceCurrent(context);
-    await getCityMethod(context);
-    await getDistrictMethod(context);
-    await getChronicDiseases(context);
-    await getDangerousActivities(context);
-    await getNationality(context);
-    await getInPatientDeductible(context);
-    await getOutPatientDeductible(context);
-    await getNoOfVisits(context);
-    await getOccupations(context);
+    await Future.wait(<Future>[
+      getCityMethod(context),
+      getDistrictMethod(context),
+      getChronicDiseases(context),
+      getDangerousActivities(context),
+      getNationality(context),
+      getInPatientDeductible(context),
+      getOutPatientDeductible(context),
+      getNoOfVisits(context),
+      getOccupations(context),
+    ]);
     await setTextData();
     isLoading.value = false;
   }

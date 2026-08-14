@@ -46,58 +46,71 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
         child: Obx(() {
           return myPoliciesController.isLoading.value
               ? const Center(child: CircularProgressIndicator())
-              : myPoliciesController.getPolicyDetailsModel.value.data == null || myPoliciesController.getPolicyDetailsModel.value.data!.isEmpty
-                  ? Center(
-                      child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
-                    )
-                  : SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Divider(color: skyBlueShade2),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8, left: 18, right: 18, bottom: 20),
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(30)), border: Border.all(color: deepBluedark)),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: InkWell(
-                                        onTap: () {
-                                          myPoliciesController.isPoliciesActive.value = true;
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(color: !myPoliciesController.isPoliciesActive.value ? Colors.transparent : deepBluedark, borderRadius: BorderRadius.all(Radius.circular(30))),
-                                          child: Center(child: AppText(text: active, size: 16, txtColor: !myPoliciesController.isPoliciesActive.value ? primaryBlack : primaryWhite)),
-                                        ),
-                                      )),
-                                      Expanded(
-                                        child: InkWell(
-                                          onTap: () {
-                                            myPoliciesController.isPoliciesActive.value = false;
-                                            setState(() {});
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(color: myPoliciesController.isPoliciesActive.value ? Colors.transparent : deepBluedark, borderRadius: BorderRadius.all(Radius.circular(30))),
-                                            child: Center(child: AppText(text: expired, size: 16, txtColor: myPoliciesController.isPoliciesActive.value ? primaryBlack : primaryWhite)),
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                myPoliciesController.isPoliciesActive.value ? activeData() : expiredData()
-                              ],
+              : RefreshIndicator(
+                  color: deepBluedark,
+                  onRefresh: () async {
+                    await myPoliciesController.getPolicyDetailsApi(context, isRefresh: true);
+                  },
+                  child: myPoliciesController.getPolicyDetailsModel.value.data == null || myPoliciesController.getPolicyDetailsModel.value.data!.isEmpty
+                      ? SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            child: Center(
+                              child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
                             ),
                           ),
-                        ],
-                      ),
-                    );
+                        )
+                      : SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Divider(color: skyBlueShade2),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8, left: 18, right: 18, bottom: 20),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(30)), border: Border.all(color: deepBluedark)),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                              child: InkWell(
+                                            onTap: () {
+                                              myPoliciesController.isPoliciesActive.value = true;
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(color: !myPoliciesController.isPoliciesActive.value ? Colors.transparent : deepBluedark, borderRadius: BorderRadius.all(Radius.circular(30))),
+                                              child: Center(child: AppText(text: active, size: 16, txtColor: !myPoliciesController.isPoliciesActive.value ? primaryBlack : primaryWhite)),
+                                            ),
+                                          )),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () {
+                                                myPoliciesController.isPoliciesActive.value = false;
+                                                setState(() {});
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(color: myPoliciesController.isPoliciesActive.value ? Colors.transparent : deepBluedark, borderRadius: BorderRadius.all(Radius.circular(30))),
+                                                child: Center(child: AppText(text: expired, size: 16, txtColor: myPoliciesController.isPoliciesActive.value ? primaryBlack : primaryWhite)),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    myPoliciesController.isPoliciesActive.value ? activeData() : expiredData()
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                );
         }),
       ),
     );

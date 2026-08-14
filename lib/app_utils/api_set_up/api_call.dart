@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,61 +18,34 @@ class ApiCall {
 
   Future<Map<String, dynamic>> postRequest({required BuildContext context, required String endpoint, Map<String, dynamic>? body, Options? options}) async {
     try {
-      bool isConnect = await NetworkUtil().isConnected(context, () {});
-      if (!isConnect) {
-        // customSnackBar(context, networkError, AnimatedSnackBarType.error);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: AppText(text: networkError,size: 14,txtColor: primaryWhite)));
-
-      } else {
-        // allApiCall(context,options);
-        Response response = await dioClient.post(endpoint, data: body, options: options);
-
-        Map<String, dynamic> data = response.data;
-
-        /* if (data['status'] == true) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: AppText(text: response.statusMessage!,size: 14,txtColor: ColorConstraint.primarywhite)));
-               }*/
-
-        /* if (data['status_code'] == 401) {
-           logout(context);
-        }*/
-
-        return data;
+      Response response = await dioClient.post(endpoint, data: body, options: options);
+      if (response.data is Map<String, dynamic>) {
+        return response.data;
       }
       return {};
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout || e.error is SocketException) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: networkError, size: 14, txtColor: primaryWhite)));
+      }
+      rethrow;
     } catch (e) {
       print(e);
       rethrow;
     }
   }
-Future<Map<String, dynamic>> postRequestFormData({required BuildContext context, required String endpoint, Map<String, dynamic>? body, Options? options}) async {
+
+  Future<Map<String, dynamic>> postRequestFormData({required BuildContext context, required String endpoint, Map<String, dynamic>? body, Options? options}) async {
     try {
-      bool isConnect = await NetworkUtil().isConnected(context, () {});
-      if (!isConnect) {
-        // customSnackBar(context, networkError, AnimatedSnackBarType.error);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: AppText(text: networkError,size: 14,txtColor: primaryWhite)));
-
-      } else {
-        // allApiCall(context,options);
-        Response response = await dioClient.post(endpoint, data: FormData.fromMap(body??{}), options: options);
-
-        Map<String, dynamic> data = response.data;
-
-        /* if (data['status'] == true) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: AppText(text: response.statusMessage!,size: 14,txtColor: ColorConstraint.primarywhite)));
-               }*/
-
-        /* if (data['status_code'] == 401) {
-           logout(context);
-        }*/
-
-        return data;
+      Response response = await dioClient.post(endpoint, data: FormData.fromMap(body ?? {}), options: options);
+      if (response.data is Map<String, dynamic>) {
+        return response.data;
       }
       return {};
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout || e.error is SocketException) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: networkError, size: 14, txtColor: primaryWhite)));
+      }
+      rethrow;
     } catch (e) {
       print(e);
       rethrow;
@@ -80,30 +54,16 @@ Future<Map<String, dynamic>> postRequestFormData({required BuildContext context,
 
   Future<Map<String, dynamic>> formDataRequest({required BuildContext context, required String endpoint, Map<String, dynamic>? body, Options? options}) async {
     try {
-      bool isConnect = await NetworkUtil().isConnected(context, () {});
-      if (!isConnect) {
-        // customSnackBar(context, networkError, AnimatedSnackBarType.error);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: AppText(text: networkError,size: 14,txtColor: primaryWhite)));
-
-      } else {
-        // allApiCall(context,options);
-        Response response = await dioClient.post(endpoint, data: FormData.fromMap(body ?? {}), options: options);
-
-        Map<String, dynamic> data = response.data;
-
-        /* if (data['status'] == true) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: AppText(text: response.statusMessage!,size: 14,txtColor: ColorConstraint.primarywhite)));
-               }*/
-
-        /* if (data['status_code'] == 401) {
-           logout(context);
-        }*/
-
-        return data;
+      Response response = await dioClient.post(endpoint, data: FormData.fromMap(body ?? {}), options: options);
+      if (response.data is Map<String, dynamic>) {
+        return response.data;
       }
       return {};
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout || e.error is SocketException) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: networkError, size: 14, txtColor: primaryWhite)));
+      }
+      rethrow;
     } catch (e) {
       print(e);
       rethrow;
@@ -112,28 +72,16 @@ Future<Map<String, dynamic>> postRequestFormData({required BuildContext context,
 
   Future<Map<String, dynamic>> getRequest({required BuildContext context, required String endpoint, Options? options}) async {
     try {
-      bool isConnect = await NetworkUtil().isConnected(context, () {});
-      if (!isConnect) {
-        // customSnackBar(context, networkError, AnimatedSnackBarType.error);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: AppText(text: networkError,size: 14,txtColor: primaryWhite)));
-
-      } else {
-        // allApiCall(context,options);
-        final Response response = await dioClient.get(endpoint, options: options);
-        Map<String, dynamic> data = response.data;
-
-        /* if (data['status'] == true) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: AppText(text: response.statusMessage!,size: 14,txtColor: ColorConstraint.primarywhite)));
-      }*/
-        /*  if (data['status_code'] == 401) {
-          logout(context);
-        }*/
-
-        return data;
+      final Response response = await dioClient.get(endpoint, options: options);
+      if (response.data is Map<String, dynamic>) {
+        return response.data;
       }
       return {};
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout || e.error is SocketException) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: networkError, size: 14, txtColor: primaryWhite)));
+      }
+      rethrow;
     } catch (e) {
       rethrow;
     }
@@ -141,28 +89,13 @@ Future<Map<String, dynamic>> postRequestFormData({required BuildContext context,
 
   getRequestList({required BuildContext context, required String endpoint, Options? options}) async {
     try {
-      bool isConnect = await NetworkUtil().isConnected(context, () {});
-      if (!isConnect) {
-        // customSnackBar(context, networkError, AnimatedSnackBarType.error);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: AppText(text: networkError,size: 14,txtColor: primaryWhite)));
-
-      } else {
-        // allApiCall(context,options);
-        var response = await dioClient.get(endpoint, options: options);
-        var data = response;
-
-        /* if (data['status'] == true) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: AppText(text: response.statusMessage!,size: 14,txtColor: ColorConstraint.primarywhite)));
-      }*/
-        /*  if (data['status_code'] == 401) {
-          logout(context);
-        }*/
-
-        return data;
+      var response = await dioClient.get(endpoint, options: options);
+      return response;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout || e.error is SocketException) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: networkError, size: 14, txtColor: primaryWhite)));
       }
-      return {};
+      rethrow;
     } catch (e) {
       rethrow;
     }

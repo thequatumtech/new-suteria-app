@@ -100,12 +100,14 @@ class CriticalIllnessInsuranceController extends GetxController {
   void init(context) async {
     isLoading.value = true;
     await getInsuranceCurrent(context);
-    await getCityMethod(context);
-    await getDistrictMethod(context);
-    await getChronicDiseases(context);
-    await getCountryMethod(context);
-    await getNationality(context);
-    await getOccupations(context);
+    await Future.wait(<Future>[
+      getCityMethod(context),
+      getDistrictMethod(context),
+      getChronicDiseases(context),
+      getCountryMethod(context),
+      getNationality(context),
+      getOccupations(context),
+    ]);
     await setTextData();
     isLoading.value = false;
   }

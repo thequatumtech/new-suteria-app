@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/HomeInsurance/home_insurance_controller.dart';
 import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
@@ -135,40 +135,46 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           padding: const EdgeInsets.all(8.0),
                           child: AppTextfield(hint: homen3, lable: homen3, controller: homeInsuranceController.claimIn5yearController.value),
                         ),
-                       Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: AppText(
-                                text: dYHHAPS,
-                                size: 15,
-                                fontWeight: FontWeight.bold,
-                                txtAlign: TextAlign.start,
-                              ),
-                            ),
-                            MultiSelectDropDown<int>(
-                              controller: homeInsuranceController.controller,
-                              onOptionSelected: (List<ValueItem> selectedOptions) {
-                                homeInsuranceController.selectProtectionSystemList.value = selectedOptions;
-                                print(homeInsuranceController.controller.selectedOptions);
-                                setState(() {});
-                              },
-                              options: homeInsuranceController.protectionSystemListDrop,
-                              focusedBorderColor: skyBlueShade1,
-                              borderColor: skyBlueShade1,
-                              borderWidth: 1,
-                              selectionType: SelectionType.multi,
-                              hint: pleaseChooseFromTheList,
-                              /*borderColor: Colors.black,*/
-
-                              chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                              dropdownHeight: 200,
-                              optionTextStyle: const TextStyle(fontSize: 16),
-                              selectedOptionIcon: const Icon(Icons.check_circle),
-                            ),
-                          ],
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: AppText(
+                          text: dYHHAPS,
+                          size: 15,
+                          txtAlign: TextAlign.start,
                         ),
+                      ),
+                      MultiDropdown<int>(
+                        controller: homeInsuranceController.controller,
+                        onSelectionChange: (List<int> selectedValues) {
+                          homeInsuranceController.selectProtectionSystemList.value =
+                              homeInsuranceController.protectionSystemListDrop
+                                  .where((item) => selectedValues.contains(item.value))
+                                  .toList();
+                          setState(() {});
+                        },
+                        items: homeInsuranceController.protectionSystemListDrop,
+                        fieldDecoration: FieldDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: skyBlueShade1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: skyBlueShade1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          hintText: pleaseChooseFromTheList,
+                        ),
+                        chipDecoration: const ChipDecoration(wrap: true),
+                        dropdownDecoration: const DropdownDecoration(maxHeight: 200),
+                        dropdownItemDecoration: const DropdownItemDecoration(
+                          selectedIcon: Icon(Icons.check_circle),
+                        ),
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 18.0),
                     child: AppBtnWithColorShades(

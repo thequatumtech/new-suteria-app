@@ -86,8 +86,17 @@ class _PetInsuranceSecondScreenState extends State<PetInsuranceSecondScreen> {
                       selectedValue: petInsuranceController.selectBreed,
                       dropdownTitle: selectPettype,
                     ),
-                    const SizedBox(height: 10),
-                    AppTextfield(width: 10, hint: petbreed, lable: petbreed, controller: petInsuranceController.petBreedNameController.value),
+                    CustomDropDownBorder(
+                      onchage: (newValue) {
+                        setState(() {
+                          petInsuranceController.selectedBreedName = newValue!;
+                          petInsuranceController.petBreedNameController.value.text = newValue;
+                        });
+                      },
+                      items: petInsuranceController.petBreedsList.map((e) => e.breed ?? '').where((b) => b.isNotEmpty).toList(),
+                      selectedValue: petInsuranceController.selectedBreedName ?? (petInsuranceController.petBreedNameController.value.text.isNotEmpty ? petInsuranceController.petBreedNameController.value.text : null),
+                      dropdownTitle: selectPetBreed,
+                    ),
                     const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -331,7 +340,7 @@ class _PetInsuranceSecondScreenState extends State<PetInsuranceSecondScreen> {
                         } else if (petInsuranceController.selectBreed == null) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectTypeOfPet, txtColor: primaryWhite, size: 12)));
                         } else if (petInsuranceController.petBreedNameController.value.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterNameOfBreed, txtColor: primaryWhite, size: 12)));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectPetBreed, txtColor: primaryWhite, size: 12)));
                         } else if (preExistingValidation()) {
                           print("object");
                         } else if (petInsuranceController.selectedInsuranceLimit.value.limit == null) {

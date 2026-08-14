@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:soperia_user/Screens/AuthScreen/admin_basic_all_api_controller/all_api_controller.dart';
 import 'package:soperia_user/app_utils/Common%20Widgets/draft_pdf_controller.dart';
 import 'package:soperia_user/app_utils/Common%20Widgets/post_pets_insurance_model.dart';
@@ -72,8 +72,8 @@ class HomeInsuranceController extends GetxController {
   Rx<CityListModel> selectCompanyCity = CityListModel().obs;
   RxList<CityListModel> companyCityList = <CityListModel>[].obs;
   RxList<ProtectionSystemList> protectionSystemList = <ProtectionSystemList>[].obs;
-  RxList<ValueItem> selectProtectionSystemList = <ValueItem>[].obs;
-  RxList<ValueItem<int>> protectionSystemListDrop = <ValueItem<int>>[].obs;
+  RxList<DropdownItem<int>> selectProtectionSystemList = <DropdownItem<int>>[].obs;
+  RxList<DropdownItem<int>> protectionSystemListDrop = <DropdownItem<int>>[].obs;
   final controller = MultiSelectController<int>();
   Rx<OccuptionList> selectOccupation = OccuptionList().obs;
   RxList<OccuptionList> occupationList = <OccuptionList>[].obs;
@@ -117,12 +117,14 @@ class HomeInsuranceController extends GetxController {
   Future<void> init(context) async {
     isLoading.value = true;
     await getInsuranceCurrent(context);
-    await getCityMethod(context);
-    await getCountryMethod(context);
-    await getNationality(context);
-    await getDistrictMethod(context);
-    await getProtectionSystemMethod(context);
-    await getOccupations(context);
+    await Future.wait(<Future>[
+      getCityMethod(context),
+      getCountryMethod(context),
+      getNationality(context),
+      getDistrictMethod(context),
+      getProtectionSystemMethod(context),
+      getOccupations(context),
+    ]);
     await setDataTextField();
     isLoading.value = false;
   }
@@ -154,6 +156,7 @@ class HomeInsuranceController extends GetxController {
     plateNoController.value.clear();
     plotNoController.value.clear();
     selectProtectionSystemList.clear();
+    protectionSystemListDrop.clear();
     sizeOfApartmentController.value.clear();
     previousPolicyExplain.value.clear();
     whyDeclineController.value.clear();
@@ -187,7 +190,7 @@ class HomeInsuranceController extends GetxController {
     planDd = '';
     effectiveDateController.value.clear();
     expiryDateController.value.clear();
-    controller.clearAllSelection();
+    controller.clearAll();
     draftPdfController.postInsuranceModel.value = PostInsuranceModel();
   }
 
@@ -361,11 +364,16 @@ class HomeInsuranceController extends GetxController {
   getProtectionSystemMethod(context) async {
     try {
       protectionSystemList.clear();
+      protectionSystemListDrop.clear();
       await adminBasicAllApiController.getProtectionSystemApi(context);
       protectionSystemList.addAll(adminBasicAllApiController.getProtectionSystemModelClass.value.data ?? []);
 
+      final seenIds = <int>{};
       for (int i = 0; i < protectionSystemList.length; i++) {
-        protectionSystemListDrop.add(ValueItem(label: protectionSystemList[i].name ?? '', value: protectionSystemList[i].id));
+        final id = protectionSystemList[i].id ?? 0;
+        if (seenIds.add(id)) {
+          protectionSystemListDrop.add(DropdownItem(label: protectionSystemList[i].name ?? '', value: id));
+        }
       }
     } on DioError catch (e) {
     } catch (f) {}

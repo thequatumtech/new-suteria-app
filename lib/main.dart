@@ -9,14 +9,17 @@ import 'package:soperia_user/app_utils/demo_localization.dart';
 import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/splash_screen.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+
 void main() async {
-  /*await Permission.notification.isDenied.then((value) {
-    if (value) {
-      Permission.notification.request();
-    }
-  });
-  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);*/
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp();
+    }
+  } catch (e) {
+    print('Firebase initializeApp notice: $e');
+  }
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   setup();
   runApp(const MyApp());

@@ -145,12 +145,11 @@ class MarineInsuranceController extends GetxController {
   void init(context) async {
     isLoading.value = true;
     await getInsuranceCurrent(context);
-    /*await getDistrictMethod(context);*/
-    /*await getCityMethod(context);*/
-    await getCountryMethod(context);
-    await getItemCategoryApi(context);
-    await getTypeCoverApi(context);
-   /* await getDangerousActivities(context);*/
+    await Future.wait(<Future>[
+      getCountryMethod(context),
+      getItemCategoryApi(context),
+      getTypeCoverApi(context),
+    ]);
     await setTextData();
     isLoading.value = false;
   }

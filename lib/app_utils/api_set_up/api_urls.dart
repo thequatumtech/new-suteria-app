@@ -87,4 +87,12 @@ const String forgotPassword ='forgot-password';
 const String getDiscountAmount ='get-discount-amount';
 const String getDiscountCoupons ='get-discount-coupons';
 const String getBannerURL ='get-banner';
+const String getPetBreeds = 'pet-breeds/';
+const String chatStartURL = 'chat/start';
+const String chatSendURL = 'chat/send';
+const String chatListURL = 'chat/list';
+String getChatMessagesURL(int chatId, {int page = 1}) => 'chat/$chatId/messages?page=$page';
+String markChatReadURL(int chatId) => 'chat/$chatId/mark-read';
+
+
 

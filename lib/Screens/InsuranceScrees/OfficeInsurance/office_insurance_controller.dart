@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_dropdown/models/value_item.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:soperia_user/Screens/AuthScreen/admin_basic_all_api_controller/all_api_controller.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
@@ -107,8 +107,8 @@ class OfficeInsuranceController extends GetxController {
   RxList<String> selectedPracticeCertificateDocument = <String>[].obs;
   RxList<String> selectedCompanyTaxCertificateDocument = <String>[].obs;
 
-  List<ValueItem<int>> selectProtectionSystemList = [];
-  List<ValueItem<int>> protectionSystemListDrop = [];
+  List<DropdownItem<int>> selectProtectionSystemList = [];
+  List<DropdownItem<int>> protectionSystemListDrop = [];
   Rx<InsuranceLimitListData> selectedInsuranceLimit = InsuranceLimitListData().obs;
   RxList<InsuranceLimitListData> insuranceLimitList = <InsuranceLimitListData>[].obs;
   Rx<InsuranceLimitModel> insuranceLimitModel = InsuranceLimitModel().obs;
@@ -127,11 +127,11 @@ class OfficeInsuranceController extends GetxController {
   void init(context) async {
     isLoading.value = true;
     await getInsuranceCurrent(context);
-    /*await getDistrictMethod(context);
-    await getCityMethod(context);*/
-    await getNationality(context);
-    await getCountryMethod(context);
-    await getProtectionSystemMethod(context);
+    await Future.wait(<Future>[
+      getNationality(context),
+      getCountryMethod(context),
+      getProtectionSystemMethod(context),
+    ]);
     await setTextData();
     isLoading.value = false;
   }
@@ -346,11 +346,16 @@ class OfficeInsuranceController extends GetxController {
   getProtectionSystemMethod(context) async {
     try {
       protectionSystemList.clear();
+      protectionSystemListDrop.clear();
       await adminBasicAllApiController.getProtectionSystemApi(context);
       protectionSystemList.addAll(adminBasicAllApiController.getProtectionSystemModelClass.value.data ?? []);
 
+      final seenIds = <int>{};
       for (int i = 0; i < protectionSystemList.length; i++) {
-        protectionSystemListDrop.add(ValueItem(label: protectionSystemList[i].name ?? '', value: protectionSystemList.value[i].id));
+        final id = protectionSystemList.value[i].id ?? 0;
+        if (seenIds.add(id)) {
+          protectionSystemListDrop.add(DropdownItem(label: protectionSystemList[i].name ?? '', value: id));
+        }
       }
     } on DioError catch (e) {
     } catch (f) {}

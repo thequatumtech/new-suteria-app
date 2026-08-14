@@ -16,8 +16,10 @@ import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/model_class/get_insurance_current_model.dart';
+import 'package:soperia_user/model_class/get_pet_breeds_model.dart';
 import 'package:soperia_user/model_class/home_Insurance_plan_model.dart';
 import 'package:soperia_user/model_class/insurance_limit_model.dart';
+
 
 class PetInsuranceController extends GetxController {
   Rx<TextEditingController> policyHolderFirstNameController = TextEditingController().obs;
@@ -41,6 +43,12 @@ class PetInsuranceController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isLoadingPetsInsurancePlan = false.obs;
   RxBool isDog = true.obs;
+
+  RxList<PetBreedData> petBreedsList = <PetBreedData>[].obs;
+  String? selectedBreedName;
+  Rx<GetPetBreedsModel> getPetBreedsModel = GetPetBreedsModel().obs;
+  RxBool isLoadingPetBreeds = false.obs;
+
 
   RxBool isLoadingVaccineDocuments = false.obs;
   RxBool isLoadingPetsImgDocuments = false.obs;
@@ -94,7 +102,9 @@ class PetInsuranceController extends GetxController {
     petBirthDateController.value.clear();
     selectGender = null;
     selectBreed = null;
+    selectedBreedName = null;
     petBreedNameController.value.clear();
+    petBreedsList.clear();
     selectedPreExistingConditions = noTxt;
     preExistingController.value.clear();
     selectedInsuranceLimit.value = InsuranceLimitListData();
@@ -112,9 +122,10 @@ class PetInsuranceController extends GetxController {
     isLoading.value = true;
     await getInsuranceCurrent(context);
     await getInsuranceLimit(context, '8');
+    await getPetBreedsApi(context);
     isLoading.value = false;
-
   }
+
 
   getInsuranceLimit(context, String id) async {
     try {
@@ -184,6 +195,36 @@ class PetInsuranceController extends GetxController {
       print(f);
     }
   }
+
+  getPetBreedsApi(context) async {
+    try {
+      isLoadingPetBreeds.value = true;
+      petBreedsList.clear();
+      String petType = isDog.value ? 'dog' : 'cat';
+      Map<String, String> header = await getHeader();
+      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient)
+          .getRequest(context: context, endpoint: "$getPetBreeds$petType", options: Options(headers: header));
+      if (response[statusCode] == 200 || response[statusCode] == 201 || response['success'] == true) {
+        GetPetBreedsModel model = GetPetBreedsModel.fromJson(response);
+        getPetBreedsModel.value = model;
+        if (model.data != null) {
+          petBreedsList.addAll(model.data!);
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
+      }
+      isLoadingPetBreeds.value = false;
+    } on DioError catch (e) {
+      isLoadingPetBreeds.value = false;
+      if (e.response != null && e.response!.statusMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      }
+    } catch (f) {
+      isLoadingPetBreeds.value = false;
+      print(f);
+    }
+  }
+
 
   void updateExpireDate([DateTime? customInceptionDate]) {
     int days = selectedInsurancePlan.value.policyPeriod ?? 364;

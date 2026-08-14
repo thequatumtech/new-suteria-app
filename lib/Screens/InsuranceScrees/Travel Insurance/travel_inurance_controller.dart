@@ -102,14 +102,12 @@ class TravelInsuranceController extends GetxController {
 
   void init(context) async {
     isLoading.value = true;
-    /*if (addDetails.value == 0) {
-      // await clearData();
-    }*/
     await getInsuranceCurrent(context);
-    // await getGeographicalAreaApiMethod(context);
-    await getCountryMethod(context);
-    await getDangerousActivities(context);
-    await getNationality(context);
+    await Future.wait(<Future>[
+      getCountryMethod(context),
+      getDangerousActivities(context),
+      getNationality(context),
+    ]);
     isLoading.value = false;
     await setTextData();
     isLoading.value = false;

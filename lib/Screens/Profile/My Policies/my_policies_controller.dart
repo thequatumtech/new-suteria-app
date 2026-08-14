@@ -22,9 +22,12 @@ class MyPoliciesController extends GetxController {
     getPolicyDetailsApi(context);
   }
 
-  getPolicyDetailsApi(context) async {
+  getPolicyDetailsApi(context, {bool isRefresh = false}) async {
+    bool showLoading = !isRefresh && (getPolicyDetailsModel.value.data == null || getPolicyDetailsModel.value.data!.isEmpty);
     try {
-      isLoading.value = true;
+      if (showLoading) {
+        isLoading.value = true;
+      }
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: getPolicyDetails, options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
@@ -37,9 +40,7 @@ class MyPoliciesController extends GetxController {
           size: 12,
         )));
       }
-      isLoading.value = false;
     } on DioError catch (e) {
-      isLoading.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: AppText(
         text: e.response!.statusMessage!,
@@ -47,13 +48,16 @@ class MyPoliciesController extends GetxController {
         size: 12,
       )));
     } catch (f) {
-      isLoading.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: AppText(
         text: "$f",
         txtColor: primaryWhite,
         size: 12,
       )));
+    } finally {
+      if (showLoading) {
+        isLoading.value = false;
+      }
     }
   }
 }

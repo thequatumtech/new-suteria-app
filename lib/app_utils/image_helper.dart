@@ -22,8 +22,9 @@ class ImageHelper {
     // required CropStyle cropStyle,
     required String title,
   }) async {
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.camera);
-    var file = File(pickedFile!.path);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile == null) return null;
+    var file = File(pickedFile.path);
     return file;
   }
 

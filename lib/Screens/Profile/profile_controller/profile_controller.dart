@@ -160,8 +160,11 @@ class ProfileController extends GetxController {
   }
 
   getProfile(context) async {
+    bool showLoading = getProfileModel.value.data == null;
     try {
-      isLoading.value = true;
+      if (showLoading) {
+        isLoading.value = true;
+      }
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: getProfileURL, options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
@@ -174,9 +177,7 @@ class ProfileController extends GetxController {
           size: 12,
         )));
       }
-      isLoading.value = false;
     } on DioException catch (e) {
-      isLoading.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: AppText(
         text: e.response!.statusMessage!,
@@ -184,13 +185,16 @@ class ProfileController extends GetxController {
         size: 12,
       )));
     } catch (f) {
-      isLoading.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: AppText(
         text: "$f",
         txtColor: primaryWhite,
         size: 12,
       )));
+    } finally {
+      if (showLoading) {
+        isLoading.value = false;
+      }
     }
   }
 
