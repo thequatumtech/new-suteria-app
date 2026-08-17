@@ -27,24 +27,23 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Row(
-        children: [
-          AppText(text: complaint, size: 18, fontWeight: FontWeight.bold),
-          const Spacer(),
-          InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const AddComplaintScreen()));
-              },
-              child: const Icon(Icons.add)),
-          const SizedBox(width: 18)
+        title: AppText(text: complaint, size: 18, fontWeight: FontWeight.bold),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const AddComplaintScreen()));
+            },
+            icon: const Icon(Icons.add),
+          ),
+          const SizedBox(width: 8),
         ],
-      )),
+      ),
       body: Obx(() {
         return complaintController.isLoadingGetApi.value
             ? const Center(child: CircularProgressIndicator())
             : complaintController.getComplaintListModel.value.data == null || complaintController.getComplaintListModel.value.data!.isEmpty
                 ? Center(
-                    child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
+                    child: AppText(text: noComplaintsFound, size: 20, fontWeight: FontWeight.w600),
                   )
                 : Padding(
                     padding: const EdgeInsets.only(top: 8, left: 18, right: 18, bottom: 16),

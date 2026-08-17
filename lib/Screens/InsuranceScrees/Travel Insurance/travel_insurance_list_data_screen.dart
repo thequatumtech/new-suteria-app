@@ -27,7 +27,10 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
 
   @override
   void initState() {
-    travelInsuranceController.getHomeInsurancePlanApi(context, '0');
+    travelInsuranceController.getHomeInsurancePlanApi(
+      context,
+      travelInsuranceController.selectedInsurancePlan.value.planName ?? '0',
+    );
     super.initState();
   }
 

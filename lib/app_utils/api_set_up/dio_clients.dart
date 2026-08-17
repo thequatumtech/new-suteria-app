@@ -85,7 +85,6 @@ class DioClient {
       ..options.baseUrl = baseURL
       ..options.connectTimeout = const Duration(seconds: 25)
       ..options.receiveTimeout = const Duration(seconds: 25)
-      ..options.sendTimeout = const Duration(seconds: 25)
       ..options.responseType = ResponseType.json
       ..interceptors.add(
         InterceptorsWrapper(

@@ -41,7 +41,7 @@ class _MyCouponsScreenState extends State<MyCouponsScreen> {
         return profileController.isLoadingDiscountCoupons.value
             ? const Center(child: CircularProgressIndicator())
             : profileController.getDiscountCouponsModel.value.data == null || profileController.getDiscountCouponsModel.value.data!.isEmpty
-                ? Center(child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600))
+                ? Center(child: AppText(text: noCouponsFound, size: 20, fontWeight: FontWeight.w600))
                 : Padding(
                     padding: const EdgeInsets.only(top: 8, left: 10, right: 10, bottom: 16),
                     child: SingleChildScrollView(

@@ -76,8 +76,31 @@ class ChatMessageItem {
       fileName: json['file_name']?.toString(),
       fileSize: json['file_size'] is int ? json['file_size'] : int.tryParse(json['file_size']?.toString() ?? ''),
       isRead: json['is_read'] == true || json['is_read'] == 1 || json['is_read'] == '1',
-      createdAt: json['created_at']?.toString() ?? '',
+      createdAt: (json['created_at'] != null && json['created_at'].toString().isNotEmpty)
+          ? json['created_at'].toString()
+          : (json['local_time']?.toString() ?? json['time']?.toString() ?? DateTime.now().toIso8601String()),
     );
+  }
+
+  DateTime get parsedCreatedAt {
+    if (createdAt.isEmpty) return DateTime.fromMillisecondsSinceEpoch(0);
+    try {
+      String clean = createdAt.trim();
+      if (!clean.endsWith('Z') && !clean.contains('+')) {
+        if (clean.contains('T')) {
+          clean = '${clean}Z';
+        } else if (clean.contains(' ')) {
+          clean = '${clean.replaceFirst(' ', 'T')}Z';
+        }
+      }
+      return DateTime.parse(clean).toLocal();
+    } catch (_) {
+      try {
+        return DateTime.parse(createdAt.replaceFirst(' ', 'T')).toLocal();
+      } catch (_) {
+        return DateTime.fromMillisecondsSinceEpoch(0);
+      }
+    }
   }
 
   bool get isClientMessage => senderType == 'client';

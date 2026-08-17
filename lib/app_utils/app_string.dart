@@ -27,6 +27,8 @@ const String editt = 'Edit';
 const String noActiveClaims = 'No Active Claims!';
 const String noActivePoliciesFound = 'No Active Policies Found';
 const String noExpiredPoliciesFound = 'No Expired Policies Found';
+const String noPoliciesFound = 'No Policies Found';
+const String no_policies_found = 'No Policies Found';
 const String youDonTHaveAnyPoliciesWithUsUet = 'You Don’t have any policies with us yet.';
 
 const String message = 'Message';
@@ -117,6 +119,7 @@ const String myclaims = 'My Claims';
 const String contactus = 'Contact Us';
 const String companycontact = 'COMPANY CONTACT NO';
 const String addcomplaints = 'Add Complaints ';
+const String noComplaintsFound = "No Complaints Found";
 const String ourwebsite = 'Our Website ';
 const String logout = 'Log Out ';
 const String active = 'Active';

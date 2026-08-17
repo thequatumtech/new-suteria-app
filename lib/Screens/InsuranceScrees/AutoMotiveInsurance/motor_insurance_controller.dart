@@ -24,8 +24,13 @@ import 'package:soperia_user/model_class/get_vehicle_color_model.dart';
 import 'package:soperia_user/model_class/get_vehicle_type_model.dart';
 import 'package:soperia_user/model_class/home_Insurance_plan_model.dart';
 import 'package:soperia_user/model_class/vehical_category_model.dart';
+import 'package:soperia_user/Screens/InsuranceScrees/AutoMotiveInsurance/Inspection360/models/inspection_manifest.dart';
 
 class MotorInsuranceController extends GetxController {
+  Rx<InspectionManifest?> inspectionManifest = Rx<InspectionManifest?>(null);
+  RxBool is360InspectionCompleted = false.obs;
+  RxList<String> selectedInspection360Videos = <String>[].obs;
+
   Rx<TextEditingController> policyHolderFirstNameController = TextEditingController().obs;
   Rx<TextEditingController> policyHolderSecondNameController = TextEditingController().obs;
   Rx<TextEditingController> policyHolderThirdNameController = TextEditingController().obs;
@@ -218,6 +223,9 @@ class MotorInsuranceController extends GetxController {
     selectedCarseer.clear();
     selectedAutoScore.clear();
     selectedCustomsDeclaration.clear();
+    inspectionManifest.value = null;
+    is360InspectionCompleted.value = false;
+    selectedInspection360Videos.clear();
   }
 
   setTextData() {

@@ -84,7 +84,7 @@ class _CustomDropDownBorderState extends State<CustomDropDownBorder> {
           ),
           const SizedBox(height: 4),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 7),
+            padding: const EdgeInsets.symmetric(vertical: 2),
             width: double.infinity,
             decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -257,7 +257,7 @@ class _CustomDropDownBorder1State extends State<CustomDropDownBorder1> {
               }
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 7),
+              padding: const EdgeInsets.symmetric(vertical: 2),
               width: double.infinity,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(12)),

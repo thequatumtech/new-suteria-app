@@ -29,7 +29,11 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
 
   @override
   void initState() {
-    travelInsuranceController.getInsuranceLimit(context, '10');
+    if (travelInsuranceController.selectDestination.value.id != null) {
+      travelInsuranceController.getInsuranceLimit(context, '10', destinationCountryId: travelInsuranceController.selectDestination.value.id);
+    } else {
+      travelInsuranceController.getInsuranceLimit(context, '10');
+    }
     super.initState();
   }
 
@@ -54,6 +58,11 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                         setState(() {
                           GetCountryList cdl = travelInsuranceController.departureFromList.firstWhere((element) => element.id == newValue);
                           travelInsuranceController.selectDepartureFrom.value = cdl;
+                          if (travelInsuranceController.selectDestination.value.id == newValue) {
+                            travelInsuranceController.selectDestination.value = GetCountryList();
+                            travelInsuranceController.selectedInsurancePlan.value = InsurancePlanName();
+                            travelInsuranceController.insurancePlanList.clear();
+                          }
                         });
                       },
                       items: travelInsuranceController.departureFromList
@@ -70,7 +79,11 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                         setState(() {
                           GetCountryList cdl = travelInsuranceController.destinationList.firstWhere((element) => element.id == newValue);
                           travelInsuranceController.selectDestination.value = cdl;
+                          travelInsuranceController.selectedInsurancePlan.value = InsurancePlanName();
                         });
+                        if (newValue != null && newValue != 0) {
+                          travelInsuranceController.getInsuranceLimit(context, '10', destinationCountryId: newValue);
+                        }
                       },
                       items: filteredDestinationList
                           .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack))))
@@ -245,28 +258,39 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                       readOnly: true,
                     ),
                     const SizedBox(height: 10),
-                    CustomDropDownBorder1(
-                      onchage: (newValue) {
-                        setState(() {
-                          InsurancePlanName cdl = travelInsuranceController.insurancePlanList.firstWhere((element) => element.planName == newValue);
-                          travelInsuranceController.selectedInsurancePlan.value = cdl;
-                        });
-                      },
-                      /*items: travelInsuranceController.insurancePlanList.map((item) => DropdownMenuItem(value: item.planName ?? 0, child: Text(item.planName ?? '', style: TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
-                */
-                      items: travelInsuranceController.insurancePlanList
-                          .map((e) => e.planName)
-                          .where((e) => e != null && e!.trim().isNotEmpty)
-                          .toSet() // remove duplicate planName
-                          .map((name) => DropdownMenuItem(
-                                value: name,
-                                child: Text(name!, style: const TextStyle(fontSize: 15, color: primaryBlack)),
-                              ))
-                          .toList(),
-                      selectedValue: travelInsuranceController.insurancePlanList.any((element) => element.planName == travelInsuranceController.selectedInsurancePlan.value.planName)
-                          ? travelInsuranceController.selectedInsurancePlan.value.planName ?? 0
-                          : null,
-                      dropdownTitle: '$selectYour $linsuranceplan',
+                    Obx(
+                      () => travelInsuranceController.isLoadingInsuranceLimit.value
+                          ? const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              child: Center(
+                                child: SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ),
+                            )
+                          : CustomDropDownBorder1(
+                              onchage: (newValue) {
+                                setState(() {
+                                  InsurancePlanName cdl = travelInsuranceController.insurancePlanList.firstWhere((element) => element.planName == newValue);
+                                  travelInsuranceController.selectedInsurancePlan.value = cdl;
+                                });
+                              },
+                              items: travelInsuranceController.insurancePlanList
+                                  .map((e) => e.planName)
+                                  .where((e) => e != null && e!.trim().isNotEmpty)
+                                  .toSet() // remove duplicate planName
+                                  .map((name) => DropdownMenuItem(
+                                        value: name,
+                                        child: Text(name!, style: const TextStyle(fontSize: 15, color: primaryBlack)),
+                                      ))
+                                  .toList(),
+                              selectedValue: travelInsuranceController.insurancePlanList.any((element) => element.planName == travelInsuranceController.selectedInsurancePlan.value.planName)
+                                  ? travelInsuranceController.selectedInsurancePlan.value.planName ?? 0
+                                  : null,
+                              dropdownTitle: '$selectYour $linsuranceplan',
+                            ),
                     ),
                     AppBtnWithColorShades(
                       onTap: () {

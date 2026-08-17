@@ -30,18 +30,17 @@ class _ReviewMyClaimStatusScreenState extends State<ReviewMyClaimStatusScreen> w
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Row(
-        children: [
-          AppText(text: reviewMyClaimStatus, size: 18, fontWeight: FontWeight.bold),
-          const Spacer(),
-          InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const MyClaimsScreen()));
-              },
-              child: const Icon(Icons.add)),
-          const SizedBox(width: 8)
+        title: AppText(text: reviewMyClaimStatus, size: 18, fontWeight: FontWeight.bold),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const MyClaimsScreen()));
+            },
+            icon: const Icon(Icons.add),
+          ),
+          const SizedBox(width: 8),
         ],
-      )),
+      ),
       body: Obx(() {
         return SafeArea(
           child: claimController.isLoadingClaimsList.value

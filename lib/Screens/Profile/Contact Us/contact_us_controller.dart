@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:soperia_user/Services/chat_realtime_service.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
@@ -142,6 +143,16 @@ class ContactUsController extends GetxController {
     }
   }
 
+  void sortMessages() {
+    chatMessagesList.sort((a, b) {
+      final aDate = a.parsedCreatedAt;
+      final bDate = b.parsedCreatedAt;
+      final cmp = aDate.compareTo(bDate);
+      if (cmp != 0) return cmp;
+      return a.id.compareTo(b.id);
+    });
+  }
+
   /// GET /api/chat/{chatId}/messages?page=1
   Future<void> getChatMessagesApi(BuildContext context, {int page = 1}) async {
     if (activeChatId.value == null) return;
@@ -170,11 +181,46 @@ class ContactUsController extends GetxController {
         currentPage.value = page;
         hasMorePages.value = currentPage.value < lastPage.value;
 
-        seenMessageIds.clear();
-        for (var item in items) {
-          seenMessageIds.add(item.id);
+        if (page == 1) {
+          seenMessageIds.clear();
+          chatMessagesList.clear();
         }
-        chatMessagesList.value = items;
+
+        for (var item in items) {
+          if (!seenMessageIds.contains(item.id)) {
+            seenMessageIds.add(item.id);
+            chatMessagesList.add(item);
+          }
+        }
+
+        // If multiple pages exist on initial load, fetch all remaining pages so user sees complete chat up to newest
+        if (page == 1 && lastPage.value > 1) {
+          for (int p = 2; p <= lastPage.value; p++) {
+            try {
+              Map<String, dynamic> nextResp = await ApiCall(dioClient: repo.dioClient).getRequest(
+                context: context,
+                endpoint: getChatMessagesURL(activeChatId.value!, page: p),
+                options: Options(headers: header),
+              );
+              if (nextResp['data'] != null) {
+                final List nextListData = nextResp['data'] is List ? nextResp['data'] : (nextResp['data']?['data'] ?? []);
+                final nextItems = nextListData.map((e) => ChatMessageItem.fromJson(e)).toList();
+                for (var item in nextItems) {
+                  if (!seenMessageIds.contains(item.id)) {
+                    seenMessageIds.add(item.id);
+                    chatMessagesList.add(item);
+                  }
+                }
+              }
+            } catch (e) {
+              debugPrint('Error fetching chat page $p: $e');
+            }
+          }
+          currentPage.value = lastPage.value;
+          hasMorePages.value = false;
+        }
+
+        sortMessages();
 
         // Initialize Firebase listener
         _realtimeService.init(activeChatId.value!);
@@ -183,6 +229,7 @@ class ContactUsController extends GetxController {
           if (!seenMessageIds.contains(newMsg.id)) {
             seenMessageIds.add(newMsg.id);
             chatMessagesList.add(newMsg);
+            sortMessages();
             scrollToBottom();
           }
         });
@@ -227,32 +274,14 @@ class ContactUsController extends GetxController {
         currentPage.value = nextPage;
         hasMorePages.value = currentPage.value < lastPage.value;
 
-        final List<ChatMessageItem> unreadOlderItems = [];
         for (var item in newItems) {
           if (!seenMessageIds.contains(item.id)) {
             seenMessageIds.add(item.id);
-            unreadOlderItems.add(item);
+            chatMessagesList.add(item);
           }
         }
 
-        if (unreadOlderItems.isNotEmpty) {
-          double oldMaxScroll = 0;
-          if (listScrollController.value.hasClients) {
-            oldMaxScroll = listScrollController.value.position.maxScrollExtent;
-          }
-
-          // Prepend older messages at the top of the chat list
-          chatMessagesList.insertAll(0, unreadOlderItems);
-
-          // Preserve exact scroll position so list doesn't jump
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (listScrollController.value.hasClients) {
-              double newMaxScroll = listScrollController.value.position.maxScrollExtent;
-              double scrollDelta = newMaxScroll - oldMaxScroll;
-              listScrollController.value.jumpTo(listScrollController.value.position.pixels + scrollDelta);
-            }
-          });
-        }
+        sortMessages();
       }
     } catch (e) {
       debugPrint('loadMoreOlderMessages error: $e');
@@ -271,7 +300,7 @@ class ContactUsController extends GetxController {
 
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(
         context: currentContext,
-        endpoint: getChatMessagesURL(activeChatId.value!, page: 1),
+        endpoint: getChatMessagesURL(activeChatId.value!, page: lastPage.value),
         options: Options(headers: header),
       );
 
@@ -287,6 +316,7 @@ class ContactUsController extends GetxController {
           }
         }
         if (addedNew) {
+          sortMessages();
           scrollToBottom();
         }
       }
@@ -302,6 +332,10 @@ class ContactUsController extends GetxController {
 
     isLoadingSendClaimsMessage.value = true;
 
+    // Get current time in UTC to pass in created_at
+    final nowUtc = DateTime.now().toUtc();
+    final utcTimeString = nowUtc.toIso8601String();
+
     try {
       if (activeChatId.value == null) {
         await startChatApi(context);
@@ -314,6 +348,8 @@ class ContactUsController extends GetxController {
         if (hasFile) {
           Map<String, dynamic> bodyData = {
             'chat_id': activeChatId.value,
+            'created_at': utcTimeString,
+            'time': utcTimeString,
           };
           if (textMsg.isNotEmpty) {
             bodyData['message'] = textMsg;
@@ -330,6 +366,8 @@ class ContactUsController extends GetxController {
           Map<String, dynamic> bodyData = {
             'chat_id': activeChatId.value,
             'message': textMsg,
+            'created_at': utcTimeString,
+            'time': utcTimeString,
           };
 
           response = await ApiCall(dioClient: repo.dioClient).postRequest(
@@ -347,10 +385,15 @@ class ContactUsController extends GetxController {
           selectedFileDocuments = File("");
 
           if (response['data'] != null && response['data'] is Map) {
-            final newMsg = ChatMessageItem.fromJson(response['data']);
+            final msgMap = Map<String, dynamic>.from(response['data'] as Map);
+            if (msgMap['created_at'] == null || msgMap['created_at'].toString().isEmpty) {
+              msgMap['created_at'] = utcTimeString;
+            }
+            final newMsg = ChatMessageItem.fromJson(msgMap);
             if (!seenMessageIds.contains(newMsg.id)) {
               seenMessageIds.add(newMsg.id);
               chatMessagesList.add(newMsg);
+              sortMessages();
             }
           }
         } else {
@@ -454,11 +497,33 @@ class ContactUsController extends GetxController {
     await startAndLoadChat(context);
   }
 
-  // WhatsApp-style Date & Time Formatters
+  /// Converts UTC createdAt timestamp to device region local time
+  static DateTime parseUtcToLocal(String createdAt) {
+    if (createdAt.isEmpty) return DateTime.fromMillisecondsSinceEpoch(0);
+    try {
+      String clean = createdAt.trim();
+      if (!clean.endsWith('Z') && !clean.contains('+')) {
+        if (clean.contains('T')) {
+          clean = '${clean}Z';
+        } else if (clean.contains(' ')) {
+          clean = '${clean.replaceFirst(' ', 'T')}Z';
+        }
+      }
+      return DateTime.parse(clean).toLocal();
+    } catch (_) {
+      try {
+        return DateTime.parse(createdAt.replaceFirst(' ', 'T')).toLocal();
+      } catch (_) {
+        return DateTime.fromMillisecondsSinceEpoch(0);
+      }
+    }
+  }
+
+  // WhatsApp-style Date & Time Formatters (converts UTC to local device region/time)
   String formatDateLabel(String createdAt) {
     if (createdAt.isEmpty) return '';
     try {
-      final msgDate = DateTime.parse(createdAt.replaceFirst(' ', 'T'));
+      final msgDate = parseUtcToLocal(createdAt);
       final now = DateTime.now();
       final yesterday = now.subtract(const Duration(days: 1));
 
@@ -479,7 +544,7 @@ class ContactUsController extends GetxController {
   String formatTimeLabel(String createdAt) {
     if (createdAt.isEmpty) return '';
     try {
-      final d = DateTime.parse(createdAt.replaceFirst(' ', 'T'));
+      final d = parseUtcToLocal(createdAt);
       final hour = d.hour % 12 == 0 ? 12 : d.hour % 12;
       final minute = d.minute.toString().padLeft(2, '0');
       final ampm = d.hour >= 12 ? 'PM' : 'AM';

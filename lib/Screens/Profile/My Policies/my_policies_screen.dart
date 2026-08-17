@@ -57,7 +57,7 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
                           child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.7,
                             child: Center(
-                              child: AppText(text: noDataFound, size: 20, fontWeight: FontWeight.w600),
+                              child: AppText(text: no_policies_found, size: 20, fontWeight: FontWeight.w600),
                             ),
                           ),
                         )

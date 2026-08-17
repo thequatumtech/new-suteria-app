@@ -18,6 +18,9 @@ import 'package:soperia_user/model_class/get_vehicle_brand_model.dart';
 import 'package:soperia_user/model_class/get_vehicle_color_model.dart';
 import 'package:soperia_user/model_class/get_vehicle_type_model.dart';
 import 'package:soperia_user/model_class/vehical_category_model.dart';
+import 'package:soperia_user/Screens/InsuranceScrees/AutoMotiveInsurance/Inspection360/screens/inspection_instructions_screen.dart';
+import 'package:soperia_user/Screens/InsuranceScrees/AutoMotiveInsurance/Inspection360/screens/inspection_review_screen.dart';
+import 'package:soperia_user/Screens/InsuranceScrees/AutoMotiveInsurance/Inspection360/widgets/inspection_status_card.dart';
 
 class AutomotiveInsuranceFourthScreen extends StatefulWidget {
   Function onNext;
@@ -341,78 +344,48 @@ class _AutomotiveInsuranceFourthScreenState extends State<AutomotiveInsuranceFou
                         addDocText: addDocuments,
                         isLoading: motorInsuranceController.isLoadingLicenseBack.value,
                       ),
-                motorInsuranceController.selectedPhotoFront.isEmpty
-                    ? InkWell(
-                        onTap: () {
-                          selectPhotoFrontDocument();
-                        },
-                        child: ImageUploadWidget(txt: addVehiclePhotoFront, borderColor: skyBlueShade2, isLoading: motorInsuranceController.isLoadingPhotoFront.value))
-                    : NewUploadDocumentsCommonScreen(
-                        documentNameText: vehiclePhotoFrontDocuments,
-                        selectedDocumentsImg: motorInsuranceController.selectedPhotoFront,
-                        removeDocumentFunction: (index) {
-                          removePhotoFrontImage(motorInsuranceController.selectedPhotoFront[index]);
-                        },
-                        addDocumentFunction: () {
-                          selectPhotoFrontDocument();
-                        },
-                        addDocText: addDocuments,
-                        isLoading: motorInsuranceController.isLoadingPhotoFront.value,
+                // Guided 360° Exterior Video Inspection Card
+                Obx(() => InspectionStatusCard(
+                  manifest: motorInsuranceController.inspectionManifest.value,
+                  isCompleted: motorInsuranceController.is360InspectionCompleted.value,
+                  onStartInspection: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InspectionInstructionsScreen(
+                          plateNumber: motorInsuranceController.vehiclePlateNoController.value.text,
+                          chassisNumber: motorInsuranceController.vehicleChassisNoController.value.text,
+                          vehicleTypeName: motorInsuranceController.selectVehicleType.value.name,
+                          vehicleCategoryName: motorInsuranceController.selectVehicleTypeCategory.value.name,
+                          vehicleBrandName: motorInsuranceController.selectVehicleBrand.value.name,
+                        ),
                       ),
-                motorInsuranceController.selectedPhotoBack.isEmpty
-                    ? InkWell(
-                        onTap: () {
-                          selectPhotoBackDocument();
-                        },
-                        child: ImageUploadWidget(txt: addVehiclePhotoBack, borderColor: skyBlueShade2))
-                    : NewUploadDocumentsCommonScreen(
-                        documentNameText: vehiclePhotoBackDocuments,
-                        selectedDocumentsImg: motorInsuranceController.selectedPhotoBack,
-                        removeDocumentFunction: (index) {
-                          removePhotoBackImage(motorInsuranceController.selectedPhotoBack[index]);
-                        },
-                        addDocumentFunction: () {
-                          selectPhotoBackDocument();
-                        },
-                        addDocText: addDocuments,
-                        isLoading: motorInsuranceController.isLoadingPhotoBack.value,
+                    );
+                  },
+                  onReviewInspection: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const InspectionReviewScreen(),
                       ),
-                motorInsuranceController.selectedPhotoRightSide.isEmpty
-                    ? InkWell(
-                        onTap: () {
-                          selectPhotoRightSideDocument();
-                        },
-                        child: ImageUploadWidget(txt: addVehiclePhotoRightSide, borderColor: skyBlueShade2, isLoading: motorInsuranceController.isLoadingPhotoRightSide.value))
-                    : NewUploadDocumentsCommonScreen(
-                        documentNameText: vehiclePhotoRightSideDocuments,
-                        selectedDocumentsImg: motorInsuranceController.selectedPhotoRightSide,
-                        removeDocumentFunction: (index) {
-                          removePhotoRightSideImage(motorInsuranceController.selectedPhotoRightSide[index]);
-                        },
-                        addDocumentFunction: () {
-                          selectPhotoRightSideDocument();
-                        },
-                        addDocText: addDocuments,
-                        isLoading: motorInsuranceController.isLoadingPhotoRightSide.value,
+                    );
+                  },
+                  onRetakeInspection: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InspectionInstructionsScreen(
+                          plateNumber: motorInsuranceController.vehiclePlateNoController.value.text,
+                          chassisNumber: motorInsuranceController.vehicleChassisNoController.value.text,
+                          vehicleTypeName: motorInsuranceController.selectVehicleType.value.name,
+                          vehicleCategoryName: motorInsuranceController.selectVehicleTypeCategory.value.name,
+                          vehicleBrandName: motorInsuranceController.selectVehicleBrand.value.name,
+                        ),
                       ),
-                motorInsuranceController.selectedPhotoLeftSide.isEmpty
-                    ? InkWell(
-                        onTap: () {
-                          selectPhotoLeftSideDocument();
-                        },
-                        child: ImageUploadWidget(txt: addVehiclePhotoLeftSide, borderColor: skyBlueShade2, isLoading: motorInsuranceController.isLoadingPhotoLeftSide.value))
-                    : NewUploadDocumentsCommonScreen(
-                        documentNameText: vehiclePhotoLeftSideDocuments,
-                        selectedDocumentsImg: motorInsuranceController.selectedPhotoLeftSide,
-                        removeDocumentFunction: (index) {
-                          removePhotoLeftSideImage(motorInsuranceController.selectedPhotoLeftSide[index]);
-                        },
-                        addDocumentFunction: () {
-                          selectPhotoLeftSideDocument();
-                        },
-                        addDocText: addDocuments,
-                        isLoading: motorInsuranceController.isLoadingPhotoLeftSide.value,
-                      ),
+                    );
+                  },
+                )),
+
                 motorInsuranceController.selectedCarseer.isEmpty
                     ? InkWell(
                         onTap: () {
@@ -504,14 +477,8 @@ class _AutomotiveInsuranceFourthScreenState extends State<AutomotiveInsuranceFou
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadLicenseFront, txtColor: primaryWhite, size: 12)));
                     } else if (motorInsuranceController.selectedLicenseBack.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadLicenseBack, txtColor: primaryWhite, size: 12)));
-                    } else if (motorInsuranceController.selectedPhotoFront.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadPhotoFront, txtColor: primaryWhite, size: 12)));
-                    } else if (motorInsuranceController.selectedPhotoBack.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadPhotoBack, txtColor: primaryWhite, size: 12)));
-                    } else if (motorInsuranceController.selectedPhotoRightSide.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadPhotoRightSide, txtColor: primaryWhite, size: 12)));
-                    } else if (motorInsuranceController.selectedPhotoLeftSide.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseUploadPhotoLeftSide, txtColor: primaryWhite, size: 12)));
+                    } else if (!motorInsuranceController.is360InspectionCompleted.value) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please complete the guided 360° vehicle exterior inspection before proceeding.', style: TextStyle(color: primaryWhite))));
                     } else {
                       widget.onNext();
                     }

@@ -84,6 +84,7 @@ class TravelInsuranceController extends GetxController {
 
   String planDd = '';
   String insuranceLimit = '';
+  RxBool isLoadingInsuranceLimit = false.obs;
   RxBool isLoadingInsurancePlan = false.obs;
   Rx<HomeInsurancePlaneModel> homeInsurancePlaneModel = HomeInsurancePlaneModel().obs;
 
@@ -289,26 +290,31 @@ class TravelInsuranceController extends GetxController {
     }
   }
 
-  getInsuranceLimit(context, String id) async {
+  getInsuranceLimit(context, String id, {int? destinationCountryId}) async {
     try {
-      isLoading.value = true;
-      // insuranceLimitList.clear();
+      isLoadingInsuranceLimit.value = true;
       insurancePlanList.clear();
+      selectedInsurancePlan.value = InsurancePlanName();
+
+      String endpoint = "$insuranceLimitUrl$id";
+      if (destinationCountryId != null && destinationCountryId != 0) {
+        endpoint += "&destination_country_id=$destinationCountryId";
+      }
+
       Map<String, String> header = await getHeader();
-      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: "$insuranceLimitUrl$id", options: Options(headers: header));
+      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: endpoint, options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         insuranceLimitModel.value = InsuranceLimitPlanModel.fromJson(response);
         insurancePlanList.addAll(insuranceLimitModel.value.data ?? []);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }
-      isLoading.value = false;
-    } on DioError catch (e) {
-      isLoading.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+    } on DioException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response?.statusMessage ?? e.message ?? '', txtColor: primaryWhite, size: 12)));
     } catch (f) {
-      isLoading.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));
+    } finally {
+      isLoadingInsuranceLimit.value = false;
     }
   }
 
