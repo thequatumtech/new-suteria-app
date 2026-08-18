@@ -22,6 +22,7 @@ import 'package:soperia_user/Screens/InsuranceScrees/Personal%20Accidents%20Insu
 import 'package:soperia_user/Screens/InsuranceScrees/Pet%20Insurance/pet_insurance_stepper.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/Travel%20Insurance/travel_insurance_stepper.dart';
 import 'package:soperia_user/app_utils/api_set_up/header_file.dart';
+import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   int sliderCurrentIndex = 0;
   final CarouselSliderController _bannerCarouselController = CarouselSliderController();
   Timer? _bannerAutoScrollTimer;
+  String _selectedLanguage = 'en';
 
   void _startAutoScrollTimer(List<BannerData> banners) {
     _bannerAutoScrollTimer?.cancel();
@@ -55,6 +57,231 @@ class _HomePageState extends State<HomePage> {
         );
       }
     });
+  }
+
+  void _showLanguageBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext sheetContext) {
+        String tempSelected = _selectedLanguage;
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              decoration: const BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Handle bar
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: grayshad200,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+
+                    // Header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: skyBlueShade4,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Icons.language_rounded, color: deepBluedark, size: 22),
+                            ),
+                            const SizedBox(width: 12),
+                            AppText(
+                              text: chooseYourLanguage,
+                              size: 16,
+                              fontWeight: FontWeight.bold,
+                              txtColor: deepBluedark,
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: grayshad400, size: 20),
+                          onPressed: () => Navigator.pop(sheetContext),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // English Option
+                    _buildLanguageItem(
+                      title: 'English',
+                      subtitle: 'English',
+                      code: 'en',
+                      isSelected: tempSelected == 'en',
+                      onTap: () {
+                        setSheetState(() {
+                          tempSelected = 'en';
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Arabic Option
+                    _buildLanguageItem(
+                      title: 'العربية',
+                      subtitle: 'Arabic',
+                      code: 'ar',
+                      isSelected: tempSelected == 'ar',
+                      onTap: () {
+                        setSheetState(() {
+                          tempSelected = 'ar';
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Confirm Button
+                    AppBtnWithColorShades(
+                      onTap: () async {
+                        setState(() {
+                          _selectedLanguage = tempSelected;
+                        });
+                        try {
+                          SharedPreferences pref = await SharedPreferences.getInstance();
+                          await pref.setString('selected_language', tempSelected);
+                        } catch (_) {}
+
+                        if (!mounted) return;
+                        Navigator.pop(sheetContext);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: AppText(
+                              text: tempSelected == 'ar'
+                                  ? 'Language selected: Arabic (العربية)'
+                                  : 'Language selected: English',
+                              txtColor: primaryWhite,
+                              size: 13,
+                            ),
+                            backgroundColor: deepBluedark,
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      btnTxt: ok,
+                      color1: darkBlue2,
+                      color2: darkBlue1,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageItem({
+    required String title,
+    required String subtitle,
+    required String code,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: isSelected ? skyBlueShade4 : primaryWhite,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? deepBluedark : skyBlueShade2,
+            width: isSelected ? 1.5 : 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 36,
+              width: 36,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: isSelected ? deepBluedark : skyBlueShade3,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                code.toUpperCase(),
+                style: TextStyle(
+                  color: isSelected ? primaryWhite : deepBluedark,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? deepBluedark : primaryBlack,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isSelected ? deepBluedark.withOpacity(0.8) : grayshad400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 22,
+              width: 22,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? deepBluedark : Colors.transparent,
+                border: Border.all(
+                  color: isSelected ? deepBluedark : grayshad200,
+                  width: 1.5,
+                ),
+              ),
+              child: isSelected
+                  ? const Icon(Icons.check, size: 14, color: primaryWhite)
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -159,51 +386,73 @@ class _HomePageState extends State<HomePage> {
             decoration: const BoxDecoration(color: Colors.transparent),
             child: homeController.isLoading.value
                 ? const Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    color: deepBlue,
-                    onRefresh: () => homeController.refreshHome(context),
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 35,
-                                  width: 35,
-                                  alignment: Alignment.center,
-                                  decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: ((homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic) != null &&
-                                            (homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic)!.isNotEmpty)
-                                        ? CachedNetworkImage(
-                                            height: 35,
-                                            width: 35,
-                                            imageUrl: "$imgBaseUrl/${homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic}",
-                                            placeholder: (context, url) => const CircularProgressIndicator(strokeWidth: 2),
-                                            errorWidget: (context, url, error) => Image.asset(splashImg, height: 35, width: 35, fit: BoxFit.cover),
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.asset(splashImg, height: 35, width: 35, fit: BoxFit.cover),
-                                  ),
+                : Column(
+                    children: [
+                      // Fixed Top Header (Profile pic, Welcome note & Language translate button)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 14, left: 20, right: 20, bottom: 10),
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 38,
+                              width: 38,
+                              alignment: Alignment.center,
+                              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: ((homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic) != null &&
+                                        (homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic)!.isNotEmpty)
+                                    ? CachedNetworkImage(
+                                        height: 38,
+                                        width: 38,
+                                        imageUrl: "$imgBaseUrl/${homeController.rxGetProfileModel.value.data?.profilePic ?? getProfileModelGlobal.data?.profilePic}",
+                                        placeholder: (context, url) => const CircularProgressIndicator(strokeWidth: 2),
+                                        errorWidget: (context, url, error) => Image.asset(splashImg, height: 38, width: 38, fit: BoxFit.cover),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.asset(splashImg, height: 38, width: 38, fit: BoxFit.cover),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                "$welcome, ${homeController.rxGetProfileModel.value.data?.firstName ?? getProfileModelGlobal.data?.firstName ?? ""}",
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            InkWell(
+                              // onTap: () => _showLanguageBottomSheet(context),
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                padding: const EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: skyBlueShade4,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: skyBlueShade2, width: 0.8),
                                 ),
-                                const SizedBox(width: 10),
-                                Text("$welcome, ${homeController.rxGetProfileModel.value.data?.firstName ?? getProfileModelGlobal.data?.firstName ?? ""}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                                const Spacer(),
-                                /*const Icon(Icons.notifications_none_outlined),*/
-                                const SizedBox(width: 10),
-                                Container(
+                                child: Image.asset(
+                                  translate,
                                   width: 20,
                                   height: 20,
-                                  decoration: const BoxDecoration(image: DecorationImage(image: AssetImage(translate))),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        Builder(
+                          ],
+                        ),
+                      ),
+                      // Scrollable Home Content
+                      Expanded(
+                        child: RefreshIndicator(
+                          color: deepBlue,
+                          onRefresh: () => homeController.refreshHome(context),
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Column(
+                              children: [
+                                Builder(
                           builder: (context) {
                             List<BannerData> banners = homeController.getBannerModel.value.data ?? [];
                             if (banners.isEmpty) {
@@ -407,6 +656,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+              ),
+            ],
+          ),
           );
         }),
       ),

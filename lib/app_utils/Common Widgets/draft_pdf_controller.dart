@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:soperia_user/Screens/AuthScreen/admin_basic_all_api_controller/all_api_controller.dart';
 import 'package:soperia_user/Screens/HomeScreen/policy_pdf.dart';
+import 'package:soperia_user/Screens/InsuranceScrees/insurance_pdf_controller.dart';
 import 'package:soperia_user/app_utils/Common%20Widgets/post_pets_insurance_model.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
@@ -119,6 +120,21 @@ class DraftPdfController extends GetxController {
     try {
       var tranData = (paymentData is Map && paymentData.containsKey('data')) ? paymentData['data'] : paymentData;
 
+      InsurancePdfController insurancePdfController = Get.put(InsurancePdfController());
+
+      // Upload signature after payment is accepted/successful
+      if (insurancePdfController.signatureBytes.value != null && insurancePdfController.signatureUrl.value.isEmpty) {
+        final purchasePolicyId = postInsuranceModel.value.data?.purchaseId ?? 0;
+        final clientId = getProfileModelGlobal.data?.id ?? 0;
+
+        await insurancePdfController.uploadSignatureApi(
+          context: context,
+          pngBytes: insurancePdfController.signatureBytes.value!,
+          purchasePolicyId: purchasePolicyId,
+          clientId: clientId,
+        );
+      }
+
       Map<String, dynamic> data = {
         'purchase_id': postInsuranceModel.value.data?.purchaseId ?? 0,
         'transaction_id': tranData['transactionReference'] ?? '',
@@ -126,6 +142,7 @@ class DraftPdfController extends GetxController {
         'payment_type': tranData['paymentInfo']?['payment_method'] ?? tranData['paymentInfo']?['cardScheme'] ?? "Paytabs",
         'payment_status': (tranData['isSuccess'] == true) ? 1 : 0,
         'full_responce': jsonEncode(paymentData),
+        'user_sign': insurancePdfController.signatureUrl.value,
       };
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: addStoreTransaction, body: (data), options: Options(headers: header));

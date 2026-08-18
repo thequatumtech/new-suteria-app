@@ -40,30 +40,12 @@ class _DiscountScreenState extends State<DiscountScreen> {
               Navigator.pop(context);
             },
             child: const Icon(Icons.keyboard_backspace_outlined)),
-        title: Row(
-          children: [
-            AppText(text: widget.screenTitle, size: 20, fontWeight: FontWeight.bold),
-            /*  const Spacer(),
-            InkWell(
-              onTap: () async {
-                await Navigator.push(context, MaterialPageRoute(builder: (context) => const MyCouponsScreen()));
-                if (draftPdfController.couponCodeController.value.text.isNotEmpty) {
-                  draftPdfController.getDiscountAmountApi(context, widget.screenTitle);
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(border: Border.all(color: gold), borderRadius: BorderRadius.circular(10)),
-                child:  AppText(
-                  text: viewCoupons,
-                  size: 13,
-                  txtColor: deepBluedark,
-                  fontWeight: FontWeight.bold,
-                  txtAlign: TextAlign.start,
-                ),
-              ),
-            )*/
-          ],
+        title: AppText(
+          text: widget.screenTitle,
+          size: 18,
+          fontWeight: FontWeight.bold,
+          maxLine: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
       body: Obx(

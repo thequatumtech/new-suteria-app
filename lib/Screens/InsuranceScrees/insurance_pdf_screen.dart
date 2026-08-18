@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
-import 'package:soperia_user/Screens/InsuranceScrees/discount_screen.dart';
+import 'package:soperia_user/Screens/InsuranceScrees/digital_signature_screen.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/insurance_pdf_controller.dart';
 import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
@@ -51,7 +51,13 @@ class _InsurancePdfScreenState extends State<InsurancePdfScreen> {
                 Navigator.pop(context);
               },
               child: const Icon(Icons.keyboard_backspace_outlined)),
-          title: AppText(text: "${widget.screenTitle} $termsConditionsPolicy", size: 14, fontWeight: FontWeight.bold),
+          title: AppText(
+            text: "${widget.screenTitle} $termsConditionsPolicy",
+            size: 14,
+            fontWeight: FontWeight.bold,
+            maxLine: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       body: Obx(
         () {
@@ -103,8 +109,15 @@ class _InsurancePdfScreenState extends State<InsurancePdfScreen> {
                 child: AppBtnWithColorShades(
                   onTap: () {
                     if (insurancePdfController.isTermConditions.value == true) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => DiscountScreen(screenTitle: widget.screenTitle, insuranceType: widget.insuranceType)));
-                      // Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DigitalSignatureScreen(
+                            screenTitle: widget.screenTitle,
+                            insuranceType: widget.insuranceType,
+                          ),
+                        ),
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseAcceptDrafPolicy /*pleaseAcceptAllTermsAndConditions*/, txtColor: primaryWhite, size: 12)));
                     } // InsurancePolicyScreen(screenTitle: widget.screenTitle)));
@@ -122,3 +135,5 @@ class _InsurancePdfScreenState extends State<InsurancePdfScreen> {
   );
 }
 }
+
+

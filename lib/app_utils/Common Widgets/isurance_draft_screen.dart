@@ -58,7 +58,13 @@ class _InsuranceDraftPdfScreenState extends State<InsuranceDraftPdfScreen> {
                 Navigator.pop(context);
               },
               child: const Icon(Icons.keyboard_backspace_outlined)),
-          title: AppText(text: "${widget.screenTitle} Draft Policy", size: 18, fontWeight: FontWeight.bold),
+          title: AppText(
+            text: "${widget.screenTitle} Draft Policy",
+            size: 16,
+            fontWeight: FontWeight.bold,
+            maxLine: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       body: Obx(() {
         return draftPdfController.isButtonLoading.value
