@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:soperia_user/Services/chat_realtime_service.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
@@ -456,10 +455,13 @@ class ContactUsController extends GetxController {
               leading: const Icon(Icons.photo_library),
               title: AppText(text: photoLibrary, size: 14, txtColor: primaryBlack),
               onTap: () async {
-                Navigator.of(context).pop();
-                selectedFileDocuments = (await selectImageFromGallery(context)) ?? selectedFileDocuments;
-                if (selectedFileDocuments.path.isNotEmpty) {
-                  sendContactMessageApi(context);
+                Navigator.of(bc).pop();
+                final file = await selectImageFromGallery(context);
+                if (file != null && file.path.isNotEmpty) {
+                  selectedFileDocuments = file;
+                  if (context.mounted) {
+                    sendContactMessageApi(context);
+                  }
                 }
               },
             ),
@@ -467,10 +469,13 @@ class ContactUsController extends GetxController {
               leading: const Icon(Icons.photo_camera),
               title: AppText(text: camera, size: 14, txtColor: primaryBlack),
               onTap: () async {
-                Navigator.of(context).pop();
-                selectedFileDocuments = (await selectImageFromCamera(context)) ?? selectedFileDocuments;
-                if (selectedFileDocuments.path.isNotEmpty) {
-                  sendContactMessageApi(context);
+                Navigator.of(bc).pop();
+                final file = await selectImageFromCamera(context);
+                if (file != null && file.path.isNotEmpty) {
+                  selectedFileDocuments = file;
+                  if (context.mounted) {
+                    sendContactMessageApi(context);
+                  }
                 }
               },
             )

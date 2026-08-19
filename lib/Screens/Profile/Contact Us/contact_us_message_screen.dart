@@ -60,6 +60,8 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                 width: 200,
                 height: 180,
                 fit: BoxFit.cover,
+                memCacheWidth: 400,
+                memCacheHeight: 360,
                 placeholder: (context, url) => const SizedBox(
                   width: 200,
                   height: 180,

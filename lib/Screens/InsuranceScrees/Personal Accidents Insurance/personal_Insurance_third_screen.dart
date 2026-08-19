@@ -282,6 +282,8 @@ class _PersonalInsuranceThirdScreenState extends State<PersonalInsuranceThirdScr
                     onTap: () {
                       if (personalInsuranceController.selectedInsuranceLimit.value.limit == null) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectInsuranceLimitCoverageAmount, txtColor: primaryWhite, size: 12)));
+                      } else if (personalInsuranceController.selectedDangerousActivity == null || personalInsuranceController.selectedDangerousActivity!.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDangerousActivitiesList, txtColor: primaryWhite, size: 12)));
                       } else if (personalInsuranceController.selectedDangerousActivity == yesTxt && personalInsuranceController.selectedDangerousActivitiesList.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDangerousActivitiesOptions, txtColor: primaryWhite, size: 12)));
                       } else if (personalInsuranceController.inceptionDateController.value.text.isEmpty) {

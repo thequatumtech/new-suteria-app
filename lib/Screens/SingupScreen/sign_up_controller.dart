@@ -1,15 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:dio/dio.dart' as m;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:soperia_user/Screens/AuthScreen/AuthController/auth_controller.dart';
-import 'package:soperia_user/Screens/AuthScreen/account_created.dart';
-import 'package:soperia_user/Screens/AuthScreen/admin_basic_all_api_controller/all_api_controller.dart';
-import 'package:soperia_user/Screens/AuthScreen/otp_screen.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
@@ -25,9 +20,8 @@ import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_district_model.dart';
 import 'package:soperia_user/model_class/get_nationality_model.dart';
 import 'package:soperia_user/model_class/get_occupation_modelClass.dart';
-
-import 'otp_screen_singup.dart';
-import 'package:dio/dio.dart' as m;
+import 'package:soperia_user/Screens/AuthScreen/admin_basic_all_api_controller/all_api_controller.dart';
+import 'package:soperia_user/Screens/AuthScreen/account_created.dart';
 
 class SignUpController extends GetxController {
   String? selectedGender;
@@ -170,15 +164,15 @@ class SignUpController extends GetxController {
     buttonLoading.value = true;
     try {
       Map<String, String> header = await getHeader();
-      var response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: userRegister, options: Options(), body: {
-        'first_name': firstNameController.value.text ?? '',
-        'father_name': secondNameController.value.text ?? '',
-        'grandfather_name': thirdNameController.value.text ?? '',
-        'surname': familyNameController.value.text ?? '',
+      Map<String, dynamic> data = {
+        'first_name': firstNameController.value.text,
+        'father_name': secondNameController.value.text,
+        'grandfather_name': thirdNameController.value.text,
+        'surname': familyNameController.value.text,
         'language': selectLanguage == "Arabic" ? "ar" : "en",
         'nationality_id': selectNationality.value.id,
-        'national_id_number': nationOrPassportNumberController.value.text ?? '',
-        'residence_id_number': idOrResidenceNumberController.value.text ?? '',
+        'national_id_number': nationOrPassportNumberController.value.text,
+        'residence_id_number': idOrResidenceNumberController.value.text,
         'birth_date': commonApiDateFormat(birthDateController.value.text),
         'gender': selectedGender == male ? 1 : 2,
         'marital_status': selectedMaritalStatus == single
@@ -188,44 +182,58 @@ class SignUpController extends GetxController {
                 : selectedMaritalStatus == divorced
                     ? 3
                     : 4,
-        'email_id': emailController.value.text ?? '',
+        'email_id': emailController.value.text,
         'mobile_no': int.parse(mobileController.value.text),
         'country_id': selectCountry.value.id,
         'residing_country_same': check == false ? 1 : 2,
         'residing_country_id': check ? selectCountry.value.id : selectResidency.value.id,
         'city_id': selectCity.value.id,
         'district_id': selectDistrict.value.id,
-        'street_name': streetController.value.text ?? '',
-        'building_no': buildingController.value.text ?? '',
+        'street_name': streetController.value.text,
+        'building_no': buildingController.value.text,
         'employment_type': selectEmp ?? '',
-        'company_name': companyController.value.text ?? '',
+        'company_name': companyController.value.text,
         'occupation_id': selectOccupation.value.id ?? 1,
         "position": selectPosition.value.name ?? '',
-        'work_nature': workNatureController.value.text ?? '',
+        'work_nature': workNatureController.value.text,
         'company_city_id': selectCityCompany.value.id ?? 1,
         'company_district_id': selectDistrictCompany.value.id ?? 1,
-        'company_street_name': companyStreetNameController.value.text ?? '',
-        'company_building_no': companyBuildingNoController.value.text ?? '',
-        'company_contact_no': companyContactNoController.value.text ?? '',
+        'company_street_name': companyStreetNameController.value.text,
+        'company_building_no': companyBuildingNoController.value.text,
+        'company_contact_no': companyContactNoController.value.text,
         'id_front': await m.MultipartFile.fromFile(residenceCardFont.path),
         'id_back': await m.MultipartFile.fromFile(residenceCardBack.path),
         'profile_pic': await m.MultipartFile.fromFile(personalPicDoc.path),
-        'agent_id': agentNoController.value.text ?? '',
         'no_of_policies': '1',
         'password': password.value.text
-      });
+      };
 
-      if (response["status_code"] == 200) {
+      if (agentNoController.value.text.trim().isNotEmpty) {
+        data['agent_id'] = agentNoController.value.text.trim();
+      }
+
+      var response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: userRegister, options: Options(headers: header), body: data);
+
+      if (response["status_code"] == 200 || response["status"] == true) {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString(tokenKey, response[tokenKey]);
         showToast(successfullyRegister, context);
         buttonLoading.value = false;
         Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountCreated()));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response['message'], txtColor: primaryWhite, size: 12)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response['message'] ?? 'Registration failed', txtColor: primaryWhite, size: 12)));
       }
 
       buttonLoading.value = false;
+    } on DioException catch (e) {
+      buttonLoading.value = false;
+      String errorMsg = "Something went wrong";
+      if (e.response?.data is Map && e.response?.data['message'] != null) {
+        errorMsg = e.response?.data['message'].toString() ?? '';
+      } else if (e.response?.statusMessage != null) {
+        errorMsg = e.response!.statusMessage!;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: errorMsg, txtColor: primaryWhite, size: 12)));
     } catch (e) {
       buttonLoading.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.toString(), txtColor: primaryWhite, size: 12)));

@@ -241,10 +241,12 @@ class ProfileController extends GetxController {
         'company_street_name': companyStreetNameController.value.text,
         'company_building_no': companyBuildingNoController.value.text,
         'company_contact_no': companyContactNoController.value.text,
-        'agent_id': agentNoController.value.text ?? '',
         'no_of_policies': '1',
-        // 'password': password.value.text
       };
+
+      if (agentNoController.value.text.trim().isNotEmpty) {
+        data['agent_id'] = agentNoController.value.text.trim();
+      }
 
       if (residenceCardFont.path.isNotEmpty) {
         data.addAll({'id_front': await m.MultipartFile.fromFile(residenceCardFont.path)});
@@ -258,15 +260,25 @@ class ProfileController extends GetxController {
 
       Map<String, String> header = await getHeader();
       var response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: updateProfile, body: data, options: Options(headers: header));
-      if (response["status_code"] == 200) {
+      if (response["status_code"] == 200 || response["status"] == true) {
         Navigator.pop(context);
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response['message'], txtColor: primaryWhite, size: 12)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response['message'] ?? 'Profile updated successfully', txtColor: primaryWhite, size: 12)));
         getProfile(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response['message'], txtColor: primaryWhite, size: 12)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response['message'] ?? 'Failed to update profile', txtColor: primaryWhite, size: 12)));
       }
       isLoadingPost.value = false;
+    } on DioException catch (e) {
+      isLoadingPost.value = false;
+      String errorMsg = "Something went wrong";
+      if (e.response?.data is Map && e.response?.data['message'] != null) {
+        errorMsg = e.response?.data['message'].toString() ?? '';
+      } else if (e.response?.statusMessage != null) {
+        errorMsg = e.response!.statusMessage!;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: errorMsg, txtColor: primaryWhite, size: 12)));
+      print(e);
     } catch (e) {
       isLoadingPost.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.toString(), txtColor: primaryWhite, size: 12)));
