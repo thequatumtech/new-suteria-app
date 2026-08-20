@@ -288,14 +288,21 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                     ),
                     const SizedBox(height: 8),
                     MultiDropdown<int>(
+                      controller: officeInsuranceController.controller,
                       onSelectionChange: (List<int> selectedValues) {
-                        officeInsuranceController.selectProtectionSystemList =
+                        officeInsuranceController.selectProtectionSystemList.value =
                             officeInsuranceController.protectionSystemListDrop
                                 .where((item) => selectedValues.contains(item.value))
                                 .toList();
                         setState(() {});
                       },
-                      items: officeInsuranceController.protectionSystemListDrop,
+                      items: officeInsuranceController.protectionSystemListDrop.map((item) {
+                        return DropdownItem<int>(
+                          label: item.label,
+                          value: item.value,
+                          selected: officeInsuranceController.selectProtectionSystemList.any((element) => element.value == item.value),
+                        );
+                      }).toList(),
                       fieldDecoration: FieldDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: skyBlueShade1),

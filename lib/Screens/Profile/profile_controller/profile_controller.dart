@@ -26,6 +26,9 @@ import 'package:soperia_user/model_class/get_district_model.dart';
 import 'package:soperia_user/model_class/get_nationality_model.dart';
 import 'package:soperia_user/model_class/get_occupation_modelClass.dart';
 import 'package:soperia_user/model_class/get_profile_model.dart';
+import 'package:soperia_user/app_utils/app_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
+import 'package:soperia_user/main.dart';
 import '../../AuthScreen/select_language.dart';
 import 'package:dio/dio.dart' as m;
 
@@ -136,15 +139,13 @@ class ProfileController extends GetxController {
 
   RxString lang = "en".obs;
   RxString english = "en".obs;
-  RxString arbic = "dr".obs;
+  RxString arbic = "ar".obs;
 
-  /* void changeLanguage(String lang,BuildContext context) async {
+  void changeLanguage(String lang, BuildContext context) async {
     languageCode = lang;
-    await loadLangs();
     Locale locale = await setLocale(lang);
     MyApp.setLocale(context, locale);
-
-  }*/
+  }
 
   init(context) async {
     isLoadingEdit.value = true;

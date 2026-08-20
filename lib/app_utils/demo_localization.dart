@@ -12,19 +12,22 @@ class DemoLocalization {
     return Localizations.of<DemoLocalization>(context, DemoLocalization);
   }
 
-  late Map<String, String> _localizedValues;
+  Map<String, String> _localizedValues = {};
 
   Future<void> load() async {
-    String jsonStringValues = await rootBundle.loadString('lib/language/${locale.languageCode}.json');
-    Map<String, dynamic> mappedJson = json.decode(jsonStringValues);
-    _localizedValues = mappedJson.map((key, value) => MapEntry(key, value.toString()));
+    try {
+      String jsonStringValues = await rootBundle.loadString('lib/language/${locale.languageCode}.json');
+      Map<String, dynamic> mappedJson = json.decode(jsonStringValues);
+      _localizedValues = mappedJson.map((key, value) => MapEntry(key, value.toString()));
+    } catch (e) {
+      print('DemoLocalization load error: $e');
+    }
   }
 
   String? translate(String key) {
-    return _localizedValues[key];
+    return _localizedValues[key] ?? key;
   }
 
-  // static member to have simple access to the delegate from Material App
   static const LocalizationsDelegate<DemoLocalization> delegate = _DemoLocalizationsDelegate();
 }
 

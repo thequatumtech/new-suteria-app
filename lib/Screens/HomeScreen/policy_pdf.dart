@@ -1,10 +1,16 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:soperia_user/Screens/HomeScreen/home_screen_bottom.dart';
+import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
+import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
+import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
+import 'package:soperia_user/app_utils/api_set_up/header_file.dart';
+import 'package:soperia_user/app_utils/api_set_up/service_locator.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
@@ -18,8 +24,9 @@ import 'package:share_plus/share_plus.dart';
 class PolicyPdf extends StatefulWidget {
   String screenTitle = '';
   String pdfUrl = '';
+  dynamic purchasePolicyId;
 
-  PolicyPdf({super.key, required this.screenTitle, required this.pdfUrl});
+  PolicyPdf({super.key, required this.screenTitle, required this.pdfUrl, this.purchasePolicyId});
 
   @override
   State<PolicyPdf> createState() => _PolicyPdfState();
@@ -31,6 +38,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
   String fileName = '';
   bool isLoadingPrint = false;
   bool isLoadingSave = false;
+  String generatedPdfUrl = '';
 
   @override
   void initState() {
@@ -49,13 +57,68 @@ class _PolicyPdfState extends State<PolicyPdf> {
     send?.send([id, status, progress]);
   }
 
+  /// Get Final Signed PDF URL
+  Future<String> fetchFinalPdfUrl(String fallbackUrl) async {
+    if (generatedPdfUrl.isNotEmpty) {
+      return generatedPdfUrl;
+    }
+    if (widget.purchasePolicyId != null && widget.purchasePolicyId != 0) {
+      try {
+        final repo = getIt.get<ApiCall>();
+        Map<String, dynamic> body = {
+          'purchase_policy_id': widget.purchasePolicyId,
+        };
+        Map<String, String> header = await getHeader();
+        Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(
+          context: context,
+          endpoint: generateFinalPdf,
+          body: body,
+          options: Options(headers: header),
+        );
+
+        if (response['status'] == true || response[statusCode] == 200 || response[statusCode] == 201) {
+          final dataObj = response['data'];
+          if (dataObj is Map && dataObj['pdf_url'] != null && dataObj['pdf_url'].toString().isNotEmpty) {
+            generatedPdfUrl = dataObj['pdf_url'].toString();
+            return generatedPdfUrl;
+          } else if (response['pdf_url'] != null && response['pdf_url'].toString().isNotEmpty) {
+            generatedPdfUrl = response['pdf_url'].toString();
+            return generatedPdfUrl;
+          }
+        } else {
+          String errMsg = response[messageKey]?.toString() ?? response['message']?.toString() ?? '';
+          if (errMsg.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: AppText(text: errMsg, txtColor: primaryWhite, size: 12)),
+            );
+          }
+        }
+      } catch (e) {
+        debugPrint('Error generating final policy pdf: $e');
+      }
+    }
+    return fallbackUrl;
+  }
+
   /// Save Pdf
   Future<void> getPdf(String url) async {
     setState(() {
       isLoadingSave = true;
     });
+
+    final targetUrl = await fetchFinalPdfUrl(url);
+    if (targetUrl.isEmpty) {
+      setState(() {
+        isLoadingSave = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: AppText(text: "PDF URL not found", txtColor: primaryWhite, size: 12)),
+      );
+      return;
+    }
+
     await requestNotificationPermissions();
-    await downloadPdf(url);
+    await downloadPdf(targetUrl);
   }
 
   Future<void> requestNotificationPermissions() async {
@@ -96,7 +159,9 @@ class _PolicyPdfState extends State<PolicyPdf> {
       Random random = Random();
       int randomNumber = random.nextInt(100);
       final baseStorage = await getStorageDirectory();
-      fileName = '$filename$randomNumber.${url.split(".").last}';
+      String ext = url.split(".").last.split("?").first;
+      if (ext.isEmpty || ext.length > 5) ext = 'pdf';
+      fileName = '$filename$randomNumber.$ext';
       setState(() {});
       final taskId = await FlutterDownloader.enqueue(
         url: url,
@@ -126,6 +191,18 @@ class _PolicyPdfState extends State<PolicyPdf> {
     setState(() {
       isLoadingPrint = true;
     });
+
+    final targetUrl = await fetchFinalPdfUrl(pdfPath);
+    if (targetUrl.isEmpty) {
+      setState(() {
+        isLoadingPrint = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: AppText(text: "PDF URL not found", txtColor: primaryWhite, size: 12)),
+      );
+      return;
+    }
+
     await requestNotificationPermissions();
 
     if (Platform.isAndroid) {
@@ -148,10 +225,12 @@ class _PolicyPdfState extends State<PolicyPdf> {
       Random random = Random();
       int randomNumber = random.nextInt(100);
       final baseStorage = await getStorageDirectory();
-      fileName = 'InsuranceFile$randomNumber.${pdfPath.split(".").last}';
+      String ext = targetUrl.split(".").last.split("?").first;
+      if (ext.isEmpty || ext.length > 5) ext = 'pdf';
+      fileName = 'InsuranceFile$randomNumber.$ext';
       setState(() {});
       final taskId = await FlutterDownloader.enqueue(
-        url: pdfPath,
+        url: targetUrl,
         headers: {},
         savedDir: baseStorage.path,
         fileName: fileName,

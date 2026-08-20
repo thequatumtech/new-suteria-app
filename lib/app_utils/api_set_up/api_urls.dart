@@ -94,6 +94,7 @@ const String chatListURL = 'chat/list';
 String getChatMessagesURL(int chatId, {int page = 1}) => 'chat/$chatId/messages?page=$page';
 String markChatReadURL(int chatId) => 'chat/$chatId/mark-read';
 const String saveSignatureUrl = 'save-signature';
+const String generateFinalPdf = 'generate-final-pdf';
 
 
 

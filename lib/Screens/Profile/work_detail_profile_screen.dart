@@ -224,6 +224,7 @@ class _WorkDetailSingupScreenState extends State<WorkDetailProfileScreen> {
                               width: 10,
                               hint: companycontact,
                               lable: companycontact,
+                              keyboardType: TextInputType.number,
                               controller: profileController.companyContactNoController.value,
                             ),
                           ],

@@ -94,8 +94,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               onchage: (newValue) {
                                 setState(() {
                                   profileController.selectLanguage = newValue;
-                                  // profileController.lang.value = profileController.english.value;
-                                  // profileController.changeLanguage(profileController.lang.value, context);
+                                  String code = (newValue == 'Arabic' || newValue == arbic) ? 'ar' : 'en';
+                                  profileController.changeLanguage(code, context);
                                 });
                               },
                               items: profileController.languages,

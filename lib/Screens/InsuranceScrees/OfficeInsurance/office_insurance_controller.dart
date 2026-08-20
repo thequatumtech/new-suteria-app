@@ -106,9 +106,9 @@ class OfficeInsuranceController extends GetxController {
   RxList<String> selectedOwnersIdDocument = <String>[].obs;
   RxList<String> selectedPracticeCertificateDocument = <String>[].obs;
   RxList<String> selectedCompanyTaxCertificateDocument = <String>[].obs;
-
-  List<DropdownItem<int>> selectProtectionSystemList = [];
-  List<DropdownItem<int>> protectionSystemListDrop = [];
+  RxList<DropdownItem<int>> selectProtectionSystemList = <DropdownItem<int>>[].obs;
+  RxList<DropdownItem<int>> protectionSystemListDrop = <DropdownItem<int>>[].obs;
+  final controller = MultiSelectController<int>();
   Rx<InsuranceLimitListData> selectedInsuranceLimit = InsuranceLimitListData().obs;
   RxList<InsuranceLimitListData> insuranceLimitList = <InsuranceLimitListData>[].obs;
   Rx<InsuranceLimitModel> insuranceLimitModel = InsuranceLimitModel().obs;
@@ -193,6 +193,9 @@ class OfficeInsuranceController extends GetxController {
     selectedOfficeInsurancePolicyBefore = noTxt;
     selectedClaimsAndAccidentsYears = noTxt;
     selectProtectionSystemList.clear();
+    try {
+      controller.clearAll();
+    } catch (e) {}
     selectedInsuranceLimit.value = InsuranceLimitListData();
     selectedInsurancePlan.value = PlanName();
     inceptionDateController.value.clear();

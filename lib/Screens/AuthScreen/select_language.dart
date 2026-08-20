@@ -6,6 +6,7 @@ import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class SelectLanguage extends StatefulWidget {
   const SelectLanguage({super.key});
@@ -17,6 +18,18 @@ class SelectLanguage extends StatefulWidget {
 class _SelectLanguageState extends State<SelectLanguage> {
   bool check = false;
   bool isSelectEn = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getLocale().then((code) {
+      if (mounted) {
+        setState(() {
+          isSelectEn = (code != 'ar');
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +131,9 @@ class _SelectLanguageState extends State<SelectLanguage> {
               ),
               const Spacer(),
               AppBtnWithColorShades(
-                onTap: () {
+                onTap: () async {
+                  await setLocale(isSelectEn ? 'en' : 'ar');
+                  if (!mounted) return;
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                 },
                 btnTxt: next,
@@ -129,18 +144,17 @@ class _SelectLanguageState extends State<SelectLanguage> {
                 height: 20,
               ),
               InkWell(
-                onTap: () => /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MobileregisterScreen(),
-                        ),*/
-                    Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SingupScreen(
-                            isEng: isSelectEn,
-                          )),
-                ),
+                onTap: () async {
+                  await setLocale(isSelectEn ? 'en' : 'ar');
+                  if (!mounted) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SingupScreen(
+                              isEng: isSelectEn,
+                            )),
+                  );
+                },
                 child: const Text.rich(
                   TextSpan(
                     children: [

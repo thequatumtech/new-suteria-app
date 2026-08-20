@@ -148,7 +148,16 @@ class DraftPdfController extends GetxController {
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: addStoreTransaction, body: (data), options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PolicyPdf(screenTitle: screenTitle, pdfUrl: pdfUrl)));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PolicyPdf(
+              screenTitle: screenTitle,
+              pdfUrl: pdfUrl,
+              purchasePolicyId: postInsuranceModel.value.data?.purchaseId ?? postInsuranceModel.value.data?.id,
+            ),
+          ),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }

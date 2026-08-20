@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soperia_user/app_utils/app_constrint.dart';
 
@@ -10,20 +11,29 @@ const String LAGUAGE_CODE = 'LAGUAGE_CODE';
 const String ENGLISH = 'en';
 const String ARBIC = 'ar';
 
-Future<Locale> setLocale(String languageCode) async {
-  SharedPreferences _prefs = await SharedPreferences.getInstance();
-  await _prefs.setString(LAGUAGE_CODE, languageCode);
-  return getLangFromCode(languageCode== "en" ? 'en' : 'ar');
+Future<Locale> setLocale(String langCode) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString(LAGUAGE_CODE, langCode);
+  await prefs.setString('selected_language', langCode);
+  languageCode = langCode;
+  Locale locale = getLangFromCode(langCode == "ar" ? 'ar' : 'en');
+  try {
+    Get.updateLocale(locale);
+  } catch (e) {
+    print('Get.updateLocale error: $e');
+  }
+  await loadLangs();
+  return locale;
 }
 
 Future<String> getLocale() async {
-  SharedPreferences _prefs = await SharedPreferences.getInstance();
-  String languageCode = _prefs.getString(LAGUAGE_CODE) ?? "en";
-  return languageCode;
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String code = prefs.getString(LAGUAGE_CODE) ?? prefs.getString('selected_language') ?? "en";
+  return code;
 }
 
-Locale getLangFromCode(String languageCode) {
-  switch (languageCode) {
+Locale getLangFromCode(String langCode) {
+  switch (langCode) {
     case ENGLISH:
       return const Locale(ENGLISH, 'US');
     case ARBIC:
@@ -33,17 +43,21 @@ Locale getLangFromCode(String languageCode) {
   }
 }
 
-
-late Map<String, String> _localizedValues;
+Map<String, String> _localizedValues = {};
 
 Future<void> loadLangs() async {
-  String jsonStringValues = await rootBundle.loadString('lib/language/$languageCode.json');
-  Map<String, dynamic> mappedJson = json.decode(jsonStringValues);
-  _localizedValues = mappedJson.map((key, value) => MapEntry(key, value.toString()));
+  try {
+    String code = languageCode ?? 'en';
+    String jsonStringValues = await rootBundle.loadString('lib/language/$code.json');
+    Map<String, dynamic> mappedJson = json.decode(jsonStringValues);
+    _localizedValues = mappedJson.map((key, value) => MapEntry(key, value.toString()));
+  } catch (e) {
+    print('Error loading language file: $e');
+  }
 }
 
 String? getTranslated(BuildContext context, String key) {
-  return _localizedValues[key];
+  return _localizedValues[key] ?? key;
 }
 
 const PROFILE_PAGE = [

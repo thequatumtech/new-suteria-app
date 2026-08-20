@@ -26,6 +26,7 @@ import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 
 class HomePage extends StatefulWidget {
@@ -158,8 +159,7 @@ class _HomePageState extends State<HomePage> {
                           _selectedLanguage = tempSelected;
                         });
                         try {
-                          SharedPreferences pref = await SharedPreferences.getInstance();
-                          await pref.setString('selected_language', tempSelected);
+                          await setLocale(tempSelected);
                         } catch (_) {}
 
                         if (!mounted) return;
@@ -227,7 +227,7 @@ class _HomePageState extends State<HomePage> {
               width: 36,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isSelected ? deepBluedark : skyBlueShade3,
+                color: isSelected ? deepBluedark : grayshad200,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
@@ -370,6 +370,7 @@ class _HomePageState extends State<HomePage> {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       isShoHome = pref.getBool('iswelcomescreen') ?? true;
+      _selectedLanguage = pref.getString('selected_language') ?? pref.getString(LAGUAGE_CODE) ?? 'en';
 
       isShoHome ? sideCopyAlert() : null;
     } on Exception catch (e) {
@@ -424,7 +425,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             const SizedBox(width: 10),
                             InkWell(
-                              // onTap: () => _showLanguageBottomSheet(context),
+                              onTap: () => _showLanguageBottomSheet(context),
                               borderRadius: BorderRadius.circular(20),
                               child: Container(
                                 padding: const EdgeInsets.all(7),
