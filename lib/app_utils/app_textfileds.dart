@@ -136,8 +136,13 @@ class _AppTextfieldCircularState extends State<AppTextfieldCircular> {
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
                 textCapitalization: ((widget.hidePassword == true) ||
+                        (widget.keyboardType == TextInputType.number) ||
+                        (widget.keyboardType == TextInputType.phone) ||
                         (widget.keyboardType == TextInputType.emailAddress) ||
                         (widget.keyboardType == TextInputType.visiblePassword) ||
+                        (widget.keyboardType == const TextInputType.numberWithOptions(decimal: true)) ||
+                        (widget.keyboardType == const TextInputType.numberWithOptions(decimal: false, signed: false)) ||
+                        (widget.keyboardType == const TextInputType.numberWithOptions(signed: true, decimal: true)) ||
                         widget.hint.toLowerCase().contains('email') ||
                         widget.lable.toLowerCase().contains('email') ||
                         widget.hint.toLowerCase().contains('password') ||
@@ -146,8 +151,13 @@ class _AppTextfieldCircularState extends State<AppTextfieldCircular> {
                     : TextCapitalization.characters,
                 inputFormatters: [
                   if (!((widget.hidePassword == true) ||
+                      (widget.keyboardType == TextInputType.number) ||
+                      (widget.keyboardType == TextInputType.phone) ||
                       (widget.keyboardType == TextInputType.emailAddress) ||
                       (widget.keyboardType == TextInputType.visiblePassword) ||
+                      (widget.keyboardType == const TextInputType.numberWithOptions(decimal: true)) ||
+                      (widget.keyboardType == const TextInputType.numberWithOptions(decimal: false, signed: false)) ||
+                      (widget.keyboardType == const TextInputType.numberWithOptions(signed: true, decimal: true)) ||
                       widget.hint.toLowerCase().contains('email') ||
                       widget.lable.toLowerCase().contains('email') ||
                       widget.hint.toLowerCase().contains('password') ||
@@ -275,8 +285,13 @@ class AppTextfield extends StatelessWidget {
         keyboardType: keyboardType,
         textInputAction: textInputAction ?? TextInputAction.done,
         textCapitalization: ((obscureText == true) ||
+                (keyboardType == TextInputType.number) ||
+                (keyboardType == TextInputType.phone) ||
                 (keyboardType == TextInputType.emailAddress) ||
                 (keyboardType == TextInputType.visiblePassword) ||
+                (keyboardType == const TextInputType.numberWithOptions(decimal: true)) ||
+                (keyboardType == const TextInputType.numberWithOptions(decimal: false, signed: false)) ||
+                (keyboardType == const TextInputType.numberWithOptions(signed: true, decimal: true)) ||
                 hint.toLowerCase().contains('email') ||
                 lable.toLowerCase().contains('email') ||
                 hint.toLowerCase().contains('password') ||
@@ -285,8 +300,13 @@ class AppTextfield extends StatelessWidget {
             : TextCapitalization.characters,
         inputFormatters: [
           if (!((obscureText == true) ||
+              (keyboardType == TextInputType.number) ||
+              (keyboardType == TextInputType.phone) ||
               (keyboardType == TextInputType.emailAddress) ||
               (keyboardType == TextInputType.visiblePassword) ||
+              (keyboardType == const TextInputType.numberWithOptions(decimal: true)) ||
+              (keyboardType == const TextInputType.numberWithOptions(decimal: false, signed: false)) ||
+              (keyboardType == const TextInputType.numberWithOptions(signed: true, decimal: true)) ||
               hint.toLowerCase().contains('email') ||
               lable.toLowerCase().contains('email') ||
               hint.toLowerCase().contains('password') ||

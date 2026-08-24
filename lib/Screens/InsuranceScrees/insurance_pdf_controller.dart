@@ -40,13 +40,20 @@ class InsurancePdfController extends GetxController {
       final multipartFile = MultipartFile.fromBytes(
         pngBytes,
         filename: 'signature_${DateTime.now().millisecondsSinceEpoch}.png',
+        contentType: DioMediaType('image', 'png'),
       );
 
+      final validPurchaseId = (purchasePolicyId != null && purchasePolicyId != 0)
+          ? purchasePolicyId
+          : 0;
+
       Map<String, dynamic> data = {
-        'purchase_policy_id': purchasePolicyId ?? 0,
+        'purchase_policy_id': validPurchaseId,
         'client_id': clientId ?? 0,
         'signature': multipartFile,
       };
+
+      print("UPLOADING SIGNATURE DATA: purchase_policy_id=$validPurchaseId, client_id=$clientId");
 
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(
@@ -56,12 +63,16 @@ class InsurancePdfController extends GetxController {
         options: Options(headers: header),
       );
 
+      print("SAVE SIGNATURE RESPONSE: $response");
+
       if (response[statusCode] == 200 || response[statusCode] == 201 || response['status'] == true) {
         final dataObj = response['data'];
         if (dataObj is Map && dataObj.containsKey('signature')) {
           signatureUrl.value = dataObj['signature'].toString();
         } else if (response.containsKey('signature')) {
           signatureUrl.value = response['signature'].toString();
+        } else if (dataObj is String) {
+          signatureUrl.value = dataObj;
         }
         signatureBytes.value = pngBytes;
         isSigned.value = true;
@@ -70,23 +81,17 @@ class InsurancePdfController extends GetxController {
       } else {
         isUploadingSignature.value = false;
         String errMsg = response[messageKey]?.toString() ?? response['message']?.toString() ?? 'Failed to save signature';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: AppText(text: errMsg, txtColor: primaryWhite, size: 12)),
-        );
+        print("SAVE SIGNATURE FAILED: $errMsg");
         return false;
       }
     } on DioException catch (e) {
       isUploadingSignature.value = false;
-      String errMsg = e.response?.statusMessage ?? e.message ?? 'Network error while saving signature';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AppText(text: errMsg, txtColor: primaryWhite, size: 12)),
-      );
+      String errMsg = e.response?.data?['message']?.toString() ?? e.response?.statusMessage ?? e.message ?? 'Network error while saving signature';
+      print("SAVE SIGNATURE DIO EXCEPTION: $errMsg | response: ${e.response?.data}");
       return false;
     } catch (f) {
       isUploadingSignature.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AppText(text: '$f', txtColor: primaryWhite, size: 12)),
-      );
+      print("SAVE SIGNATURE EXCEPTION: $f");
       return false;
     }
   }

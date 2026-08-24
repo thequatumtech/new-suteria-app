@@ -25,7 +25,11 @@ class _IndividualMedicalInsuranceListDataScreenState extends State<IndividualMed
   @override
   void initState() {
     individualMedicalInsuranceController.getIndividualInsuranceApi(
-        context, individualMedicalInsuranceController.insurancetypes ?? '', individualMedicalInsuranceController.selectedInsuranceLimit.value.limit!);
+      context,
+      individualMedicalInsuranceController.insurancetypes ?? '',
+      individualMedicalInsuranceController.selectedInsuranceLimit.value.limit!,
+      insuranceClass: individualMedicalInsuranceController.selectclass,
+    );
     super.initState();
   }
 

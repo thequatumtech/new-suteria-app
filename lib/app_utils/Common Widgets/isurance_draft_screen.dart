@@ -39,7 +39,6 @@ class _InsuranceDraftPdfScreenState extends State<InsuranceDraftPdfScreen> {
 
   @override
   void dispose() {
-    insurancePdfController.resetTerms();
     super.dispose();
   }
 

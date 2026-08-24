@@ -536,22 +536,27 @@ class LifeInsuranceController extends GetxController {
     }
   }
 
-  getLifeInsurancePlanApi(context, String id) async {
+  getLifeInsurancePlanApi(context, String id, {String? insuranceYearsPeriod}) async {
     try {
       await Future.delayed(const Duration(milliseconds: 100));
       isLoadingGetLifeInsurance.value = true;
       Map<String, String> header = await getHeader();
+      String cleanLimit = id.toString().replaceAll('.0', '');
+      String endpoint = "$getLifeInsurancePlan?limit=$cleanLimit";
+      if (insuranceYearsPeriod != null && insuranceYearsPeriod.isNotEmpty) {
+        endpoint += "&insurance_years_period=$insuranceYearsPeriod";
+      }
       Map<String, dynamic> response =
-          await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: "$getLifeInsurancePlan${id.toString().replaceAll('.0', '')}", options: Options(headers: header));
+          await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: endpoint, options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         homeInsurancePlaneModel.value = HomeInsurancePlaneModel.fromJson(response);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }
       isLoadingGetLifeInsurance.value = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       isLoadingGetLifeInsurance.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response?.statusMessage ?? e.message ?? '', txtColor: primaryWhite, size: 12)));
     } catch (f) {
       isLoadingGetLifeInsurance.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));

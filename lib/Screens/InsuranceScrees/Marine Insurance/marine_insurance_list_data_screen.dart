@@ -148,7 +148,7 @@ class _MarineInsuranceListDataScreenState extends State<MarineInsuranceListDataS
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: marineInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "The Quote is:  ${marineInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  AppText(text: "The Quote is:  ${marineInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                 //  AppText(text: "Starting from ₹${marineInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

@@ -464,11 +464,34 @@ class IndividualMedicalInsuranceController extends GetxController {
     }
   }
 
-  getIndividualInsuranceApi(context, String insuranceType, String apiUrl) {
+  getIndividualInsuranceApi(context, String insuranceType, String limit, {String? insuranceClass}) {
+    String cleanLimit = limit.replaceAll('.0', '');
+    String paramClass = '';
+    if (insuranceClass != null && insuranceClass.isNotEmpty) {
+      String lower = insuranceClass.toLowerCase().trim();
+      if (lower.contains('vip')) {
+        paramClass = 'VIP';
+      } else if (lower.contains('first')) {
+        paramClass = 'first';
+      } else if (lower.contains('second')) {
+        paramClass = 'second';
+      } else if (lower.contains('third')) {
+        paramClass = 'third';
+      } else {
+        paramClass = insuranceClass;
+      }
+    }
+    String endpoint = '';
     if (insuranceType == inPatientOnly) {
-      getInsurancePlanApi(context, getInPatientInsurancePlan + apiUrl.toString());
+      endpoint = "$getInPatientInsurancePlan?limit=$cleanLimit";
     } else if (insuranceType == inOutPatientOnly) {
-      getInsurancePlanApi(context, getOutPatientInsurancePlan + apiUrl.toString());
+      endpoint = "$getOutPatientInsurancePlan?limit=$cleanLimit";
+    }
+    if (paramClass.isNotEmpty) {
+      endpoint += "&class=$paramClass";
+    }
+    if (endpoint.isNotEmpty) {
+      getInsurancePlanApi(context, endpoint);
     }
   }
 
@@ -484,9 +507,9 @@ class IndividualMedicalInsuranceController extends GetxController {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }
       isLoadingInsurancePlan.value = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       isLoadingInsurancePlan.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response?.statusMessage ?? e.message ?? '', txtColor: primaryWhite, size: 12)));
     } catch (f) {
       isLoadingInsurancePlan.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));

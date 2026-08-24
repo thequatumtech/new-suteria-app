@@ -124,8 +124,11 @@ class DraftPdfController extends GetxController {
 
       // Upload signature after payment is accepted/successful
       if (insurancePdfController.signatureBytes.value != null && insurancePdfController.signatureUrl.value.isEmpty) {
-        final purchasePolicyId = postInsuranceModel.value.data?.purchaseId ?? 0;
-        final clientId = getProfileModelGlobal.data?.id ?? 0;
+        final purchasePolicyId = postInsuranceModel.value.data?.purchasePolicyId ??
+            postInsuranceModel.value.data?.purchaseId ??
+            postInsuranceModel.value.data?.id ??
+            0;
+        final clientId = postInsuranceModel.value.data?.clientId ?? getProfileModelGlobal.data?.id ?? 0;
 
         await insurancePdfController.uploadSignatureApi(
           context: context,
@@ -136,7 +139,7 @@ class DraftPdfController extends GetxController {
       }
 
       Map<String, dynamic> data = {
-        'purchase_id': postInsuranceModel.value.data?.purchaseId ?? 0,
+        'purchase_id': postInsuranceModel.value.data?.purchaseId ?? postInsuranceModel.value.data?.purchasePolicyId ?? 0,
         'transaction_id': tranData['transactionReference'] ?? '',
         'amount': tranData['tranTotal'] ?? tranData['cartAmount'] ?? tranData['tran_total'] ?? 0,
         'payment_type': tranData['paymentInfo']?['payment_method'] ?? tranData['paymentInfo']?['cardScheme'] ?? "Paytabs",
@@ -154,7 +157,7 @@ class DraftPdfController extends GetxController {
             builder: (context) => PolicyPdf(
               screenTitle: screenTitle,
               pdfUrl: pdfUrl,
-              purchasePolicyId: postInsuranceModel.value.data?.purchaseId ?? postInsuranceModel.value.data?.id,
+              purchasePolicyId: postInsuranceModel.value.data?.purchasePolicyId ?? postInsuranceModel.value.data?.purchaseId ?? postInsuranceModel.value.data?.id,
             ),
           ),
         );

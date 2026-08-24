@@ -24,6 +24,7 @@ import 'package:soperia_user/model_class/get_occupation_modelClass.dart';
 import 'package:soperia_user/model_class/get_personal_accident_plan_model.dart';
 import 'package:soperia_user/model_class/home_Insurance_plan_model.dart';
 import 'package:soperia_user/model_class/insurance_limit_model.dart';
+import 'package:soperia_user/model_class/personal_accident_insurance_model.dart';
 
 class PersonalInsuranceController extends GetxController {
   Rx<TextEditingController> policyHolderFirstNameController = TextEditingController().obs;
@@ -81,6 +82,7 @@ class PersonalInsuranceController extends GetxController {
 
   Rx<CityListModel> selectCompanyCity = CityListModel().obs;
   RxList<CityListModel> companyCityList = <CityListModel>[].obs;
+  Rx<GetPersonalAccidentInsuranceModel> personalAccidentInsuranceModel = GetPersonalAccidentInsuranceModel().obs;
   Rx<HomeInsurancePlaneModel> homeInsurancePlaneModel = HomeInsurancePlaneModel().obs;
   RxInt planId = 0.obs;
   final picker1 = ImagePicker();
@@ -369,12 +371,15 @@ class PersonalInsuranceController extends GetxController {
       await Future.delayed(const Duration(milliseconds: 200));
       isLoading.value = true;
       Map<String, String> header = await getHeader();
+      String periodValue = RegExp(r'\d+').stringMatch(selectInsurancePeriod.value.name ?? '') ??
+          (selectInsurancePeriod.value.name ?? selectInsurancePeriod.value.id?.toString() ?? '');
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(
           context: context,
           endpoint:
-              "$getPersonalAccidentPlanInsurancePlan${id.toString().replaceAll('.0', '')}&insurance_period=${selectInsurancePeriod.value.id ?? ''}",
+              "$getPersonalAccidentPlanInsurancePlan${id.toString().replaceAll('.0', '')}&insurance_period=$periodValue",
           options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
+        personalAccidentInsuranceModel.value = GetPersonalAccidentInsuranceModel.fromJson(response);
         homeInsurancePlaneModel.value = HomeInsurancePlaneModel.fromJson(response);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -53,8 +53,8 @@ class TravelInsuranceController extends GetxController {
 
   AdminBasicAllApiController adminBasicAllApiController = Get.put(AdminBasicAllApiController());
 
-  // Rx<GetGeographicalAreaList> selectGeographicalArea = GetGeographicalAreaList().obs;
-  // RxList<GetGeographicalAreaList> geoGraphicalAreaList = <GetGeographicalAreaList>[].obs;
+  Rx<GetGeographicalAreaList> selectGeographicalArea = GetGeographicalAreaList().obs;
+  RxList<GetGeographicalAreaList> geoGraphicalAreaList = <GetGeographicalAreaList>[].obs;
   RxBool isLoading = false.obs;
   List<String> genderList = [];
   List<String> maritalStatusList = [];
@@ -108,6 +108,7 @@ class TravelInsuranceController extends GetxController {
       getCountryMethod(context),
       getDangerousActivities(context),
       getNationality(context),
+      getGeographicalAreaApiMethod(context),
     ]);
     isLoading.value = false;
     await setTextData();
@@ -157,7 +158,7 @@ class TravelInsuranceController extends GetxController {
     selectDepartureFrom.value = GetCountryList();
     selectDestination.value = GetCountryList();
     selectAdditionalDestination.value = GetCountryList();
-    // selectGeographicalArea.value = GetGeographicalAreaList();
+    selectGeographicalArea.value = GetGeographicalAreaList();
     effectiveDateController.value.clear();
     noOfDaysController.value.clear();
     expiryDateController.value.clear();
@@ -235,11 +236,10 @@ class TravelInsuranceController extends GetxController {
 
   getGeographicalAreaApiMethod(context) async {
     try {
-      // geoGraphicalAreaList.clear();
-      // await adminBasicAllApiController.getGeographicalAreaApi(context);
-      // geoGraphicalAreaList.addAll(adminBasicAllApiController.getGeographicalAreaModelClass.value.data ?? []);
-    } on DioError catch (e) {
-    } catch (f) {}
+      geoGraphicalAreaList.clear();
+      await adminBasicAllApiController.getGeographicalAreaApi(context);
+      geoGraphicalAreaList.addAll(adminBasicAllApiController.getGeographicalAreaModelClass.value.data ?? []);
+    } catch (_) {}
   }
 
   getNationality(context) async {
@@ -290,7 +290,7 @@ class TravelInsuranceController extends GetxController {
     }
   }
 
-  getInsuranceLimit(context, String id, {int? destinationCountryId}) async {
+  getInsuranceLimit(context, String id, {int? destinationCountryId, int? geographicalAreaId}) async {
     try {
       isLoadingInsuranceLimit.value = true;
       insurancePlanList.clear();
@@ -299,6 +299,9 @@ class TravelInsuranceController extends GetxController {
       String endpoint = "$insuranceLimitUrl$id";
       if (destinationCountryId != null && destinationCountryId != 0) {
         endpoint += "&destination_country_id=$destinationCountryId";
+      }
+      if (geographicalAreaId != null && geographicalAreaId != 0) {
+        endpoint += "&geographical_area_id=$geographicalAreaId";
       }
 
       Map<String, String> header = await getHeader();
@@ -318,12 +321,21 @@ class TravelInsuranceController extends GetxController {
     }
   }
 
-  getHomeInsurancePlanApi(context, String planName) async {
+  getHomeInsurancePlanApi(context, String planName, {String? travelDays, int? planId}) async {
     try {
       await Future.delayed(const Duration(milliseconds: 200));
       isLoadingInsurancePlan.value = true;
       Map<String, String> header = await getHeader();
-      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: "$getTravelInsurancePlan$planName", options: Options(headers: header));
+      String endpoint = "$getTravelInsurancePlan?";
+      if (planId != null && planId != 0) {
+        endpoint += "plan_id=$planId";
+      } else {
+        endpoint += "plan_name=$planName";
+      }
+      if (travelDays != null && travelDays.isNotEmpty) {
+        endpoint += "&travel_days=$travelDays";
+      }
+      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: endpoint, options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         homeInsurancePlaneModel.value = HomeInsurancePlaneModel.fromJson(response);
         if (homeInsurancePlaneModel.value.data == null || homeInsurancePlaneModel.value.data!.isEmpty) {
@@ -333,9 +345,9 @@ class TravelInsuranceController extends GetxController {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }
       isLoadingInsurancePlan.value = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       isLoadingInsurancePlan.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response?.statusMessage ?? e.message ?? '', txtColor: primaryWhite, size: 12)));
     } catch (f) {
       isLoadingInsurancePlan.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));

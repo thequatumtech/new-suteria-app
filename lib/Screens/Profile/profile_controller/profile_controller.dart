@@ -210,7 +210,7 @@ class ProfileController extends GetxController {
         'father_name': secondNameController.value.text,
         'grandfather_name': thirdNameController.value.text,
         'surname': familyNameController.value.text,
-        'language': selectLanguage == "Arabic" ? "ab" : "en",
+        'language': selectLanguage == "Arabic" ? "ar" : "en",
         'nationality_id': selectNationality.value.id,
         'national_id_number': nationOrPassportNumberController.value.text ?? '',
         'residence_id_number': idOrResidenceNumberController.value.text ?? '',

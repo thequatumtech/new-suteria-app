@@ -22,29 +22,29 @@ Widget? getLOBStepWidget(PolicyData policyData) {
   if (pTypeNo != null && pTypeNo > 0) {
     switch (pTypeNo) {
       case 1:
-        return const IndividualFamilyInsuranceStep();
+        return const HomeInsuranceStep();
       case 2:
-        return const IndividualPersonalInsuranceStep();
+        return const OfficeInsuranceStep();
       case 3:
         return const LifeInsuranceStep();
       case 4:
-        return const HomeInsuranceStep();
+        return const CriticalInsuranceStep();
       case 5:
         return const PersonalInsuranceStep();
       case 6:
-        return const TravelInsuranceStep();
+        return const IndividualPersonalInsuranceStep();
       case 7:
-        return const MarineInsuranceStep();
+        return const IndividualFamilyInsuranceStep();
       case 8:
-        return const AutomotiveInsuranceStep();
-      case 9:
-        return const OfficeInsuranceStep();
-      case 10:
-        return const CriticalInsuranceStep();
-      case 11:
         return const PetInsuranceStep();
-      case 12:
+      case 9:
         return const DentalInsuranceStep();
+      case 10:
+        return const TravelInsuranceStep();
+      case 11:
+        return const MarineInsuranceStep();
+      case 12:
+        return const AutomotiveInsuranceStep();
     }
   }
 

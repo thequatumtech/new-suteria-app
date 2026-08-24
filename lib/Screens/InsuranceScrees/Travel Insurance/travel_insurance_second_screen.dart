@@ -29,11 +29,17 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
 
   @override
   void initState() {
-    if (travelInsuranceController.selectDestination.value.id != null) {
-      travelInsuranceController.getInsuranceLimit(context, '10', destinationCountryId: travelInsuranceController.selectDestination.value.id);
-    } else {
-      travelInsuranceController.getInsuranceLimit(context, '10');
+    int? destId = travelInsuranceController.selectDestination.value.id;
+    int? geoId = travelInsuranceController.selectGeographicalArea.value.id;
+    if (travelInsuranceController.geoGraphicalAreaList.isEmpty) {
+      travelInsuranceController.getGeographicalAreaApiMethod(context);
     }
+    travelInsuranceController.getInsuranceLimit(
+      context,
+      '10',
+      destinationCountryId: (destId != null && destId != 0) ? destId : null,
+      geographicalAreaId: (geoId != null && geoId != 0) ? geoId : null,
+    );
     super.initState();
   }
 
@@ -62,6 +68,12 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                             travelInsuranceController.selectDestination.value = GetCountryList();
                             travelInsuranceController.selectedInsurancePlan.value = InsurancePlanName();
                             travelInsuranceController.insurancePlanList.clear();
+                            travelInsuranceController.getInsuranceLimit(
+                              context,
+                              '10',
+                              destinationCountryId: null,
+                              geographicalAreaId: travelInsuranceController.selectGeographicalArea.value.id,
+                            );
                           }
                         });
                       },
@@ -81,9 +93,12 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                           travelInsuranceController.selectDestination.value = cdl;
                           travelInsuranceController.selectedInsurancePlan.value = InsurancePlanName();
                         });
-                        if (newValue != null && newValue != 0) {
-                          travelInsuranceController.getInsuranceLimit(context, '10', destinationCountryId: newValue);
-                        }
+                        travelInsuranceController.getInsuranceLimit(
+                          context,
+                          '10',
+                          destinationCountryId: (newValue != null && newValue != 0) ? newValue : null,
+                          geographicalAreaId: travelInsuranceController.selectGeographicalArea.value.id,
+                        );
                       },
                       items: filteredDestinationList
                           .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack))))
@@ -209,22 +224,29 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                           )
                         : const SizedBox(),
 
-                    /*CustomDropDownBorder1(
+                    CustomDropDownBorder1(
                       onchage: (newValue) {
                         setState(() {
                           GetGeographicalAreaList cdl = travelInsuranceController.geoGraphicalAreaList.firstWhere((element) => element.id == newValue);
                           travelInsuranceController.selectGeographicalArea.value = cdl;
+                          travelInsuranceController.selectedInsurancePlan.value = InsurancePlanName();
                         });
+                        travelInsuranceController.getInsuranceLimit(
+                          context,
+                          '10',
+                          destinationCountryId: travelInsuranceController.selectDestination.value.id,
+                          geographicalAreaId: (newValue != null && newValue != 0) ? newValue : null,
+                        );
                       },
                       items: travelInsuranceController.geoGraphicalAreaList
-                          .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: TextStyle(fontSize: 15, color: primaryBlack))))
+                          .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack))))
                           .toList(),
                       selectedValue: travelInsuranceController.geoGraphicalAreaList.any((element) => element.id == travelInsuranceController.selectGeographicalArea.value.id)
                           ? travelInsuranceController.selectGeographicalArea.value.id ?? 0
                           : null,
-                      dropdownTitle: geoarea,
-                    ),*/
-                     const SizedBox(
+                      dropdownTitle: "$selectYour $geoarea",
+                    ),
+                    const SizedBox(
                       height: 10,
                     ),
                     AppTextfield(
@@ -278,7 +300,7 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                                 });
                               },
                               items: travelInsuranceController.insurancePlanList
-                                  .map((e) => e.planName)
+                                   .map((e) => e.planName)
                                   .where((e) => e != null && e!.trim().isNotEmpty)
                                   .toSet() // remove duplicate planName
                                   .map((name) => DropdownMenuItem(
@@ -306,14 +328,9 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDangerousActivitiesOptions, txtColor: primaryWhite, size: 12)));
                         } else if (travelInsuranceController.selectedDangerousActivity == yesTxt && travelInsuranceController.selectedDangerousActivitiesList.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectDangerousActivitiesList, txtColor: primaryWhite, size: 12)));
-                        }
-                        /*else if (travelInsuranceController.selectAdditionalDestination.value.id == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectAdditionalDestination, txtColor: primaryWhite, size: 12)));
-                        }
-                        else if (travelInsuranceController.selectGeographicalArea.value.id == null) {
+                        } else if (travelInsuranceController.selectGeographicalArea.value.id == null) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectGeographicalArea, txtColor: primaryWhite, size: 12)));
-                        }*/
-                        else if (travelInsuranceController.effectiveDateController.value.text.isEmpty) {
+                        } else if (travelInsuranceController.effectiveDateController.value.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectEffectiveDate, txtColor: primaryWhite, size: 12)));
                         } else if (travelInsuranceController.noOfDaysController.value.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterNumberOfTotalDays, txtColor: primaryWhite, size: 12)));

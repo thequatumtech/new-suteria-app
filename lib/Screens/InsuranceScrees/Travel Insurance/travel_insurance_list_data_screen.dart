@@ -8,7 +8,6 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
-import 'package:soperia_user/model_class/get_chronic_disease_model.dart';
 import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_dangerous_activities_model.dart';
 
@@ -30,6 +29,7 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
     travelInsuranceController.getHomeInsurancePlanApi(
       context,
       travelInsuranceController.selectedInsurancePlan.value.planName ?? '0',
+      travelDays: travelInsuranceController.noOfDaysController.value.text,
     );
     super.initState();
   }
@@ -107,23 +107,20 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
                                       'departure_from_country_id': travelInsuranceController.selectDepartureFrom.value.id ?? 0,
                                       'destination_country_id': travelInsuranceController.selectDestination.value.id ?? 0,
                                       'additional_destination_country_id': travelInsuranceController.selectAdditionalDestination.value.id ?? 0,
-                                      // 'geographical_countries': travelInsuranceController.selectGeographicalArea.value.id ?? 0,
+                                      'geographical_area_id': travelInsuranceController.selectGeographicalArea.value.id ?? 0,
                                       'effective_date': commonApiDateFormat(travelInsuranceController.effectiveDateController.value.text),
                                       'travel_days': travelInsuranceController.noOfDaysController.value.text,
                                       'expiry_date': commonApiDateFormat(travelInsuranceController.expiryDateController.value.text),
                                       'other_documents': '',
-                                      'insurance_limit': '',
+                                      'insurance_limit': travelInsuranceController.insuranceLimit.isNotEmpty
+                                          ? travelInsuranceController.insuranceLimit
+                                          : (travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit?.toString() ?? ''),
                                       'plan_id': travelInsuranceController.planDd,
                                       'payment_status': 1,
+                                      'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
                                       'members': members,
                                       'dangerous_activities': chronicIdList(travelInsuranceController.selectedDangerousActivitiesList),
-
-                                      ///Add in API
                                       'multiple_destination': multipleDestList(travelInsuranceController.selectedMultiDestinationList),
-
-                                      ///Add in API
-
-                                      'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
                                     },
                                     apiUrl: addTravelInsurance,
                                     insuranceType: travelInsuranceTxt,
@@ -151,7 +148,7 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
 
                                   travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null && travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!='' ? AppText(
                                       text:
-                                          "The Quote is: ${travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit ?? ''} ",//Term Plan
+                                          "The Quote is: ${travelInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD",//Term Plan
                                       txtColor: deepBlue,
                                       fontWeight: FontWeight.bold,
                                       size: 15):const SizedBox(),

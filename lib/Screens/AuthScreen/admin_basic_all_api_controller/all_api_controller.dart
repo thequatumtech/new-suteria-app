@@ -56,7 +56,7 @@ class AdminBasicAllApiController extends GetxController {
   Rx<GetClaimDeductibleModelClass> getClaimDeductibleModelClass = GetClaimDeductibleModelClass().obs;
   Rx<GetNationalityModelClass> getNationalityModelClass = GetNationalityModelClass().obs;
   Rx<GetCurrencyModelClass> getCurrencyModelClass = GetCurrencyModelClass().obs;
-  // Rx<GetGeographicalAreaModelClass> getGeographicalAreaModelClass = GetGeographicalAreaModelClass().obs;
+  Rx<GetGeographicalAreaModelClass> getGeographicalAreaModelClass = GetGeographicalAreaModelClass().obs;
   Rx<GetVehicleBrandModelClass> getVehicleBrandModelClass = GetVehicleBrandModelClass().obs;
   Rx<GetVehicleColorModelClass> getVehicleColorModelClass = GetVehicleColorModelClass().obs;
   Rx<GetVehicleTypeModelClass> getVehicleTypeModelClass = GetVehicleTypeModelClass().obs;
@@ -406,7 +406,7 @@ class AdminBasicAllApiController extends GetxController {
     }
   }
 
- /* getGeographicalAreaApi(context) async {
+  getGeographicalAreaApi(context) async {
     try {
       isLoading.value = true;
       Map<String, String> header = await getHeader();
@@ -414,17 +414,17 @@ class AdminBasicAllApiController extends GetxController {
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         getGeographicalAreaModelClass.value = GetGeographicalAreaModelClass.fromJson(response);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text:response[messageKey].toString(), txtColor: primaryWhite, size: 12,)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }
       isLoading.value = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       isLoading.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12,)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response?.statusMessage ?? e.message ?? '', txtColor: primaryWhite, size: 12)));
     } catch (f) {
       isLoading.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12,)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));
     }
-  }*/
+  }
 
   getVehicleBrandApi(context) async {
     try {

@@ -25,7 +25,12 @@ class _FamilyMedicalInsuranceListDataScreenState extends State<FamilyMedicalInsu
 
   @override
   void initState() {
-    familyMedicalInsuranceController.getIndividualInsuranceApi(context, familyMedicalInsuranceController.insurancetypes ?? '', familyMedicalInsuranceController.selectedInsuranceLimit.value.limit!);
+    familyMedicalInsuranceController.getIndividualInsuranceApi(
+      context,
+      familyMedicalInsuranceController.insurancetypes ?? '',
+      familyMedicalInsuranceController.selectedInsuranceLimit.value.limit!,
+      insuranceClass: familyMedicalInsuranceController.selectclass,
+    );
     super.initState();
   }
 
@@ -176,7 +181,7 @@ class _FamilyMedicalInsuranceListDataScreenState extends State<FamilyMedicalInsu
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null &&familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=''?  AppText(text: "The Quote is: ${familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15):const SizedBox(),
+                                  familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null &&familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=''?  AppText(text: "The Quote is: ${familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15):const SizedBox(),
                                  // AppText(text: "Starting from ₹${familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

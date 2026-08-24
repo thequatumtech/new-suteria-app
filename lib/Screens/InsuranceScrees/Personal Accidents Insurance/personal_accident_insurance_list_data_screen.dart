@@ -9,6 +9,8 @@ import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 
+import 'package:soperia_user/model_class/personal_accident_insurance_model.dart';
+
 import '../../../model_class/get_dangerous_activities_model.dart';
 
 class PersonalAccidentInsuranceListDataScreen extends StatefulWidget {
@@ -39,24 +41,27 @@ class _PersonalAccidentInsuranceListDataScreenState extends State<PersonalAccide
           ),
         ),
         body: Obx(() {
+          final List<Data>? dataList = personalInsuranceController.personalAccidentInsuranceModel.value.data;
           return personalInsuranceController.isLoading.value
               ? const Center(child: CircularProgressIndicator())
-              : personalInsuranceController.homeInsurancePlaneModel.value.data != null && personalInsuranceController.homeInsurancePlaneModel.value.data!.isNotEmpty
+              : dataList != null && dataList.isNotEmpty
                   ? ListView.builder(
-                      itemCount: personalInsuranceController.homeInsurancePlaneModel.value.data?.length ?? 0,
+                      itemCount: dataList.length,
                       itemBuilder: (context, index) {
+                        final Data item = dataList[index];
                         return InkWell(
                           onTap: () async {
-                            // homeInsuranceController.insuranceLimit=criticalIllnessInsuranceController.homeInsurancePlaneModel.value.data?[index].limit.toString()??'';
-                            personalInsuranceController.planId.value = personalInsuranceController.homeInsurancePlaneModel.value.data?[index].id ?? 0;
+                            personalInsuranceController.planId.value = item.id ?? 0;
                             setState(() {});
+                            String periodValue = RegExp(r'\d+').stringMatch(personalInsuranceController.selectInsurancePeriod.value.name ?? '') ??
+                                (personalInsuranceController.selectInsurancePeriod.value.name ?? personalInsuranceController.selectInsurancePeriod.value.id?.toString() ?? '');
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => InsuranceDraftPdfScreen(
                                           screenTitle: personalinsurance,
-                                          pdfPath: personalInsuranceController.homeInsurancePlaneModel.value.data?[index].insurancePolicyPdf ?? '',
-                                          insurancePolicyText: personalInsuranceController.homeInsurancePlaneModel.value.data?[index].insurancePolicyText ?? '',
+                                          pdfPath: item.insurancePolicyPdf ?? '',
+                                          insurancePolicyText: item.insurancePolicyText ?? '',
                                           data: {
                                             'first_name': personalInsuranceController.policyHolderFirstNameController.value.text ?? '',
                                             'last_name': personalInsuranceController.policyHolderSecondNameController.value.text ?? '',
@@ -78,8 +83,13 @@ class _PersonalAccidentInsuranceListDataScreenState extends State<PersonalAccide
                                             'building_no': personalInsuranceController.buildingNoController.value.text,
                                             'company_contact': personalInsuranceController.companyTelephoneNoController.value.text,
                                             'company_city_id': personalInsuranceController.selectCompanyCity.value.id,
+                                            'insurance_limit': item.limit ?? personalInsuranceController.selectedInsuranceLimit.value.limit ?? '',
+                                            'limit': item.limit ?? personalInsuranceController.selectedInsuranceLimit.value.limit ?? '',
+                                            'insurance_amount': item.limit ?? personalInsuranceController.selectedInsuranceLimit.value.limit ?? '',
                                             'inception_date': commonApiDateFormat(personalInsuranceController.inceptionDateController.value.text),
-                                            'inception_period': personalInsuranceController.selectInsurancePeriod.value.id,
+                                            'inception_period': periodValue,
+                                            'insurance_period': periodValue,
+                                            'insurance_period_id': personalInsuranceController.selectInsurancePeriod.value.id ?? '',
                                             'occupany_type_work': personalInsuranceController.occupancyController.value.text,
                                             'photo_documents_1': personalInsuranceController.documents1,
                                             'photo_documents_2': personalInsuranceController.documents2,
@@ -106,21 +116,19 @@ class _PersonalAccidentInsuranceListDataScreenState extends State<PersonalAccide
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   AppText(
-                                    text: personalInsuranceController.homeInsurancePlaneModel.value.data?[index].insuranceCompany?.companyName ?? '',
+                                    text: item.insuranceCompany?.companyName ?? '',
                                     size: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   const SizedBox(height: 5),
-                                  AppText(text: personalInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  personalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit != null &&
-                                          personalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit != ''
+                                  AppText(text: item.planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  item.limit != null && item.limit.toString().isNotEmpty
                                       ? AppText(
-                                          text: "The Quote is: ${personalInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''} ", //Term Plan
+                                          text: "The Quote is: ${item.grossPremium ?? ''} JOD",
                                           txtColor: deepBlue,
                                           fontWeight: FontWeight.bold,
                                           size: 15)
                                       : const SizedBox(),
-                                  // AppText(text: "Starting from ₹${personalInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),
                             ),
