@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:soperia_user/Screens/Profile/My%20Policies/get_policy_details_model.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
@@ -23,6 +26,7 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
   Key pdfKey = UniqueKey();
   bool useWebView = false;
   WebViewController? webViewController;
+  bool isSharing = false;
 
   @override
   void initState() {
@@ -48,6 +52,50 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
         _initWebViewController(pdfUrl);
       }
     });
+  }
+
+  Future<void> _sharePdf(String pdfUrl) async {
+    if (isSharing) return;
+    setState(() {
+      isSharing = true;
+    });
+
+    try {
+      if (pdfUrl.isEmpty) return;
+      final tempDir = await getTemporaryDirectory();
+      int timestamp = DateTime.now().millisecondsSinceEpoch;
+      final tempFilePath = '${tempDir.path}/policy_${widget.policyData.policyNo ?? timestamp}.pdf';
+
+      final dio = Dio();
+      await dio.download(
+        pdfUrl,
+        tempFilePath,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      final file = File(tempFilePath);
+      if (await file.exists() && await file.length() > 0) {
+        await Share.shareXFiles(
+          [XFile(tempFilePath, mimeType: 'application/pdf')],
+          text: widget.policyData.policyType ?? 'Policy Document',
+        );
+      } else {
+        await Share.share(pdfUrl, subject: widget.policyData.policyType ?? 'Policy Document');
+      }
+    } catch (e) {
+      debugPrint('Error downloading PDF for sharing: $e');
+      await Share.share(pdfUrl, subject: widget.policyData.policyType ?? 'Policy Document');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isSharing = false;
+        });
+      }
+    }
   }
 
   @override
@@ -166,13 +214,19 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
                         tooltip: 'Reload',
                         onPressed: _reloadPdf,
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.share_outlined, color: primaryBlack),
-                        tooltip: 'Share',
-                        onPressed: () {
-                          Share.share(pdfUrl, subject: widget.policyData.policyType ?? 'Policy Document');
-                        },
-                      ),
+                      isSharing
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : IconButton(
+                              icon: const Icon(Icons.share_outlined, color: primaryBlack),
+                              tooltip: 'Share',
+                              onPressed: () {
+                                _sharePdf(pdfUrl);
+                              },
+                            ),
                     ],
                   ],
                 ),

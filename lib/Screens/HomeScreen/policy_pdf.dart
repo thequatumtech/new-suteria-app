@@ -1,10 +1,15 @@
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:math';
+import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:soperia_user/Screens/HomeScreen/home_screen_bottom.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
@@ -14,12 +19,12 @@ import 'package:soperia_user/app_utils/api_set_up/service_locator.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
-import 'dart:math';
-import 'dart:ui';
-import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:isolate';
-import 'package:share_plus/share_plus.dart';
+
+@pragma('vm:entry-point')
+void downloadCallback(String id, int status, int progress) {
+  final SendPort? send = IsolateNameServer.lookupPortByName('downloader_send_port');
+  send?.send([id, status, progress]);
+}
 
 class PolicyPdf extends StatefulWidget {
   String screenTitle = '';
@@ -33,28 +38,29 @@ class PolicyPdf extends StatefulWidget {
 }
 
 class _PolicyPdfState extends State<PolicyPdf> {
-  bool check = false;
-  ReceivePort _port = ReceivePort();
+  final ReceivePort _port = ReceivePort();
   String fileName = '';
   bool isLoadingPrint = false;
   bool isLoadingSave = false;
   String generatedPdfUrl = '';
+  final GlobalKey _shareButtonKey = GlobalKey();
 
   @override
   void initState() {
+    super.initState();
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
     IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
-      print(data);
-      setState(() {});
+      debugPrint('Downloader port data: $data');
+      if (mounted) {
+        setState(() {});
+      }
     });
-    FlutterDownloader.registerCallback(downloadCallback);
-    super.initState();
-  }
-
-  @pragma('vm:entry-point')
-  static void downloadCallback(String id, int status, int progress) {
-    final SendPort? send = IsolateNameServer.lookupPortByName('downloader_send_port');
-    send?.send([id, status, progress]);
+    try {
+      FlutterDownloader.registerCallback(downloadCallback);
+    } catch (e) {
+      debugPrint('Error registering FlutterDownloader callback: $e');
+    }
   }
 
   /// Get Final Signed PDF URL
@@ -87,7 +93,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
           }
         } else {
           String errMsg = response[messageKey]?.toString() ?? response['message']?.toString() ?? '';
-          if (errMsg.isNotEmpty) {
+          if (errMsg.isNotEmpty && mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: AppText(text: errMsg, txtColor: primaryWhite, size: 12)),
             );
@@ -100,181 +106,212 @@ class _PolicyPdfState extends State<PolicyPdf> {
     return fallbackUrl;
   }
 
-  /// Save Pdf
+  Future<void> requestPermissions() async {
+    try {
+      await Permission.notification.request();
+      if (Platform.isAndroid) {
+        int sdkInt = 0;
+        try {
+          final deviceInfo = await DeviceInfoPlugin().androidInfo;
+          sdkInt = deviceInfo.version.sdkInt;
+        } catch (e) {
+          debugPrint('Error getting androidInfo: $e');
+        }
+
+        if (sdkInt <= 32) {
+          await Permission.storage.request();
+        } else {
+          await Permission.photos.request();
+        }
+      }
+    } catch (e) {
+      debugPrint('Error requesting permissions: $e');
+    }
+  }
+
+  Future<String> getDownloadDirectoryPath() async {
+    if (Platform.isAndroid) {
+      try {
+        final publicDownloadDir = Directory('/storage/emulated/0/Download');
+        if (await publicDownloadDir.exists()) {
+          return publicDownloadDir.path;
+        }
+      } catch (e) {
+        debugPrint('Public download dir not directly accessible: $e');
+      }
+
+      final extDir = await getExternalStorageDirectory();
+      if (extDir != null) {
+        return extDir.path;
+      }
+    }
+
+    final docDir = await getApplicationDocumentsDirectory();
+    return docDir.path;
+  }
+
+  /// Save / Download Pdf
   Future<void> getPdf(String url) async {
+    if (isLoadingSave) return;
     setState(() {
       isLoadingSave = true;
     });
 
-    final targetUrl = await fetchFinalPdfUrl(url);
-    if (targetUrl.isEmpty) {
-      setState(() {
-        isLoadingSave = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AppText(text: "PDF URL not found", txtColor: primaryWhite, size: 12)),
-      );
-      return;
-    }
-
-    await requestNotificationPermissions();
-    await downloadPdf(targetUrl);
-  }
-
-  Future<void> requestNotificationPermissions() async {
-    final PermissionStatus status = await Permission.notification.request();
-  }
-
-  Future<Directory> getStorageDirectory() async {
-    if (Platform.isAndroid) {
-      final externalDir = await getExternalStorageDirectory();
-      if (externalDir != null) {
-        return externalDir;
-      }
-    }
-    return await getApplicationDocumentsDirectory();
-  }
-
-  downloadPdf(String path) async {
-    if (Platform.isAndroid) {
-      int sdkInt = 0;
-      try {
-        final deviceInfo = await DeviceInfoPlugin().androidInfo;
-        sdkInt = deviceInfo.version.sdkInt;
-      } catch (e) {
-        debugPrint('Error getting androidInfo: $e');
-      }
-
-      if (sdkInt > 32) {
-        await Permission.photos.request();
-      } else {
-        await Permission.storage.request();
-      }
-    }
-    await download(path, "InsuranceFile");
-  }
-
-  Future download(String url, String filename) async {
     try {
-      Random random = Random();
-      int randomNumber = random.nextInt(100);
-      final baseStorage = await getStorageDirectory();
-      String ext = url.split(".").last.split("?").first;
-      if (ext.isEmpty || ext.length > 5) ext = 'pdf';
-      fileName = '$filename$randomNumber.$ext';
-      setState(() {});
-      final taskId = await FlutterDownloader.enqueue(
-        url: url,
-        headers: {},
-        savedDir: baseStorage.path,
-        fileName: fileName,
-        saveInPublicStorage: Platform.isAndroid,
-        showNotification: true,
-        openFileFromNotification: true,
-        requiresStorageNotLow: true,
+      final targetUrl = await fetchFinalPdfUrl(url);
+      if (targetUrl.isEmpty) {
+        if (mounted) {
+          setState(() {
+            isLoadingSave = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: AppText(text: "PDF URL not found", txtColor: primaryWhite, size: 12)),
+          );
+        }
+        return;
+      }
+
+      await requestPermissions();
+
+      final baseDirPath = await getDownloadDirectoryPath();
+      int timestamp = DateTime.now().millisecondsSinceEpoch;
+      fileName = 'InsurancePolicy_$timestamp.pdf';
+      final saveFilePath = '$baseDirPath/$fileName';
+
+      debugPrint('Downloading PDF to $saveFilePath from $targetUrl');
+
+      final dio = Dio();
+      await dio.download(
+        targetUrl,
+        saveFilePath,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+          validateStatus: (status) => status != null && status < 500,
+        ),
       );
-      print('task id $taskId');
-      setState(() {
-        isLoadingSave = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: fileDownloading, txtColor: primaryWhite, size: 12)));
-    } on Exception catch (e) {
-      setState(() {
-        isLoadingSave = false;
-      });
-      print(e);
+
+      final file = File(saveFilePath);
+      if (await file.exists() && await file.length() > 0) {
+        debugPrint('File successfully saved: $saveFilePath (${await file.length()} bytes)');
+        if (mounted) {
+          setState(() {
+            isLoadingSave = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: AppText(
+                text: 'PDF downloaded successfully: $fileName',
+                txtColor: primaryWhite,
+                size: 12,
+              ),
+              action: SnackBarAction(
+                label: 'Share',
+                textColor: Colors.amberAccent,
+                onPressed: () {
+                  Share.shareXFiles([XFile(saveFilePath, mimeType: 'application/pdf', name: fileName)], text: widget.screenTitle);
+                },
+              ),
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        }
+      } else {
+        throw Exception('Downloaded file is empty or missing');
+      }
+    } catch (e) {
+      debugPrint('Error downloading PDF: $e');
+      if (mounted) {
+        setState(() {
+          isLoadingSave = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: AppText(text: 'Download failed. Please try again.', txtColor: primaryWhite, size: 12)),
+        );
+      }
     }
   }
 
-  /// Print PDF
-  getPdfFile(String pdfPath) async {
+  /// Share PDF directly
+  Future<void> getPdfFile(String pdfPath) async {
+    if (isLoadingPrint) return;
     setState(() {
       isLoadingPrint = true;
     });
 
-    final targetUrl = await fetchFinalPdfUrl(pdfPath);
-    if (targetUrl.isEmpty) {
-      setState(() {
-        isLoadingPrint = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AppText(text: "PDF URL not found", txtColor: primaryWhite, size: 12)),
-      );
-      return;
-    }
-
-    await requestNotificationPermissions();
-
-    if (Platform.isAndroid) {
-      int sdkInt = 0;
-      try {
-        final deviceInfo = await DeviceInfoPlugin().androidInfo;
-        sdkInt = deviceInfo.version.sdkInt;
-      } catch (e) {
-        debugPrint('Error getting androidInfo: $e');
-      }
-
-      if (sdkInt > 32) {
-        await Permission.photos.request();
-      } else {
-        await Permission.storage.request();
-      }
-    }
-
     try {
-      Random random = Random();
-      int randomNumber = random.nextInt(100);
-      final baseStorage = await getStorageDirectory();
-      String ext = targetUrl.split(".").last.split("?").first;
-      if (ext.isEmpty || ext.length > 5) ext = 'pdf';
-      fileName = 'InsuranceFile$randomNumber.$ext';
-      setState(() {});
-      final taskId = await FlutterDownloader.enqueue(
-        url: targetUrl,
-        headers: {},
-        savedDir: baseStorage.path,
-        fileName: fileName,
-        saveInPublicStorage: Platform.isAndroid,
-        showNotification: true,
-        openFileFromNotification: true,
-        requiresStorageNotLow: true,
-      );
-      print('task id $taskId');
-    } on Exception catch (e) {
-      setState(() {
-        isLoadingPrint = false;
-      });
-      print(e);
-    }
-
-    await Future.delayed(const Duration(seconds: 2));
-    sharePdf();
-  }
-
-  sharePdf() async {
-    try {
-      final dir = await getStorageDirectory();
-      final file = File('${dir.path}/$fileName');
-      if (await file.exists()) {
-        Share.shareXFiles([XFile(file.path)]);
-      } else {
-        debugPrint('File does not exist at ${file.path}');
+      final targetUrl = await fetchFinalPdfUrl(pdfPath);
+      if (targetUrl.isEmpty) {
+        if (mounted) {
+          setState(() {
+            isLoadingPrint = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: AppText(text: "PDF URL not found", txtColor: primaryWhite, size: 12)),
+          );
+        }
+        return;
       }
-      print('OOOOOOOOOOOOOOOOOOOOOOO');
-      setState(() {
-        isLoadingPrint = false;
-      });
+
+      final tempDir = await getTemporaryDirectory();
+      int timestamp = DateTime.now().millisecondsSinceEpoch;
+      fileName = 'InsurancePolicy_$timestamp.pdf';
+      final tempFilePath = '${tempDir.path}/$fileName';
+
+      debugPrint('Downloading PDF for share to $tempFilePath from $targetUrl');
+
+      final dio = Dio();
+      await dio.download(
+        targetUrl,
+        tempFilePath,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      final file = File(tempFilePath);
+      if (await file.exists() && await file.length() > 0) {
+        debugPrint('File ready for sharing: $tempFilePath (${await file.length()} bytes)');
+        Rect? shareOrigin;
+        try {
+          final box = _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
+          if (box != null && box.hasSize) {
+            shareOrigin = box.localToGlobal(Offset.zero) & box.size;
+          }
+        } catch (e) {
+          debugPrint('Error calculating share origin: $e');
+        }
+
+        await Share.shareXFiles(
+          [XFile(tempFilePath, mimeType: 'application/pdf', name: fileName)],
+          text: widget.screenTitle.isNotEmpty ? widget.screenTitle : 'Policy Document',
+          sharePositionOrigin: shareOrigin,
+        );
+      } else {
+        throw Exception('File was not downloaded properly for sharing');
+      }
     } catch (e) {
-      setState(() {
-        isLoadingPrint = false;
-      });
-      print(e);
+      debugPrint('Error sharing PDF: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: AppText(text: 'Failed to share PDF. Please try again.', txtColor: primaryWhite, size: 12)),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoadingPrint = false;
+        });
+      }
     }
   }
 
   @override
   void dispose() {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
+    _port.close();
     super.dispose();
   }
 
@@ -327,6 +364,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Container(
+                      key: _shareButtonKey,
                       width: double.infinity,
                       height: 150,
                       decoration: BoxDecoration(
