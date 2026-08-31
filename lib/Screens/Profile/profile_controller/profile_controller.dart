@@ -31,6 +31,7 @@ import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/main.dart';
 import '../../AuthScreen/select_language.dart';
 import 'package:dio/dio.dart' as m;
+import 'package:soperia_user/Screens/SingupScreen/sign_up_controller.dart';
 
 class ProfileController extends GetxController {
 /*  ProfileController profileController = Get.put(ProfileController());*/
@@ -526,7 +527,14 @@ class ProfileController extends GetxController {
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         SharedPreferences pre = await SharedPreferences.getInstance();
         print("token<<<<<<<$pre");
-        pre.clear();
+        String currentLang = pre.getString('selected_language') ?? pre.getString(LAGUAGE_CODE) ?? 'en';
+        await pre.clear();
+        await pre.setString('selected_language', currentLang);
+        await pre.setString(LAGUAGE_CODE, currentLang);
+        if (Get.isRegistered<SignUpController>()) {
+          Get.find<SignUpController>().clearData();
+          Get.delete<SignUpController>(force: true);
+        }
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const SelectLanguage()), (route) => false);
         isLogout.value = false;
       } else {

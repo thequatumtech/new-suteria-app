@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 import 'app_text.dart';
 
@@ -196,8 +197,8 @@ class _AppTextfieldCircularState extends State<AppTextfieldCircular> {
                                 },
                                 child: Icon(widget.subfixicon, color: widget.sufixColor ?? primaryGrey, size: widget.subfixSize ?? 15))
                         : null,
-                    hintText: widget.hint,
-                    label: Text(widget.lable),
+                    hintText: getTranslated(context, widget.hint),
+                    label: widget.lable.isNotEmpty ? Text(getTranslated(context, widget.lable)) : null,
                     labelStyle: TextStyle(color: widget.hintTxtColor ?? primaryGreyShade3, fontSize: widget.hintSize ?? 12),
                     alignLabelWithHint: true,
                     hintStyle: TextStyle(color: widget.hintTxtColor ?? primaryGreyShade3, fontSize: widget.hintSize ?? 12),
@@ -323,8 +324,8 @@ class AppTextfield extends StatelessWidget {
             counterText: '',
             filled: true,
             fillColor: primaryWhite,
-            hintText: hint,
-            label: Text(lable),
+            hintText: getTranslated(context, hint),
+            label: lable.isNotEmpty ? Text(getTranslated(context, lable)) : null,
             floatingLabelAlignment: FloatingLabelAlignment.start,alignLabelWithHint: true,
             labelStyle: TextStyle(color: skyBlueShade3, fontSize: hintSize ?? 14),
             hintStyle: TextStyle(color: skyBlueShade3, fontSize: hintSize ?? 14),

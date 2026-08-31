@@ -214,14 +214,19 @@ class SignUpController extends GetxController {
 
       var response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: userRegister, options: Options(headers: header), body: data);
 
-      if (response["status_code"] == 200 || response["status"] == true) {
+      int resStatusCode = int.tryParse(response["status_code"]?.toString() ?? response[statusCode]?.toString() ?? "0") ?? 0;
+      bool isSuccessStatus = (resStatusCode == 200 || resStatusCode == 201) && response["status"] != false;
+
+      if (isSuccessStatus && response[tokenKey] != null && response[tokenKey].toString().isNotEmpty && response[tokenKey] != "null") {
         SharedPreferences preferences = await SharedPreferences.getInstance();
-        preferences.setString(tokenKey, response[tokenKey]);
+        await preferences.setString(tokenKey, response[tokenKey].toString());
         showToast(successfullyRegister, context);
         buttonLoading.value = false;
+        clearData();
         Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountCreated()));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response['message'] ?? 'Registration failed', txtColor: primaryWhite, size: 12)));
+        String msg = response['message']?.toString() ?? response[messageKey]?.toString() ?? 'Registration failed';
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: msg, txtColor: primaryWhite, size: 12)));
       }
 
       buttonLoading.value = false;
@@ -241,10 +246,10 @@ class SignUpController extends GetxController {
   }
 
   clearData() {
-    selectedGender = '';
-    selectedMaritalStatus = '';
-    selectLanguage = '';
-    languages.clear();
+    selectedGender = null;
+    selectedMaritalStatus = null;
+    selectLanguage = null;
+    languages.assignAll([arbic, english]);
     firstNameController.value.clear();
     secondNameController.value.clear();
     thirdNameController.value.clear();
@@ -254,7 +259,7 @@ class SignUpController extends GetxController {
     birthDateController.value.clear();
     emailController.value.clear();
     mobileController.value.clear();
-    selectEmp = '';
+    selectEmp = null;
     streetController.value.clear();
     buildingController.value.clear();
     companyController.value.clear();
@@ -265,6 +270,9 @@ class SignUpController extends GetxController {
     agentNoController.value.clear();
     password.clear();
     conformPassword.clear();
+    check = false;
+    check2 = false;
+    buttonLoading.value = false;
     selectDistrict.value = DistrictList();
     selectDistrictCompany.value = DistrictList();
     selectCountry.value = GetCountryList();

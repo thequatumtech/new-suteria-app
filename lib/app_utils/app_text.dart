@@ -19,7 +19,21 @@ class AppText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(/*getTranslated(context, text) ?? */text,maxLines: maxLine,
-        style: TextStyle(fontFamily: fontFamily??"Montserrat_Regular",color: txtColor ?? primaryBlack, fontSize: size ?? 8, fontWeight: fontWeight ?? FontWeight.normal,overflow:overflow, decoration: textunderline ??TextDecoration.none,decorationColor: textUnderlineColor ?? primaryBlack),textAlign: txtAlign,softWrap: true,); //getternsleted(context,key)
+    String translatedText = getTranslated(context, text);
+    return Text(
+      translatedText,
+      maxLines: maxLine,
+      style: TextStyle(
+        fontFamily: fontFamily ?? "Montserrat_Regular",
+        color: txtColor ?? primaryBlack,
+        fontSize: size ?? 8,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        overflow: overflow,
+        decoration: textunderline ?? TextDecoration.none,
+        decorationColor: textUnderlineColor ?? primaryBlack,
+      ),
+      textAlign: txtAlign,
+      softWrap: true,
+    );
   }
 }

@@ -30,9 +30,7 @@ class _SingupScreenState extends State<SingupScreen> {
 
   @override
   void initState() {
-    /* signUpController.postSignUp(context);*/
-    // TODO: implement initState
-
+    signUpController.clearData();
     signUpController.init(context);
     signUpController.isEng = widget.isEng ?? true;
     super.initState();

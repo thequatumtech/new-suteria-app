@@ -25,7 +25,21 @@ class DemoLocalization {
   }
 
   String? translate(String key) {
-    return _localizedValues[key] ?? key;
+    if (key.isEmpty) return key;
+    String trimmed = key.trim();
+    if (num.tryParse(trimmed) != null) {
+      return key;
+    }
+    String? val = _localizedValues[key];
+    if (val != null && val.isNotEmpty) return val;
+    val = _localizedValues[trimmed];
+    if (val != null && val.isNotEmpty) return val;
+    val = _localizedValues[trimmed.toLowerCase()];
+    if (val != null && val.isNotEmpty) return val;
+    String singleSpaced = trimmed.replaceAll(RegExp(r'\s+'), ' ');
+    val = _localizedValues[singleSpaced];
+    if (val != null && val.isNotEmpty) return val;
+    return key;
   }
 
   static const LocalizationsDelegate<DemoLocalization> delegate = _DemoLocalizationsDelegate();

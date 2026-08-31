@@ -51,13 +51,14 @@ class LoginController extends GetxController {
         options: Options(headers: header),
       );
       print("LOGIN RESPONSE: $response");
-      if (response[statusCode] == 200 || response[statusCode] == 201) {
+      if ((response[statusCode] == 200 || response[statusCode] == 201) && response[tokenKey] != null && response[tokenKey].toString().isNotEmpty && response[tokenKey] != "null") {
         SharedPreferences preferences = await SharedPreferences.getInstance();
-        preferences.setString(tokenKey, response[tokenKey]);
+        await preferences.setString(tokenKey, response[tokenKey].toString());
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomePageBottomNav()), (route) => false);
       } else {
         isLoading.value = false;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
+        String msg = response[messageKey]?.toString() ?? response['message']?.toString() ?? 'Login failed';
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: msg, txtColor: primaryWhite, size: 12)));
       }
       isLoading.value = false;
     } catch (e) {

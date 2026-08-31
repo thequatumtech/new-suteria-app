@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class CustomDropDown extends StatefulWidget {
   List<String> items = [];
@@ -96,7 +97,7 @@ class _CustomDropDownBorderState extends State<CustomDropDownBorder> {
               value: (widget.selectedValue != null && widget.items.contains(widget.selectedValue))
                   ? widget.selectedValue
                   : null,
-              hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
+              hint: Text(getTranslated(context, widget.hintText ?? widget.dropdownTitle ?? "")),
               onChanged: (newValue) {
                 // widget.selectedValue = newValue!;
 
@@ -174,7 +175,7 @@ class _CustomDropDownBorderStringDisableState extends State<CustomDropDownBorder
               value: (widget.selectedValue != null && widget.items.contains(widget.selectedValue))
                   ? widget.selectedValue
                   : null,
-              hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
+              hint: Text(getTranslated(context, widget.hintText ?? widget.dropdownTitle ?? "")),
               onChanged: null,
               // iconSize: 40,
 
@@ -271,7 +272,7 @@ class _CustomDropDownBorder1State extends State<CustomDropDownBorder1> {
                 value: (widget.selectedValue != null && uniqueItems.any((item) => item.value == widget.selectedValue))
                     ? widget.selectedValue
                     : null,
-                hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
+                hint: Text(getTranslated(context, widget.hintText ?? widget.dropdownTitle ?? "")),
                 onChanged: (newValue) {
                   widget.onchage(newValue);
 
@@ -362,7 +363,7 @@ class _CustomDropDownBorderDisableState extends State<CustomDropDownBorderDisabl
                   value: (widget.selectedValue != null && uniqueItems.any((item) => item.value == widget.selectedValue))
                       ? widget.selectedValue
                       : null,
-                  hint: Text(widget.hintText ?? widget.dropdownTitle ?? ""),
+                  hint: Text(getTranslated(context, widget.hintText ?? widget.dropdownTitle ?? "")),
                   onChanged: null,
                   // disabled
                   isExpanded: true,

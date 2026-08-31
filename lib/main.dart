@@ -22,6 +22,7 @@ void main() async {
   }
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   setup();
+  await loadLangs();
   runApp(const MyApp());
 }
 

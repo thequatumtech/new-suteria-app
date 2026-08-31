@@ -132,7 +132,7 @@ class _SelectLanguageState extends State<SelectLanguage> {
               const Spacer(),
               AppBtnWithColorShades(
                 onTap: () async {
-                  await setLocale(isSelectEn ? 'en' : 'ar');
+                  await setLocale(isSelectEn ? 'en' : 'ar', context);
                   if (!mounted) return;
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                 },
@@ -145,7 +145,7 @@ class _SelectLanguageState extends State<SelectLanguage> {
               ),
               InkWell(
                 onTap: () async {
-                  await setLocale(isSelectEn ? 'en' : 'ar');
+                  await setLocale(isSelectEn ? 'en' : 'ar', context);
                   if (!mounted) return;
                   Navigator.push(
                     context,

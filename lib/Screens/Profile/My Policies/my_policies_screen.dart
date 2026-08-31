@@ -12,6 +12,7 @@ import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class MyPolicies extends StatefulWidget {
   const MyPolicies({super.key});
@@ -193,7 +194,7 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
                     color: deepBluedark,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                   ),
-                  child: AppText(text: '$policyNo ${policyItem.policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
+                  child: AppText(text: '${getTranslated(context, policyNo)} ${policyItem.policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 20, left: 16, right: 16),
@@ -321,7 +322,7 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
                     color: deepBluedark,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                   ),
-                  child: AppText(text: '$policyNo ${policyItem.policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
+                  child: AppText(text: '${getTranslated(context, policyNo)} ${policyItem.policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 20, left: 16, right: 16),

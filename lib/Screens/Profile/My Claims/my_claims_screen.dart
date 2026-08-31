@@ -7,6 +7,7 @@ import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class MyClaimsScreen extends StatefulWidget {
   const MyClaimsScreen({super.key});
@@ -71,7 +72,7 @@ class _MyClaimsScreenState extends State<MyClaimsScreen> with SingleTickerProvid
                                               color: deepBluedark,
                                               borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                                             ),
-                                            child: AppText(text: '$policyNo ${claimController.getPolicyDetailsModel.value.data![index].policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
+                                            child: AppText(text: '${getTranslated(context, policyNo)} ${claimController.getPolicyDetailsModel.value.data![index].policyNo ?? ''}', txtColor: primaryWhite, size: 16, fontWeight: FontWeight.w700),
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(top: 16, bottom: 20, left: 16, right: 16),

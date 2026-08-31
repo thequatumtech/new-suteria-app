@@ -5,11 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart' as g;
 import 'package:get/get_core/src/get_main.dart';
 import 'package:soperia_user/Screens/AuthScreen/select_language.dart';
+import 'package:soperia_user/Screens/SingupScreen/sign_up_controller.dart';
 import 'package:soperia_user/app_utils/api_set_up/dio_clients.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/network_util.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class ApiCall {
   final DioClient dioClient;
@@ -112,9 +114,16 @@ class ApiCall {
   }*/
 
 
-  void logout(BuildContext context) {
-    SharedPreferences _pref = Get.find();
-    _pref.clear();
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const SelectLanguage()));
+  void logout(BuildContext context) async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    String currentLang = _pref.getString('selected_language') ?? _pref.getString(LAGUAGE_CODE) ?? 'en';
+    await _pref.clear();
+    await _pref.setString('selected_language', currentLang);
+    await _pref.setString(LAGUAGE_CODE, currentLang);
+    if (g.Get.isRegistered<SignUpController>()) {
+      g.Get.find<SignUpController>().clearData();
+      g.Get.delete<SignUpController>(force: true);
+    }
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SelectLanguage()), (route) => false);
   }
 }

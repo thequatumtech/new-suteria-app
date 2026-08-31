@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                           _selectedLanguage = tempSelected;
                         });
                         try {
-                          await setLocale(tempSelected);
+                          await setLocale(tempSelected, context);
                         } catch (_) {}
 
                         if (!mounted) return;

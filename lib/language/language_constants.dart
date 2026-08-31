@@ -5,13 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soperia_user/app_utils/app_constrint.dart';
+import 'package:soperia_user/app_utils/demo_localization.dart';
+import 'package:soperia_user/main.dart';
 
 const String LAGUAGE_CODE = 'LAGUAGE_CODE';
 
 const String ENGLISH = 'en';
 const String ARBIC = 'ar';
 
-Future<Locale> setLocale(String langCode) async {
+Future<Locale> setLocale(String langCode, [BuildContext? context]) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString(LAGUAGE_CODE, langCode);
   await prefs.setString('selected_language', langCode);
@@ -21,6 +23,13 @@ Future<Locale> setLocale(String langCode) async {
     Get.updateLocale(locale);
   } catch (e) {
     print('Get.updateLocale error: $e');
+  }
+  if (context != null) {
+    try {
+      MyApp.setLocale(context, locale);
+    } catch (e) {
+      print('MyApp.setLocale error: $e');
+    }
   }
   await loadLangs();
   return locale;
@@ -45,9 +54,10 @@ Locale getLangFromCode(String langCode) {
 
 Map<String, String> _localizedValues = {};
 
-Future<void> loadLangs() async {
+Future<void> loadLangs([String? lang]) async {
   try {
-    String code = languageCode ?? 'en';
+    String code = lang ?? languageCode ?? await getLocale();
+    languageCode = code;
     String jsonStringValues = await rootBundle.loadString('lib/language/$code.json');
     Map<String, dynamic> mappedJson = json.decode(jsonStringValues);
     _localizedValues = mappedJson.map((key, value) => MapEntry(key, value.toString()));
@@ -56,8 +66,51 @@ Future<void> loadLangs() async {
   }
 }
 
-String? getTranslated(BuildContext context, String key) {
-  return _localizedValues[key] ?? key;
+String getTranslated(BuildContext? context, String key) {
+  if (key.isEmpty) return key;
+
+  String trimmed = key.trim();
+  // Do not translate pure numbers / timer digits / quantities / IDs
+  if (num.tryParse(trimmed) != null) {
+    return key;
+  }
+
+  // 1. Direct match
+  String? value = _localizedValues[key];
+  if (value != null && value.isNotEmpty) return value;
+
+  // 2. Trimmed match
+  value = _localizedValues[trimmed];
+  if (value != null && value.isNotEmpty) return value;
+
+  // 3. Lowercase match
+  value = _localizedValues[trimmed.toLowerCase()];
+  if (value != null && value.isNotEmpty) return value;
+
+  // 4. Normalized whitespace match
+  String singleSpaced = trimmed.replaceAll(RegExp(r'\s+'), ' ');
+  value = _localizedValues[singleSpaced];
+  if (value != null && value.isNotEmpty) return value;
+
+  // 5. Try DemoLocalization if context is available
+  if (context != null) {
+    try {
+      String? demoVal = DemoLocalization.of(context)?.translate(key);
+      if (demoVal != null && demoVal != key && demoVal.isNotEmpty) {
+        return demoVal;
+      }
+    } catch (_) {}
+  }
+
+  return key;
+}
+
+/// Helper function to translate backend response messages / error messages
+String translateBackendMessage(dynamic msg, [BuildContext? context]) {
+  if (msg == null) return '';
+  String text = msg.toString().trim();
+  if (text.isEmpty) return '';
+  return getTranslated(context, text);
 }
 
 const PROFILE_PAGE = [
