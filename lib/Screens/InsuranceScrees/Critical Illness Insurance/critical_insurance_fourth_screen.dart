@@ -70,7 +70,7 @@ class _CriticalInsuranceFourthScreenState extends State<CriticalInsuranceFourthS
                               });
                             },
                           ),
-                          const Text(yesTxt),
+                          AppText(text: yesTxt),
                           Radio(
                             value: noTxt,
                             groupValue: criticalIllnessInsuranceController.selectedOption1,
@@ -80,7 +80,7 @@ class _CriticalInsuranceFourthScreenState extends State<CriticalInsuranceFourthS
                               });
                             },
                           ),
-                          const Text(noTxt),
+                          AppText(text: noTxt),
                         ],
                       ),
                     ],

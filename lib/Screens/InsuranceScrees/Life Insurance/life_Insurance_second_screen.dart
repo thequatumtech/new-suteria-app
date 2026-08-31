@@ -124,7 +124,7 @@ class _LifeInsuranceSecondScreenState extends State<LifeInsuranceSecondScreen> {
                               });
                             },
                           ),
-                          const Text(yesTxt),
+                          AppText(text: yesTxt),
                           Radio(
                             value: noTxt,
                             groupValue: lifeInsuranceController.selectedOption1,
@@ -134,7 +134,7 @@ class _LifeInsuranceSecondScreenState extends State<LifeInsuranceSecondScreen> {
                               });
                             },
                           ),
-                          const Text(noTxt),
+                          AppText(text: noTxt),
                         ],
                       ),
                       if (lifeInsuranceController.selectedOption1 == yesTxt)

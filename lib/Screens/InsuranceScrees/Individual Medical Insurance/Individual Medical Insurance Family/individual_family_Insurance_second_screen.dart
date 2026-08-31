@@ -55,7 +55,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                     });
                   },
                 ),
-                const Text(yesTxt),
+                AppText(text: yesTxt),
                 Radio(
                   value: noTxt,
                   groupValue: familyMedicalInsuranceController.selectedExistingMedicalInsurancePolicyOption,
@@ -65,7 +65,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                     });
                   },
                 ),
-                const Text(noTxt),
+                AppText(text: noTxt),
               ],
             ),
             if (familyMedicalInsuranceController.selectedExistingMedicalInsurancePolicyOption == yesTxt)
@@ -170,7 +170,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                     });
                   },
                 ),
-                const Text(yesTxt),
+                AppText(text: yesTxt),
                 Radio(
                   value: noTxt,
                   groupValue: familyMedicalInsuranceController.selectedChronicDisease,
@@ -181,7 +181,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                     });
                   },
                 ),
-                const Text(noTxt),
+                AppText(text: noTxt),
               ],
             ),
 
@@ -253,7 +253,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                         });
                       },
                     ),
-                    const Text(yesTxt),
+                    AppText(text: yesTxt),
                     Radio(
                       value: noTxt,
                       groupValue: familyMedicalInsuranceController.selectedPreviousOperationsOption,
@@ -263,7 +263,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                         });
                       },
                     ),
-                    const Text(noTxt),
+                    AppText(text: noTxt),
                   ],
                 ),
               ],
@@ -287,7 +287,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: familyMedicalInsuranceController.selectedPregnantOption,
@@ -297,7 +297,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   if (familyMedicalInsuranceController.selectedPregnantOption == yesTxt) ...[
@@ -336,7 +336,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                     });
                   },
                 ),
-                const Text(yesTxt),
+                AppText(text: yesTxt),
                 Radio(
                   value: noTxt,
                   groupValue: familyMedicalInsuranceController.selectedDangerousActivity,
@@ -347,7 +347,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
                     });
                   },
                 ),
-                const Text(noTxt),
+                AppText(text: noTxt),
               ],
             ),
 

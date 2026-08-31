@@ -106,7 +106,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(yesTxt),
+                  AppText(text: yesTxt),
                   Radio(
                     value: noTxt,
                     groupValue: marineInsuranceController.selectedMultipleCountry,
@@ -116,7 +116,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(noTxt),
+                  AppText(text: noTxt),
                 ],
               ),
               marineInsuranceController.selectedMultipleCountry == yesTxt
@@ -165,7 +165,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(yesTxt),
+                  AppText(text: yesTxt),
                   Radio(
                     value: noTxt,
                     groupValue: marineInsuranceController.selectedDangerousActivity,
@@ -175,7 +175,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(noTxt),
+                  AppText(text: noTxt),
                 ],
               ),
 
@@ -305,7 +305,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(yesTxt),
+                  AppText(text: yesTxt),
                   Radio(
                     value: noTxt,
                     groupValue: marineInsuranceController.selectedExistingInsurancePolicyOption,
@@ -315,7 +315,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(noTxt),
+                  AppText(text: noTxt),
                 ],
               ),
            /*   if (marineInsuranceController.selectedExistingInsurancePolicyOption == yesTxt)
@@ -348,7 +348,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(yesTxt),
+                  AppText(text: yesTxt),
                   Radio(
                     value: noTxt,
                     groupValue: marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption,
@@ -358,7 +358,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(noTxt),
+                  AppText(text: noTxt),
                 ],
               ),
               if (marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption == yesTxt)
@@ -391,7 +391,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(yesTxt),
+                  AppText(text: yesTxt),
                   Radio(
                     value: noTxt,
                     groupValue: marineInsuranceController.selectedClaimsAccidentsInPastYearOption,
@@ -401,7 +401,7 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                       });
                     },
                   ),
-                  const Text(noTxt),
+                  AppText(text: noTxt),
                 ],
               ),
               if (marineInsuranceController.selectedClaimsAccidentsInPastYearOption == yesTxt)

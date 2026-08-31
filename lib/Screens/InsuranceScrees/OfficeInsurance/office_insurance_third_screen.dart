@@ -48,7 +48,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: officeInsuranceController.selectedPartnerInTheCompany,
@@ -58,7 +58,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     AppText(text: mariq2, size: 15, txtAlign: TextAlign.start),
@@ -73,7 +73,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: officeInsuranceController.selectedAuthorizedToIssue,
@@ -83,7 +83,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     if (officeInsuranceController.selectedAuthorizedToIssue == yesTxt)
@@ -111,7 +111,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: officeInsuranceController.selectedPreviousInsurancePolicy,
@@ -121,7 +121,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     if (officeInsuranceController.selectedPreviousInsurancePolicy == yesTxt)
@@ -165,7 +165,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: officeInsuranceController.selectedAuthorizedIsStated,
@@ -175,7 +175,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     if (officeInsuranceController.selectedAuthorizedIsStated == yesTxt) AppTextfield(controller: officeInsuranceController.previousInsurancePolicyController.value, hint: homen1, lable: homen1),
@@ -198,7 +198,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: officeInsuranceController.selectedOfficeInsurancePolicyBefore,
@@ -208,7 +208,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     if (officeInsuranceController.selectedOfficeInsurancePolicyBefore == yesTxt)
@@ -241,7 +241,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: officeInsuranceController.selectedClaimsAndAccidentsYears,
@@ -251,7 +251,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             });
                           },
                         ),
-                        Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     if (officeInsuranceController.selectedClaimsAndAccidentsYears == yesTxt)

@@ -27,7 +27,9 @@ import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/language/language_constants.dart';
+import 'package:soperia_user/app_utils/app_constrint.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/Screens/HomeScreen/home_screen_bottom.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -39,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   int sliderCurrentIndex = 0;
   final CarouselSliderController _bannerCarouselController = CarouselSliderController();
   Timer? _bannerAutoScrollTimer;
-  String _selectedLanguage = 'en';
+  String _selectedLanguage = languageCode ?? 'en';
 
   void _startAutoScrollTimer(List<BannerData> banners) {
     _bannerAutoScrollTimer?.cancel();
@@ -66,7 +68,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (BuildContext sheetContext) {
-        String tempSelected = _selectedLanguage;
+        String tempSelected = languageCode ?? _selectedLanguage;
         return StatefulBuilder(
           builder: (context, setSheetState) {
             return Container(
@@ -164,18 +166,10 @@ class _HomePageState extends State<HomePage> {
 
                         if (!mounted) return;
                         Navigator.pop(sheetContext);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: AppText(
-                              text: tempSelected == 'ar'
-                                  ? 'Language selected: Arabic (العربية)'
-                                  : 'Language selected: English',
-                              txtColor: primaryWhite,
-                              size: 13,
-                            ),
-                            backgroundColor: deepBluedark,
-                            duration: const Duration(seconds: 2),
-                          ),
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePageBottomNav(initialIndex: 0)),
+                          (route) => false,
                         );
                       },
                       btnTxt: ok,
@@ -370,7 +364,12 @@ class _HomePageState extends State<HomePage> {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       isShoHome = pref.getBool('iswelcomescreen') ?? true;
-      _selectedLanguage = pref.getString('selected_language') ?? pref.getString(LAGUAGE_CODE) ?? 'en';
+      String savedCode = pref.getString('selected_language') ?? pref.getString(LAGUAGE_CODE) ?? languageCode ?? 'en';
+      if (mounted) {
+        setState(() {
+          _selectedLanguage = savedCode;
+        });
+      }
 
       isShoHome ? sideCopyAlert() : null;
     } on Exception catch (e) {
@@ -416,10 +415,11 @@ class _HomePageState extends State<HomePage> {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: Text(
-                                "$welcome, ${homeController.rxGetProfileModel.value.data?.firstName ?? getProfileModelGlobal.data?.firstName ?? ""}",
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                maxLines: 1,
+                              child: AppText(
+                                text: "${getTranslated(context, welcome)}, ${homeController.rxGetProfileModel.value.data?.firstName ?? getProfileModelGlobal.data?.firstName ?? ""}",
+                                fontWeight: FontWeight.bold,
+                                size: 16,
+                                maxLine: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),

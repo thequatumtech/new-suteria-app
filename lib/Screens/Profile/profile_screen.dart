@@ -2,13 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:soperia_user/Screens/AuthScreen/change_password_in_app/change_password_view.dart';
+import 'package:soperia_user/Screens/HomeScreen/home_screen_bottom.dart';
 import 'package:soperia_user/Screens/Profile/Complaint/complaint_screen.dart';
 import 'package:soperia_user/Screens/Profile/Contact%20Us/contact_us_message_screen.dart';
 import 'package:soperia_user/Screens/Profile/Social%20Media/social_media_list_screen.dart';
 import 'package:soperia_user/Screens/Profile/edit_profile.dart';
+import 'package:soperia_user/app_utils/app_button.dart';
+import 'package:soperia_user/app_utils/app_constrint.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import '../../app_utils/Common Widgets/webview_title_url.dart';
 import 'profile_controller/profile_controller.dart';
 
@@ -26,6 +30,222 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     profileController.getProfile(context);
     super.initState();
+  }
+
+  void _showLanguageBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext sheetContext) {
+        String tempSelected = languageCode ?? 'en';
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              decoration: const BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Handle bar
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: grayshad200,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+
+                    // Header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: skyBlueShade4,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Icons.language_rounded, color: deepBluedark, size: 22),
+                            ),
+                            const SizedBox(width: 12),
+                            AppText(
+                              text: chooseYourLanguage,
+                              size: 16,
+                              fontWeight: FontWeight.bold,
+                              txtColor: deepBluedark,
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: grayshad400, size: 20),
+                          onPressed: () => Navigator.pop(sheetContext),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // English Option
+                    _buildLanguageItem(
+                      title: 'English',
+                      subtitle: 'English',
+                      code: 'en',
+                      isSelected: tempSelected == 'en',
+                      onTap: () {
+                        setSheetState(() {
+                          tempSelected = 'en';
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Arabic Option
+                    _buildLanguageItem(
+                      title: 'العربية',
+                      subtitle: 'Arabic',
+                      code: 'ar',
+                      isSelected: tempSelected == 'ar',
+                      onTap: () {
+                        setSheetState(() {
+                          tempSelected = 'ar';
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Confirm Button
+                    AppBtnWithColorShades(
+                      onTap: () async {
+                        try {
+                          await setLocale(tempSelected, context);
+                        } catch (_) {}
+
+                        if (!mounted) return;
+                        Navigator.pop(sheetContext);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePageBottomNav(initialIndex: 2)),
+                          (route) => false,
+                        );
+                      },
+                      btnTxt: ok,
+                      color1: darkBlue2,
+                      color2: darkBlue1,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageItem({
+    required String title,
+    required String subtitle,
+    required String code,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: isSelected ? deepBlue.withValues(alpha: 0.06) : grayshad100.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? deepBlue : primaryGreyShade,
+            width: isSelected ? 1.8 : 1.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: isSelected ? deepBlue : primaryWhite,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? deepBlue : primaryGreyShade,
+                  width: 1,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  code == 'ar' ? 'ع' : 'EN',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: isSelected ? primaryWhite : deepBluedark,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                      color: isSelected ? deepBluedark : primaryBlack,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isSelected ? deepBlue.withValues(alpha: 0.8) : primaryGrey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? deepBlue : Colors.transparent,
+                border: Border.all(
+                  color: isSelected ? deepBlue : primaryGreyShade,
+                  width: 2,
+                ),
+              ),
+              child: isSelected
+                  ? const Icon(
+                      Icons.check,
+                      size: 14,
+                      color: primaryWhite,
+                    )
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -67,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         placeholder: (context, url) => const CircularProgressIndicator(),
                                         errorWidget: (context, url, error) => const Icon(Icons.error),
                                         fit: BoxFit.cover))),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,27 +321,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePasswordScreen()));
                               }else if (profileController.menu[index] == socialPages) {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const SocialMediaListScreen()));
-                              }else if (profileController.menu[index] == termsConditions) {
-                                //Add commentMore actions
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const PrivacyPolicyScreen(
-                                    url: 'https://www.sisirbc.com/terms-conditions.php', title: termsConditions,
+                              } else if (profileController.menu[index] == chooseYourLanguage) {
+                                _showLanguageBottomSheet(context);
+                              } else if (profileController.menu[index] == termsConditions) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const PrivacyPolicyScreen(
+                                      id: 5,
+                                      title: termsConditions,
+                                      url: 'https://www.sisirbc.com/terms-conditions.php',
+                                    ),
                                   ),
-                                ),
-                              );
-                              }
-                              else if (profileController.menu[index] == privacyPolicyTxt) {
-                                //Add commentMore actions
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const PrivacyPolicyScreen(
-                                    url: 'https://www.sisirbc.com/privacy-policy.php', title: privacyPolicyTxt,
+                                );
+                              } else if (profileController.menu[index] == privacyPolicyTxt) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const PrivacyPolicyScreen(
+                                      id: 6,
+                                      title: privacyPolicyTxt,
+                                      url: 'https://www.sisirbc.com/privacy-policy.php',
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              } else if (profileController.menu[index] == refundAndCancellation) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const PrivacyPolicyScreen(
+                                      id: 7,
+                                      title: refundAndCancellation,
+                                    ),
+                                  ),
+                                );
                               }
                             },
                             child: Column(

@@ -22,12 +22,16 @@ void main() async {
   }
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   setup();
-  await loadLangs();
-  runApp(const MyApp());
+  String savedLang = await getLocale();
+  languageCode = savedLang;
+  await loadLangs(savedLang);
+  Locale initialLocale = getLangFromCode(savedLang);
+  runApp(MyApp(initialLocale: initialLocale));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Locale? initialLocale;
+  const MyApp({Key? key, this.initialLocale}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -41,6 +45,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   Locale? _locale;
 
+  @override
+  void initState() {
+    super.initState();
+    _locale = widget.initialLocale ?? getLangFromCode(languageCode ?? 'en');
+  }
+
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
@@ -51,11 +61,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void didChangeDependencies() {
     getLocale().then((locale) {
-      setState(() {
-        _locale = getLangFromCode(locale);
-        languageCode = locale;
-        loadLangs();
-      });
+      if (mounted) {
+        setState(() {
+          _locale = getLangFromCode(locale);
+          languageCode = locale;
+        });
+      }
     });
     super.didChangeDependencies();
   }

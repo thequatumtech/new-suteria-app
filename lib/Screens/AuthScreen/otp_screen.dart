@@ -30,12 +30,15 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill {
   int duration = 30;
   String otp = "";
   List<TextEditingController?> otpControllers = [];
+  bool _otpSent = false;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     listenForCode();
     Future.delayed(Duration.zero, () async {
-      if (mounted) {
+      if (mounted && !_otpSent && !authController.isLoadingSendOtp.value) {
+        _otpSent = true;
         authController.mobileNoController.value.text = widget.mobileNo;
         bool success = await authController.forgotOtpSendPostApi(context: context, isResend: false, isFromSignup: widget.isFromSignup);
         if (success) {
@@ -248,15 +251,20 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill {
     );
   }
 
-  submitOTP() {
+  submitOTP() async {
+    if (_isSubmitting || signUpController.buttonLoading.value) {
+      return;
+    }
     if (otp.length == 4) {
       if ((authController.forgotOtpSendModel.value.data?.otp ?? "").isNotEmpty) {
         if (authController.forgotOtpSendModel.value.data!.otp == otp) {
+          _isSubmitting = true;
           if (widget.isFromSignup) {
-            signUpController.postSignUp(context);
+            await signUpController.postSignUp(context);
           } else {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const UpdatePasswordScreen()));
           }
+          _isSubmitting = false;
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: otpIsWrongPleaseEnterValidOtp, txtColor: primaryWhite, size: 12)));
         }

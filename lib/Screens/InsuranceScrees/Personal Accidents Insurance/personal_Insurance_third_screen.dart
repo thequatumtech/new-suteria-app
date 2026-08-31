@@ -129,7 +129,7 @@ class _PersonalInsuranceThirdScreenState extends State<PersonalInsuranceThirdScr
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: personalInsuranceController.selectedDangerousActivity,
@@ -139,7 +139,7 @@ class _PersonalInsuranceThirdScreenState extends State<PersonalInsuranceThirdScr
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   personalInsuranceController.selectedDangerousActivity == yesTxt

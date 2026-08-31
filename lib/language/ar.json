@@ -2200,6 +2200,12 @@
   "select_your": "اختر",
   "Select Your": "اختر",
   "selectYour": "اختر",
+  "Select Your Insurance Limit / Limit of Cover": "اختر سقف التأمين / سقف التغطية",
+  "Select Your Insurance Plan": "اختر برنامج التأمين",
+  "Select Your Office Type": "اختر نوع المكتب",
+  "Select Your Insurance Period": "اختر مدة التأمين",
+  "Select Your Destination": "اختر الوجهة",
+  "Select Your Geographical Area": "اختر المنطقة الجغرافية",
   "select_your_preferred_language": "اختر لغتك المفضلة",
   "Select Your Preferred Language": "اختر لغتك المفضلة",
   "selectlanguage": "اختر لغتك المفضلة",
@@ -4128,5 +4134,8 @@
   "PDF document not available": "مستند PDF غير متوفر",
   "pdf_document_not_available": "مستند PDF غير متوفر",
   "JOD": "د.أ",
-  "jod": "د.أ"
+  "jod": "د.أ",
+  "refundAndCancellation": "استرداد الأموال والإلغاء",
+  "Refund And Cancellation": "استرداد الأموال والإلغاء",
+  "refund_and_cancellation": "استرداد الأموال والإلغاء"
 }

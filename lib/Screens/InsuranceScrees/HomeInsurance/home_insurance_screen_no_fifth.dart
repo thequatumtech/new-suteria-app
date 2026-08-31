@@ -51,7 +51,7 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           });
                         },
                       ),
-                      Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: homeInsuranceController.selectedOption1,
@@ -61,7 +61,7 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           });
                         },
                       ),
-                      Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   if (homeInsuranceController.selectedOption1 == yesTxt)
@@ -84,7 +84,7 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: homeInsuranceController.selectedOption2,
@@ -94,7 +94,7 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   if (homeInsuranceController.selectedOption2 == yesTxt)
@@ -117,7 +117,7 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: homeInsuranceController.selectedOption3,
@@ -127,7 +127,7 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   if(homeInsuranceController.selectedOption3 == yesTxt)

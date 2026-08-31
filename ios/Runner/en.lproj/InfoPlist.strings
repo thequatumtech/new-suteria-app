@@ -1,0 +1,6 @@
+/* English InfoPlist.strings */
+"CFBundleDisplayName" = "Soteria";
+"CFBundleName" = "Soteria";
+"NSCameraUsageDescription" = "This app requires access to camera to take photos.";
+"NSMicrophoneUsageDescription" = "This app requires access to microphone.";
+"NSPhotoLibraryUsageDescription" = "This app requires access to photo library to pick images.";

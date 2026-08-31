@@ -804,6 +804,7 @@ const String pleaseEnterClaimNote = "Please enter claim note";
 const String pleaseUploadDocuments = "Please upload documents";
 const String termsConditions = "Terms & Conditions";
 const String termsConditionsPolicy = "Terms, Conditions & Privacy";
+const String refundAndCancellation = "Refund And Cancellation";
 const String areYouSureYouWantToLogout = "Are you sure you want to Logout?";
 const String selectLanguage = "Select Language";
 const String nationalNumberPassportNumber = "National Number / Passport Number";

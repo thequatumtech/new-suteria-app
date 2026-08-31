@@ -178,7 +178,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     });
                   },
                 ),
-                const Text(yesTxt),
+                AppText(text: yesTxt),
                 Radio(
                   value: noTxt,
                   groupValue: familyMedicalInsuranceController.selectedPregnantOptionMember,
@@ -188,7 +188,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     });
                   },
                 ),
-                const Text(noTxt),
+                AppText(text: noTxt),
               ],
             ),
             if (familyMedicalInsuranceController.selectedPregnantOptionMember == yesTxt) ...[
@@ -277,7 +277,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 });
               },
             ),
-            const Text(yesTxt),
+            AppText(text: yesTxt),
             Radio(
               value: noTxt,
               groupValue: familyMedicalInsuranceController.memberChronicOption[widget.index],
@@ -289,7 +289,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 });
               },
             ),
-            const Text(noTxt),
+            AppText(text: noTxt),
           ],
         ),
         if (familyMedicalInsuranceController.memberChronicOption[widget.index] == yesTxt)MultiSelectDialogField<GetChronicDiseasesList>(
@@ -367,7 +367,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: familyMedicalInsuranceController.memberSelectedPreviousOperationsOption[widget.index],
@@ -377,7 +377,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                 ],
@@ -405,7 +405,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: familyMedicalInsuranceController.memberSelectedPregnantOption[widget.index],
@@ -415,7 +415,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     if (familyMedicalInsuranceController.memberSelectedPregnantOption[widget.index] == yesTxt) ...[
@@ -463,7 +463,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       });
                     },
                   ),
-                  const Text(yesTxt),
+                  AppText(text: yesTxt),
                   Radio(
                     value: noTxt,
                     groupValue: familyMedicalInsuranceController.memberSelectedDangerousActivity[widget.index],
@@ -474,7 +474,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       });
                     },
                   ),
-                  const Text(noTxt),
+                  AppText(text: noTxt),
                 ],
               ),
               familyMedicalInsuranceController.memberSelectedDangerousActivity[widget.index] == yesTxt

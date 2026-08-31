@@ -104,7 +104,7 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                     });
                   },
                 ),
-                const Text(yesTxt),
+                AppText(text: yesTxt),
                 Radio(
                   value: noTxt,
                   groupValue: criticalIllnessInsuranceController.selectedChronicDisease,
@@ -115,7 +115,7 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                     });
                   },
                 ),
-                const Text(noTxt),
+                AppText(text: noTxt),
               ],
             ),
             if (criticalIllnessInsuranceController.selectedChronicDisease == yesTxt) ...[
@@ -165,7 +165,7 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                     });
                   },
                 ),
-                const Text(yesTxt),
+                AppText(text: yesTxt),
                 Radio(
                   value: noTxt,
                   groupValue: criticalIllnessInsuranceController.selectedChronicDisease,
@@ -175,7 +175,7 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                     });
                   },
                 ),
-                const Text(noTxt),
+                AppText(text: noTxt),
               ],
             ),
 
@@ -223,7 +223,7 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                           });
                         },
                       ),
-                      Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: criticalIllnessInsuranceController.selectedOption,
@@ -233,7 +233,7 @@ class _CriticalInsuranceThirdScreenState extends State<CriticalInsuranceThirdScr
                           });
                         },
                       ),
-                      Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                 ],

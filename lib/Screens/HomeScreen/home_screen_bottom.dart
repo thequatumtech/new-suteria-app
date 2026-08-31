@@ -8,6 +8,9 @@ import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'home_screen.dart';
 
 class HomePageBottomNav extends StatefulWidget {
+  final int initialIndex;
+  const HomePageBottomNav({Key? key, this.initialIndex = 0}) : super(key: key);
+
   @override
   _HomePageBottomNavState createState() => _HomePageBottomNavState();
 }
@@ -15,6 +18,12 @@ class HomePageBottomNav extends StatefulWidget {
 class _HomePageBottomNavState extends State<HomePageBottomNav> {
   int bottomBarCurrentIndex = 0;
   int sliderCurrentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    bottomBarCurrentIndex = widget.initialIndex;
+  }
 
   List<Widget> screens = [
     HomePage(),

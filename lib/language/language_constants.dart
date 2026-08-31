@@ -37,8 +37,12 @@ Future<Locale> setLocale(String langCode, [BuildContext? context]) async {
 
 Future<String> getLocale() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String code = prefs.getString(LAGUAGE_CODE) ?? prefs.getString('selected_language') ?? "en";
-  return code;
+  String? saved = prefs.getString(LAGUAGE_CODE) ?? prefs.getString('selected_language');
+  if (saved != null && saved.isNotEmpty) {
+    return saved;
+  }
+  String systemLang = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+  return (systemLang == 'ar') ? 'ar' : 'en';
 }
 
 Locale getLangFromCode(String langCode) {

@@ -121,6 +121,7 @@ class _MobileregisterScreenState extends State<MobileregisterScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => const PrivacyPolicyScreen(
+                                          id: 5,
                                           url: 'https://www.sisirbc.com/terms-conditions.php', title: termsConditions,
                                         ),
                                       ),
@@ -139,6 +140,7 @@ class _MobileregisterScreenState extends State<MobileregisterScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => const PrivacyPolicyScreen(
+                                            id: 6,
                                             url: 'https://www.sisirbc.com/privacy-policy.php', title: privacyPolicyTxt,
                                           ),
                                         ),

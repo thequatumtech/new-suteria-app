@@ -144,7 +144,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: lifeInsuranceController.selectedChronicDisease,
@@ -155,7 +155,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   if (lifeInsuranceController.selectedChronicDisease != null && lifeInsuranceController.selectedChronicDisease == yesTxt) ...[
@@ -209,7 +209,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                 });
                               },
                             ),
-                            const Text(yesTxt),
+                            AppText(text: yesTxt),
                             Radio(
                               value: noTxt,
                               groupValue: lifeInsuranceController.selectedAnyOperation,
@@ -219,7 +219,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                 });
                               },
                             ),
-                            const Text(noTxt),
+                            AppText(text: noTxt),
                           ],
                         ),
                       ],
@@ -246,7 +246,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                 });
                               },
                             ),
-                            const Text(yesTxt),
+                            AppText(text: yesTxt),
                             Radio(
                               value: noTxt,
                               groupValue: lifeInsuranceController.selectedDescline,
@@ -256,7 +256,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                 });
                               },
                             ),
-                            const Text(noTxt),
+                            AppText(text: noTxt),
                           ],
                         ),
                       ],
@@ -283,7 +283,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                 });
                               },
                             ),
-                            const Text(yesTxt),
+                            AppText(text: yesTxt),
                             Radio(
                               value: noTxt,
                               groupValue: lifeInsuranceController.selectedNowAnyPolicy,
@@ -293,7 +293,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                                 });
                               },
                             ),
-                            const Text(noTxt),
+                            AppText(text: noTxt),
                           ],
                         ),
                       ],

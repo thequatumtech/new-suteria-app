@@ -186,7 +186,7 @@ class _IndividualFamilyInsuranceFirstScreenState extends State<IndividualFamilyI
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: familyMedicalInsuranceController.selectAmericanNationality,
@@ -196,7 +196,7 @@ class _IndividualFamilyInsuranceFirstScreenState extends State<IndividualFamilyI
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   familyMedicalInsuranceController.selectAmericanNationality == yesTxt

@@ -2200,6 +2200,12 @@
   "select_your": "Select Your",
   "Select Your": "Select Your",
   "selectYour": "Select Your",
+  "Select Your Insurance Limit / Limit of Cover": "Select Your Insurance Limit / Limit of Cover",
+  "Select Your Insurance Plan": "Select Your Insurance Plan",
+  "Select Your Office Type": "Select Your Office Type",
+  "Select Your Insurance Period": "Select Your Insurance Period",
+  "Select Your Destination": "Select Your Destination",
+  "Select Your Geographical Area": "Select Your Geographical Area",
   "select_your_preferred_language": "Select Your Preferred Language",
   "Select Your Preferred Language": "Select Your Preferred Language",
   "selectlanguage": "Select Your Preferred Language",
@@ -4128,5 +4134,8 @@
   "PDF document not available": "PDF document not available",
   "pdf_document_not_available": "PDF document not available",
   "JOD": "JOD",
-  "jod": "JOD"
+  "jod": "JOD",
+  "refundAndCancellation": "Refund And Cancellation",
+  "Refund And Cancellation": "Refund And Cancellation",
+  "refund_and_cancellation": "Refund And Cancellation"
 }

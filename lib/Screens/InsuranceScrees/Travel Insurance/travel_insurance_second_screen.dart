@@ -123,7 +123,7 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: travelInsuranceController.selectedMultipleCountry,
@@ -133,7 +133,7 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     travelInsuranceController.selectedMultipleCountry == yesTxt
@@ -181,7 +181,7 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: travelInsuranceController.selectedDangerousActivity,
@@ -192,7 +192,7 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     travelInsuranceController.selectedDangerousActivity == yesTxt

@@ -1,0 +1,6 @@
+/* Arabic InfoPlist.strings */
+"CFBundleDisplayName" = "سوتيريا";
+"CFBundleName" = "سوتيريا";
+"NSCameraUsageDescription" = "يحتاج هذا التطبيق إلى الوصول إلى الكاميرا لالتقاط الصور.";
+"NSMicrophoneUsageDescription" = "يحتاج هذا التطبيق إلى الوصول إلى الميكروفون.";
+"NSPhotoLibraryUsageDescription" = "يحتاج هذا التطبيق إلى الوصول إلى مكتبة الصور لاختيار الصور.";

@@ -84,8 +84,10 @@ class ProfileController extends GetxController {
     addcomplaints,
     changePass,
     socialPages,
+    chooseYourLanguage,
     termsConditions,
     privacyPolicyTxt,
+    refundAndCancellation,
     logout,
   ].obs;
 
@@ -104,9 +106,10 @@ class ProfileController extends GetxController {
     addComplints,
     changePassword,
     ourWebsite,
+    translate,
+    termAndCondition,
     privacyPolicy,
     termAndCondition,
-    logouticon,
     logouticon,
   ].obs;
 

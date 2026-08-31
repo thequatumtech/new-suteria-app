@@ -28,6 +28,7 @@ class _CreatePasswordState extends State<CreatePassword> {
 
   bool isChar6 = false;
   bool isSpecialChar = false;
+  bool _isNavigating = false;
 
   checkPassword(String value) {
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -212,6 +213,7 @@ class _CreatePasswordState extends State<CreatePassword> {
                     Obx(
                       () => AppBtnWithColorShades(
                         onTap: () async {
+                          if (_isNavigating) return;
                           await checkPassword(signUpController.password.text);
                           if (signUpController.password.text.isEmpty) {
                             showToast(pleaseEnterPassword, context);
@@ -222,7 +224,10 @@ class _CreatePasswordState extends State<CreatePassword> {
                           } else if (signUpController.password.text != signUpController.conformPassword.text) {
                             showToast(passwordAndConformPasswordNotMatch, context);
                           } else {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen(isFromSignup: true, mobileNo: signUpController.mobileController.value.text)));
+                            _isNavigating = true;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen(isFromSignup: true, mobileNo: signUpController.mobileController.value.text))).then((_) {
+                              _isNavigating = false;
+                            });
                           }
                         },
                         btnTxt: createAccount,

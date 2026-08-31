@@ -20,6 +20,7 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   AuthController authController = Get.put(AuthController());
+  bool _isNavigating = false;
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +89,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     child: AppBtnWithColorShades(
                       isLoad: false,
                       onTap: () {
+                        if (_isNavigating) return;
                         if (authController.mobileNoController.value.text.isEmpty) {
                           showToast(pleaseEnterMobileNo, context);
                         } else {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen(isFromSignup: false, mobileNo: authController.mobileNoController.value.text)));
+                          _isNavigating = true;
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen(isFromSignup: false, mobileNo: authController.mobileNoController.value.text))).then((_) {
+                            _isNavigating = false;
+                          });
                         }
                       },
                       btnTxt: continuE,

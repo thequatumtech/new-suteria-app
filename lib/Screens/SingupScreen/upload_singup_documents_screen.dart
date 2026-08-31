@@ -109,6 +109,7 @@ class _UploadSingUpDocumentsScreenState extends State<UploadSingUpDocumentsScree
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => const PrivacyPolicyScreen(
+                                              id: 5,
                                               url: 'https://www.sisirbc.com/terms-conditions.php', title: termsConditions,
                                             ),
                                           ),
@@ -116,7 +117,6 @@ class _UploadSingUpDocumentsScreenState extends State<UploadSingUpDocumentsScree
                                       },
 
                                     style: TextStyle(color: Colors.blue)),
-                                  TextSpan(text: termsConditions, style: TextStyle(color: Colors.blue)),
                                       TextSpan(text: and),
                                     TextSpan(text: privacyPolicyTxt,
 
@@ -128,6 +128,7 @@ class _UploadSingUpDocumentsScreenState extends State<UploadSingUpDocumentsScree
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => const PrivacyPolicyScreen(
+                                              id: 6,
                                               url: 'https://www.sisirbc.com/privacy-policy.php', title: privacyPolicyTxt,
                                             ),
                                           ),

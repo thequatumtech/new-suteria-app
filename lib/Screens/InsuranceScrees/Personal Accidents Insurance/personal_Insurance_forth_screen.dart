@@ -38,7 +38,7 @@ class _PersonalInsuranceForthScreenState extends State<PersonalInsuranceForthScr
                   });
                 },
               ),
-              const Text(yesTxt),
+              AppText(text: yesTxt),
               Radio(
                 value: noTxt,
                 groupValue: _selectedOption,
@@ -48,7 +48,7 @@ class _PersonalInsuranceForthScreenState extends State<PersonalInsuranceForthScr
                   });
                 },
               ),
-              Text(noTxt),
+              AppText(text: noTxt),
             ],
           ),
           if (_selectedOption == yesTxt)

@@ -290,7 +290,7 @@ class _MarineInsuranceFirstScreenState extends State<MarineInsuranceFirstScreen>
                                       });
                                     },
                                   ),
-                                  const Text(yesTxt),
+                                  AppText(text: yesTxt),
                                   Radio(
                                     value: noTxt,
                                     groupValue: marineInsuranceController.selectedPartnerInTheCompanyOption,
@@ -300,7 +300,7 @@ class _MarineInsuranceFirstScreenState extends State<MarineInsuranceFirstScreen>
                                       });
                                     },
                                   ),
-                                  const Text(noTxt),
+                                  AppText(text: noTxt),
                                 ],
                               ),
                               AppText(text: mariq2, size: 15, txtAlign: TextAlign.start),
@@ -315,7 +315,7 @@ class _MarineInsuranceFirstScreenState extends State<MarineInsuranceFirstScreen>
                                       });
                                     },
                                   ),
-                                  const Text(yesTxt),
+                                  AppText(text: yesTxt),
                                   Radio(
                                     value: noTxt,
                                     groupValue: marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption,
@@ -326,7 +326,7 @@ class _MarineInsuranceFirstScreenState extends State<MarineInsuranceFirstScreen>
                                      /* ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));*/
                                     },
                                   ),
-                                  const Text(noTxt),
+                                  AppText(text: noTxt),
                                 ],
                               ),
                               if (marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption == yesTxt)
@@ -355,7 +355,7 @@ class _MarineInsuranceFirstScreenState extends State<MarineInsuranceFirstScreen>
                                       });
                                     },
                                   ),
-                                  const Text(yesTxt),
+                                  AppText(text: yesTxt),
                                   Radio(
                                     value: noTxt,
                                     groupValue: marineInsuranceController.selectedCompanyRegistrationOption,
@@ -365,7 +365,7 @@ class _MarineInsuranceFirstScreenState extends State<MarineInsuranceFirstScreen>
                                       });
                                     },
                                   ),
-                                  const Text(noTxt),
+                                  AppText(text: noTxt),
                                 ],
                               ),
                               if (marineInsuranceController.selectedCompanyRegistrationOption == noTxt)

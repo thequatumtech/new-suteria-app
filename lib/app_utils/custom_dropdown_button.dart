@@ -35,7 +35,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
         items: widget.items.toSet().toList().map((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value, style: const TextStyle()),
+            child: Text(getTranslated(context, value), style: const TextStyle()),
           );
         }).toList(),
         underline: Container(
@@ -112,7 +112,7 @@ class _CustomDropDownBorderState extends State<CustomDropDownBorder> {
               items: widget.items.toSet().toList().map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: Text(getTranslated(context, value)),
                 );
               }).toList(),
 
@@ -185,7 +185,7 @@ class _CustomDropDownBorderStringDisableState extends State<CustomDropDownBorder
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(
-                    value,
+                    getTranslated(context, value),
                     style: const TextStyle(color: primaryBlack),
                   ),
                 );

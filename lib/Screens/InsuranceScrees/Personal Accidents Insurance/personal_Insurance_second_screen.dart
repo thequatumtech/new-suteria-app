@@ -64,7 +64,7 @@ class _PersonalInsuranceSecondScreenState extends State<PersonalInsuranceSecondS
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: personalInsuranceController.selectedOption1,
@@ -74,7 +74,7 @@ class _PersonalInsuranceSecondScreenState extends State<PersonalInsuranceSecondS
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   if (personalInsuranceController.selectedOption1 == yesTxt)Column(

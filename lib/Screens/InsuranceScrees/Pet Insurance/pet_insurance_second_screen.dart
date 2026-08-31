@@ -113,7 +113,7 @@ class _PetInsuranceSecondScreenState extends State<PetInsuranceSecondScreen> {
                             });
                           },
                         ),
-                        const Text(yesTxt),
+                        AppText(text: yesTxt),
                         Radio(
                           value: noTxt,
                           groupValue: petInsuranceController.selectedPreExistingConditions,
@@ -123,7 +123,7 @@ class _PetInsuranceSecondScreenState extends State<PetInsuranceSecondScreen> {
                             });
                           },
                         ),
-                        const Text(noTxt),
+                        AppText(text: noTxt),
                       ],
                     ),
                     if (petInsuranceController.selectedPreExistingConditions == yesTxt)

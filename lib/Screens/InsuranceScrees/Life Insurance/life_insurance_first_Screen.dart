@@ -176,7 +176,7 @@ class _LifeInsuranceFirstScreenState extends State<LifeInsuranceFirstScreen> {
                           });
                         },
                       ),
-                      const Text(yesTxt),
+                      AppText(text: yesTxt),
                       Radio(
                         value: noTxt,
                         groupValue: lifeInsuranceController.selectAmericanNationality,
@@ -186,7 +186,7 @@ class _LifeInsuranceFirstScreenState extends State<LifeInsuranceFirstScreen> {
                           });
                         },
                       ),
-                      const Text(noTxt),
+                      AppText(text: noTxt),
                     ],
                   ),
                   lifeInsuranceController.selectAmericanNationality == yesTxt
