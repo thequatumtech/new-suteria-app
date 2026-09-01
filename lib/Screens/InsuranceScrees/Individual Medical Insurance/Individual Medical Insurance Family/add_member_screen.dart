@@ -15,6 +15,7 @@ import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/app_utils/custom_dropdown_button.dart';
 import 'package:soperia_user/app_utils/image_upload_widget.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_chronic_disease_model.dart';
 import 'package:soperia_user/model_class/get_dangerous_activities_model.dart';
 import 'package:soperia_user/model_class/get_nationality_model.dart';
@@ -80,7 +81,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           ),
         ),
         AppText(
-          text: "$member ${widget.index + 1} $detail",
+          text: "${getTranslated(context, member)} ${widget.index + 1} ${getTranslated(context, detail)}",
           size: 16,
           fontWeight: FontWeight.bold,
           txtAlign: TextAlign.start,
@@ -178,7 +179,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     });
                   },
                 ),
-                AppText(text: yesTxt),
+                AppText(text: yesTxt, size: 14),
                 Radio(
                   value: noTxt,
                   groupValue: familyMedicalInsuranceController.selectedPregnantOptionMember,
@@ -188,7 +189,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     });
                   },
                 ),
-                AppText(text: noTxt),
+                AppText(text: noTxt, size: 14),
               ],
             ),
             if (familyMedicalInsuranceController.selectedPregnantOptionMember == yesTxt) ...[
@@ -277,7 +278,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 });
               },
             ),
-            AppText(text: yesTxt),
+            AppText(text: yesTxt, size: 14),
             Radio(
               value: noTxt,
               groupValue: familyMedicalInsuranceController.memberChronicOption[widget.index],
@@ -289,14 +290,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 });
               },
             ),
-            AppText(text: noTxt),
+            AppText(text: noTxt, size: 14),
           ],
         ),
         if (familyMedicalInsuranceController.memberChronicOption[widget.index] == yesTxt)MultiSelectDialogField<GetChronicDiseasesList>(
           items: familyMedicalInsuranceController.getChronicDiseasesListMember
-              .map((e) => MultiSelectItem<GetChronicDiseasesList>(e, e.name ?? ''))
+              .map((e) => MultiSelectItem<GetChronicDiseasesList>(e, getTranslated(context, e.name ?? '')))
               .toList(),
-          title: const Text(selectchodiseases),
+          title: Text(getTranslated(context, selectchodiseases)),
+          confirmText: Text(getTranslated(context, "OK"), style: const TextStyle(color: blueShade1)),
+          cancelText: Text(getTranslated(context, "CANCEL"), style: const TextStyle(color: blueShade1)),
           selectedColor: blueShade1,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
@@ -307,9 +310,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             color: Colors.black,
           ),
 
-          buttonText: const Text(
-            selectchodiseases,
-            style: TextStyle(
+          buttonText: Text(
+            getTranslated(context, selectchodiseases),
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
             ),
@@ -367,7 +370,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           });
                         },
                       ),
-                      AppText(text: yesTxt),
+                      AppText(text: yesTxt, size: 14),
                       Radio(
                         value: noTxt,
                         groupValue: familyMedicalInsuranceController.memberSelectedPreviousOperationsOption[widget.index],
@@ -377,7 +380,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           });
                         },
                       ),
-                      AppText(text: noTxt),
+                      AppText(text: noTxt, size: 14),
                     ],
                   ),
                 ],
@@ -405,7 +408,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                             });
                           },
                         ),
-                        AppText(text: yesTxt),
+                        AppText(text: yesTxt, size: 14),
                         Radio(
                           value: noTxt,
                           groupValue: familyMedicalInsuranceController.memberSelectedPregnantOption[widget.index],
@@ -415,7 +418,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                             });
                           },
                         ),
-                        AppText(text: noTxt),
+                        AppText(text: noTxt, size: 14),
                       ],
                     ),
                     if (familyMedicalInsuranceController.memberSelectedPregnantOption[widget.index] == yesTxt) ...[
@@ -463,7 +466,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       });
                     },
                   ),
-                  AppText(text: yesTxt),
+                  AppText(text: yesTxt, size: 14),
                   Radio(
                     value: noTxt,
                     groupValue: familyMedicalInsuranceController.memberSelectedDangerousActivity[widget.index],
@@ -474,7 +477,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       });
                     },
                   ),
-                  AppText(text: noTxt),
+                  AppText(text: noTxt, size: 14),
                 ],
               ),
               familyMedicalInsuranceController.memberSelectedDangerousActivity[widget.index] == yesTxt

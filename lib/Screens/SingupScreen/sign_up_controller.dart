@@ -225,14 +225,14 @@ class SignUpController extends GetxController {
         clearData();
         Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountCreated()));
       } else {
-        String msg = response['message']?.toString() ?? response[messageKey]?.toString() ?? 'Registration failed';
+        String msg = response['message']?.toString() ?? response[messageKey]?.toString() ?? registrationFailed;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: msg, txtColor: primaryWhite, size: 12)));
       }
 
       buttonLoading.value = false;
     } on DioException catch (e) {
       buttonLoading.value = false;
-      String errorMsg = "Something went wrong";
+      String errorMsg = somethingWentWrong;
       if (e.response?.data is Map && e.response?.data['message'] != null) {
         errorMsg = e.response?.data['message'].toString() ?? '';
       } else if (e.response?.statusMessage != null) {
@@ -241,7 +241,7 @@ class SignUpController extends GetxController {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: errorMsg, txtColor: primaryWhite, size: 12)));
     } catch (e) {
       buttonLoading.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.toString(), txtColor: primaryWhite, size: 12)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: somethingWentWrong, txtColor: primaryWhite, size: 12)));
     }
   }
 

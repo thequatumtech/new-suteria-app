@@ -12,6 +12,7 @@ import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class StrokeLine {
   final List<Offset> points;
@@ -855,7 +856,9 @@ class _DigitalSignatureScreenState extends State<DigitalSignatureScreen> {
           child: const Icon(Icons.keyboard_backspace_outlined, color: primaryBlack),
         ),
         title: AppText(
-          text: "${widget.screenTitle} $digitalSignature",
+          text: (Localizations.localeOf(context).languageCode == 'ar' || Get.locale?.languageCode == 'ar')
+              ? "${getTranslated(context, widget.screenTitle)} - ${getTranslated(context, digitalSignature)}"
+              : "${getTranslated(context, widget.screenTitle)} ${getTranslated(context, digitalSignature)}",
           size: 15,
           fontWeight: FontWeight.bold,
           txtColor: deepBluedark,
@@ -913,7 +916,7 @@ class _DigitalSignatureScreenState extends State<DigitalSignatureScreen> {
                                     ),
                                     const SizedBox(height: 2),
                                     AppText(
-                                      text: 'Policy Acceptance & E-Signature',
+                                      text: policyAcceptanceAndESignature,
                                       size: 12,
                                       txtColor: grayshad400,
                                     ),
@@ -932,7 +935,7 @@ class _DigitalSignatureScreenState extends State<DigitalSignatureScreen> {
                                   AppText(text: policyHolder, size: 11, txtColor: grayshad400),
                                   const SizedBox(height: 2),
                                   AppText(
-                                    text: policyHolderName.isNotEmpty ? policyHolderName : 'Policyholder',
+                                    text: policyHolderName.isNotEmpty ? policyHolderName : getTranslated(context, policyHolder),
                                     size: 13,
                                     fontWeight: FontWeight.bold,
                                     txtColor: primaryBlack,
@@ -1048,7 +1051,7 @@ class _DigitalSignatureScreenState extends State<DigitalSignatureScreen> {
                                           Icon(Icons.edit_note, size: 14, color: grayshad400.withOpacity(0.8)),
                                           const SizedBox(width: 4),
                                           Text(
-                                            signAboveLine,
+                                            getTranslated(context, signAboveLine),
                                             style: TextStyle(
                                               fontSize: 11,
                                               color: grayshad400.withOpacity(0.8),
@@ -1152,11 +1155,14 @@ class _DigitalSignatureScreenState extends State<DigitalSignatureScreen> {
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      validation.isValid
-                                          ? signatureValid
-                                          : (_hasAnyDrawing
-                                              ? signatureInvalid
-                                              : 'Pending'),
+                                      getTranslated(
+                                        context,
+                                        validation.isValid
+                                            ? signatureValid
+                                            : (_hasAnyDrawing
+                                                ? signatureInvalid
+                                                : 'Pending'),
+                                      ),
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
@@ -1190,12 +1196,12 @@ class _DigitalSignatureScreenState extends State<DigitalSignatureScreen> {
                                           border: Border.all(color: skyBlueShade2),
                                         ),
                                         child: Row(
-                                          children: const [
-                                            Icon(Icons.undo, size: 14, color: deepBluedark),
-                                            SizedBox(width: 4),
+                                          children: [
+                                            const Icon(Icons.undo, size: 14, color: deepBluedark),
+                                            const SizedBox(width: 4),
                                             Text(
-                                              undoStroke,
-                                              style: TextStyle(
+                                              getTranslated(context, undoStroke),
+                                              style: const TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w600,
                                                 color: deepBluedark,
@@ -1216,12 +1222,12 @@ class _DigitalSignatureScreenState extends State<DigitalSignatureScreen> {
                                           border: Border.all(color: const Color(0xFFFFCDD2)),
                                         ),
                                         child: Row(
-                                          children: const [
-                                            Icon(Icons.delete_outline, size: 14, color: redshad500),
-                                            SizedBox(width: 4),
+                                          children: [
+                                            const Icon(Icons.delete_outline, size: 14, color: redshad500),
+                                            const SizedBox(width: 4),
                                             Text(
-                                              clearSignature,
-                                              style: TextStyle(
+                                              getTranslated(context, clearSignature),
+                                              style: const TextStyle(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w600,
                                                 color: redshad500,
@@ -1251,17 +1257,14 @@ class _DigitalSignatureScreenState extends State<DigitalSignatureScreen> {
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Icon(Icons.info_outline, color: deepBluedark, size: 18),
-                          SizedBox(width: 8),
+                        children: [
+                          const Icon(Icons.info_outline, color: deepBluedark, size: 18),
+                          const SizedBox(width: 8),
                           Expanded(
-                            child: Text(
-                              signatureDeclaration,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF4A4E71),
-                                height: 1.4,
-                              ),
+                            child: AppText(
+                              text: signatureDeclaration,
+                              size: 12,
+                              txtColor: const Color(0xFF4A4E71),
                             ),
                           ),
                         ],

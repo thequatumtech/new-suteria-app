@@ -79,7 +79,7 @@ class _OfficeInsuranceSecondScreenState extends State<OfficeInsuranceSecondScree
                 },
                 items: const [' 1 ', ' 2', ' 3', ' 4 ', ' 5', ' 6'],
                 selectedValue: officeInsuranceController.selectNoOfFloor,
-                dropdownTitle: select + nooffloors,
+                dropdownTitle: selectNoOfFloorsForBuildingVilla,
               ),
               CustomDropDownBorder(
                 onchage: (newValue) {

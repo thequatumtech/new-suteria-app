@@ -9,6 +9,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 import '../../app_utils/Common Widgets/webview_title_url.dart';
 
@@ -74,9 +75,23 @@ class _MobileregisterScreenState extends State<MobileregisterScreen> {
                       height: 18,
                     ),
                     IntlPhoneField(
+                      disableLengthCheck: true,
+                      dropdownIconPosition: IconPosition.trailing,
+                      invalidNumberMessage: getTranslated(context, invalidMobileNumber),
+                      dropdownTextStyle: const TextStyle(fontSize: 14, fontFamily: "Montserrat_Regular"),
+                      style: const TextStyle(fontSize: 14, fontFamily: "Montserrat_Regular"),
+                      flagsButtonMargin: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: InputDecoration(
-                        hintText: entermobileno,
-                        border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black12), borderRadius: BorderRadius.circular(10)),
+                        filled: true,
+                        fillColor: primaryWhite,
+                        hintText: getTranslated(context, entermobileno),
+                        hintStyle: TextStyle(color: skyBlueShade3, fontSize: 14, fontFamily: "Montserrat_Regular"),
+                        errorStyle: const TextStyle(fontSize: 12, fontFamily: "Montserrat_Regular"),
+                        border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: skyBlueShade1), borderRadius: BorderRadius.circular(10)),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: 1, color: skyBlueShade1), borderRadius: BorderRadius.circular(10)),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(width: 1, color: skyBlueShade1), borderRadius: BorderRadius.circular(10)),
+                        errorBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1, color: Colors.red), borderRadius: BorderRadius.circular(10)),
+                        focusedErrorBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1, color: Colors.red), borderRadius: BorderRadius.circular(10)),
                       ),
                       initialCountryCode: 'JO',
                       onChanged: (phone) {
@@ -104,51 +119,51 @@ class _MobileregisterScreenState extends State<MobileregisterScreen> {
                               });
                             },
                           ),
-                           Expanded(
-                            child: Text.rich(
-                                maxLines: 3,
-                                style: TextStyle(fontSize: 10),
-                                TextSpan(children: [
-                                  TextSpan(
-                                    text: bySigningUpYouAgree,
-                                  ),
-                                TextSpan(text: termsConditions,
-                                    recognizer:
+                          Expanded(
+                              child: Text.rich(
+                                  maxLines: 3,
+                                  style: const TextStyle(fontSize: 10, fontFamily: "Montserrat_Regular"),
+                                  TextSpan(children: [
+                                    TextSpan(
+                                      text: getTranslated(context, bySigningUpAgreeTo),
+                                    ),
+                                    TextSpan(text: getTranslated(context, termsConditions),
+                                        recognizer:
 
-                                    TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const PrivacyPolicyScreen(
-                                          id: 5,
-                                          url: 'https://www.sisirbc.com/terms-conditions.php', title: termsConditions,
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                        TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PrivacyPolicyScreen(
+                                                  id: 5,
+                                                  url: 'https://www.sisirbc.com/terms-conditions.php', title: getTranslated(context, termsConditions),
+                                                ),
+                                              ),
+                                            );
+                                          },
 
-                                style: const TextStyle(color: Colors.blue)),
-                              const TextSpan(text: and),
-                              TextSpan(text: privacyPolicyTxt,
+                                        style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600)),
+                                    TextSpan(text: " ${getTranslated(context, and)} "),
+                                    TextSpan(text: getTranslated(context, privacyPolicyTxt),
 
-                                  recognizer:
+                                        recognizer:
 
-                                  TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const PrivacyPolicyScreen(
-                                            id: 6,
-                                            url: 'https://www.sisirbc.com/privacy-policy.php', title: privacyPolicyTxt,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  style: const TextStyle(color: Colors.blue)),
-                                ])),
-                          ),
+                                        TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PrivacyPolicyScreen(
+                                                  id: 6,
+                                                  url: 'https://www.sisirbc.com/privacy-policy.php', title: getTranslated(context, privacyPolicyTxt),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600)),
+                                  ])),
+                            ),
                         ],
                       ),
                     ),
@@ -232,11 +247,12 @@ class _MobileregisterScreenState extends State<MobileregisterScreen> {
                             builder: (context) => const LoginScreen(),
                           ),
                           (route) => false),
-                      child: const Text.rich(
+                      child: Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(text: passwordnotee, style: TextStyle(color: primaryGrey)),
-                            TextSpan(text: login, style: TextStyle(color: blue500)),
+                            TextSpan(text: getTranslated(context, passwordnotee).trim(), style: const TextStyle(color: primaryGrey, fontFamily: "Montserrat_Regular")),
+                            const TextSpan(text: "  "),
+                            TextSpan(text: getTranslated(context, login).trim(), style: const TextStyle(color: blue500, fontWeight: FontWeight.bold, fontFamily: "Montserrat_Regular")),
                           ],
                         ),
                       ),

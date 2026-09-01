@@ -19,6 +19,7 @@ import 'package:soperia_user/app_utils/api_set_up/service_locator.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 @pragma('vm:entry-point')
 void downloadCallback(String id, int status, int progress) {
@@ -165,7 +166,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
             isLoadingSave = false;
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: AppText(text: "PDF URL not found", txtColor: primaryWhite, size: 12)),
+            SnackBar(content: AppText(text: pdfUrlNotFound, txtColor: primaryWhite, size: 12)),
           );
         }
         return;
@@ -201,15 +202,15 @@ class _PolicyPdfState extends State<PolicyPdf> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: AppText(
-                text: 'PDF downloaded successfully: $fileName',
+                text: '${getTranslated(context, pdfDownloadedSuccessfully)}: $fileName',
                 txtColor: primaryWhite,
                 size: 12,
               ),
               action: SnackBarAction(
-                label: 'Share',
+                label: getTranslated(context, share),
                 textColor: Colors.amberAccent,
                 onPressed: () {
-                  Share.shareXFiles([XFile(saveFilePath, mimeType: 'application/pdf', name: fileName)], text: widget.screenTitle);
+                  Share.shareXFiles([XFile(saveFilePath, mimeType: 'application/pdf', name: fileName)], text: getTranslated(context, widget.screenTitle));
                 },
               ),
               duration: const Duration(seconds: 4),
@@ -226,7 +227,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
           isLoadingSave = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: AppText(text: 'Download failed. Please try again.', txtColor: primaryWhite, size: 12)),
+          SnackBar(content: AppText(text: downloadFailedPleaseTryAgain, txtColor: primaryWhite, size: 12)),
         );
       }
     }
@@ -247,7 +248,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
             isLoadingPrint = false;
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: AppText(text: "PDF URL not found", txtColor: primaryWhite, size: 12)),
+            SnackBar(content: AppText(text: pdfUrlNotFound, txtColor: primaryWhite, size: 12)),
           );
         }
         return;
@@ -286,7 +287,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
 
         await Share.shareXFiles(
           [XFile(tempFilePath, mimeType: 'application/pdf', name: fileName)],
-          text: widget.screenTitle.isNotEmpty ? widget.screenTitle : 'Policy Document',
+          text: widget.screenTitle.isNotEmpty ? getTranslated(context, widget.screenTitle) : getTranslated(context, policyDocument),
           sharePositionOrigin: shareOrigin,
         );
       } else {
@@ -296,7 +297,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
       debugPrint('Error sharing PDF: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: AppText(text: 'Failed to share PDF. Please try again.', txtColor: primaryWhite, size: 12)),
+          SnackBar(content: AppText(text: failedToSharePdfPleaseTryAgain, txtColor: primaryWhite, size: 12)),
         );
       }
     } finally {

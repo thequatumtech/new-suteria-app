@@ -8,6 +8,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_dangerous_activities_model.dart';
 
@@ -148,7 +149,7 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
 
                                   travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null && travelInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!='' ? AppText(
                                       text:
-                                          "The Quote is: ${travelInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD",//Term Plan
+                                          "${getTranslated(context, theQuoteIs)}: ${travelInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} ${getTranslated(context, 'JOD')}",
                                       txtColor: deepBlue,
                                       fontWeight: FontWeight.bold,
                                       size: 15):const SizedBox(),

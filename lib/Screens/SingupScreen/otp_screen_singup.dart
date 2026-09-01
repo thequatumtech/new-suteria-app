@@ -10,6 +10,7 @@ import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class OtpScreenSingUp extends StatefulWidget {
   const OtpScreenSingUp({super.key});
@@ -139,14 +140,15 @@ class _OtpScreenSingUpState extends State<OtpScreenSingUp> {
                       ),
                       Row(
                         children: [
-                          const Text.rich(
+                          Text.rich(
                               maxLines: 3,
-                              style: TextStyle(fontSize: 10),
+                              style: const TextStyle(fontSize: 10, fontFamily: "Montserrat_Regular"),
                               TextSpan(children: [
                                 TextSpan(
-                                  text: didnTReceiveTheCode,
+                                  text: getTranslated(context, didnTReceiveTheCode),
                                 ),
-                                TextSpan(text: resend, style: TextStyle(color: Colors.blue)),
+                                const TextSpan(text: "  "),
+                                TextSpan(text: getTranslated(context, resend), style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
                               ])),
                           const Spacer(),
                           Padding(

@@ -155,11 +155,18 @@ class _SelectLanguageState extends State<SelectLanguage> {
                             )),
                   );
                 },
-                child: const Text.rich(
+                child: Text.rich(
                   TextSpan(
                     children: [
-                      TextSpan(text: donTHaveAnAccount, style: TextStyle(color: primaryGrey)),
-                      TextSpan(text: singUp, style: TextStyle(color: blue500)),
+                      TextSpan(
+                        text: getTranslated(context, donTHaveAnAccount).trim(),
+                        style: const TextStyle(color: primaryGrey, fontFamily: "Montserrat_Regular"),
+                      ),
+                      const TextSpan(text: "  "),
+                      TextSpan(
+                        text: getTranslated(context, singUp).trim(),
+                        style: const TextStyle(color: blue500, fontWeight: FontWeight.bold, fontFamily: "Montserrat_Regular"),
+                      ),
                     ],
                   ),
                 ),

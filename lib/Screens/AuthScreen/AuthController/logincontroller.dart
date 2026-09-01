@@ -64,7 +64,7 @@ class LoginController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       print("LOGIN ERROR: $e");
-      String errorMsg = "Something went wrong";
+      String errorMsg = somethingWentWrong;
       if (e is DioException && e.response != null) {
         print("LOGIN DIO RESPONSE: ${e.response?.data}");
         errorMsg = e.response?.data?[messageKey]?.toString() ?? e.response?.statusMessage ?? errorMsg;

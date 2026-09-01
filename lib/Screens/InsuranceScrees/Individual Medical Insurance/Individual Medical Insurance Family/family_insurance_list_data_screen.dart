@@ -8,6 +8,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_chronic_disease_model.dart';
 
 class FamilyMedicalInsuranceListDataScreen extends StatefulWidget {
@@ -181,7 +182,7 @@ class _FamilyMedicalInsuranceListDataScreenState extends State<FamilyMedicalInsu
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null &&familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=''?  AppText(text: "The Quote is: ${familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15):const SizedBox(),
+                                  familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null &&familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=''?  AppText(text: "${getTranslated(context, theQuoteIs)}: ${familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} ${getTranslated(context, 'JOD')}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15):const SizedBox(),
                                  // AppText(text: "Starting from ₹${familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

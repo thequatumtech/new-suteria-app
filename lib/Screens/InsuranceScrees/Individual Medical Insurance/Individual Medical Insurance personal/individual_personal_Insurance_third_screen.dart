@@ -9,6 +9,7 @@ import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/app_utils/custom_dropdown_button.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_in_patient_deductible_model.dart';
 import 'package:soperia_user/model_class/get_number_of_visit_model.dart';
 import 'package:soperia_user/model_class/get_out_patient_deductible_model.dart';
@@ -119,7 +120,7 @@ class _IndividualPersonalInsuranceThirdScreenState extends State<IndividualPerso
                           });
                         },
                         items: individualMedicalInsuranceController.getInPatientList
-                            .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack))))
+                            .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack))))
                             .toList(),
                         selectedValue: individualMedicalInsuranceController.getInPatientList.any((element) => element.id == individualMedicalInsuranceController.selectInPatient.value.id)
                             ? individualMedicalInsuranceController.selectInPatient.value.id ?? 0
@@ -145,7 +146,7 @@ class _IndividualPersonalInsuranceThirdScreenState extends State<IndividualPerso
                           });
                         },
                         items: individualMedicalInsuranceController.getOutPatientList
-                            .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack))))
+                            .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack))))
                             .toList(),
                         selectedValue: individualMedicalInsuranceController.getOutPatientList.any((element) => element.id == individualMedicalInsuranceController.selectOutPatient.value.id)
                             ? individualMedicalInsuranceController.selectOutPatient.value.id ?? 0
@@ -164,7 +165,7 @@ class _IndividualPersonalInsuranceThirdScreenState extends State<IndividualPerso
                           });
                         },
                         items: individualMedicalInsuranceController.getNoOfVisitsList
-                            .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name.toString() ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack))))
+                            .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name.toString() ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack))))
                             .toList(),
                         selectedValue: individualMedicalInsuranceController.getNoOfVisitsList.any((element) => element.id == individualMedicalInsuranceController.selectNoOfVisits.value.id)
                             ? individualMedicalInsuranceController.selectNoOfVisits.value.id ?? 0
@@ -190,7 +191,7 @@ class _IndividualPersonalInsuranceThirdScreenState extends State<IndividualPerso
                         .toSet() // remove duplicate planName
                         .map((name) => DropdownMenuItem(
                               value: name,
-                              child: Text(name!, style: const TextStyle(fontSize: 15, color: primaryBlack)),
+                              child: Text(getTranslated(context, name!), style: const TextStyle(fontSize: 15, color: primaryBlack)),
                             ))
                         .toList(),
                     selectedValue: individualMedicalInsuranceController.insuranceLimitList.any((element) => element.limit == individualMedicalInsuranceController.selectedInsuranceLimit.value.limit)

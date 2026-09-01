@@ -16,6 +16,7 @@ import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/app_utils/custom_dropdown_button.dart';
 import 'package:soperia_user/app_utils/image_upload_widget.dart';
 import 'package:soperia_user/app_utils/utils.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_chronic_disease_model.dart';
 import 'package:soperia_user/model_class/get_dangerous_activities_model.dart';
 
@@ -52,7 +53,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                     });
                   },
                 ),
-                AppText(text: yesTxt),
+                AppText(text: yesTxt, size: 14),
                 Radio(
                   value: noTxt,
                   groupValue: individualMedicalInsuranceController.selectedExistingMedicalInsurancePolicyOption,
@@ -62,7 +63,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                     });
                   },
                 ),
-                AppText(text: noTxt),
+                AppText(text: noTxt, size: 14),
               ],
             ),
             if (individualMedicalInsuranceController.selectedExistingMedicalInsurancePolicyOption == yesTxt) ...[
@@ -187,7 +188,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                     });
                   },
                 ),
-                AppText(text: yesTxt),
+                AppText(text: yesTxt, size: 14),
                 Radio(
                   value: noTxt,
                   groupValue: individualMedicalInsuranceController.selectedChronicDisease,
@@ -198,14 +199,16 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                     });
                   },
                 ),
-                AppText(text: noTxt),
+                AppText(text: noTxt, size: 14),
               ],
             ),
 
             if (individualMedicalInsuranceController.selectedChronicDisease == yesTxt) ...[
               MultiSelectDialogField<GetChronicDiseasesList>(
-                items: individualMedicalInsuranceController.getChronicDiseasesList.map((e) => MultiSelectItem<GetChronicDiseasesList>(e, e.name ?? '')).toList(),
-                title: const Text(selectchodiseases),
+                items: individualMedicalInsuranceController.getChronicDiseasesList.map((e) => MultiSelectItem<GetChronicDiseasesList>(e, getTranslated(context, e.name ?? ''))).toList(),
+                title: Text(getTranslated(context, selectchodiseases)),
+                confirmText: Text(getTranslated(context, "OK"), style: const TextStyle(color: blueShade1)),
+                cancelText: Text(getTranslated(context, "CANCEL"), style: const TextStyle(color: blueShade1)),
                 selectedColor: blueShade1,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -215,9 +218,9 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                   Icons.keyboard_arrow_down_outlined,
                   color: Colors.black,
                 ),
-                buttonText: const Text(
-                  selectchodiseases,
-                  style: TextStyle(
+                buttonText: Text(
+                  getTranslated(context, selectchodiseases),
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -254,7 +257,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                         });
                       },
                     ),
-                    AppText(text: yesTxt),
+                    AppText(text: yesTxt, size: 14),
                     Radio(
                       value: noTxt,
                       groupValue: individualMedicalInsuranceController.selectedPreviousOperationsOption,
@@ -264,7 +267,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                         });
                       },
                     ),
-                    AppText(text: noTxt),
+                    AppText(text: noTxt, size: 14),
                   ],
                 ),
               ],
@@ -293,7 +296,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                           });
                         },
                       ),
-                      AppText(text: yesTxt),
+                      AppText(text: yesTxt, size: 14),
                       Radio(
                         value: noTxt,
                         groupValue: individualMedicalInsuranceController.selectedPregnantOption,
@@ -303,7 +306,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                           });
                         },
                       ),
-                      AppText(text: noTxt),
+                      AppText(text: noTxt, size: 14),
                     ],
                   ),
                   if (individualMedicalInsuranceController.selectedPregnantOption == yesTxt) ...[
@@ -344,7 +347,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                     });
                   },
                 ),
-                AppText(text: yesTxt),
+                AppText(text: yesTxt, size: 14),
                 Radio(
                   value: noTxt,
                   groupValue: individualMedicalInsuranceController.selectDangerousActivity,
@@ -354,7 +357,7 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                     });
                   },
                 ),
-                AppText(text: noTxt),
+                AppText(text: noTxt, size: 14),
               ],
             ),
             /*individualMedicalInsuranceController.selectDangerousActivity == yesTxt
@@ -383,8 +386,10 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
 
             if (individualMedicalInsuranceController.selectDangerousActivity == yesTxt) ...[
               MultiSelectDialogField<GetDangerousActivitiesList>(
-                items: individualMedicalInsuranceController.getDangerousActivitiesList.map((e) => MultiSelectItem<GetDangerousActivitiesList>(e, e.name ?? '')).toList(),
-                title: const Text(dangerousActivities),
+                items: individualMedicalInsuranceController.getDangerousActivitiesList.map((e) => MultiSelectItem<GetDangerousActivitiesList>(e, getTranslated(context, e.name ?? ''))).toList(),
+                title: Text(getTranslated(context, dangerousActivities)),
+                confirmText: Text(getTranslated(context, "OK"), style: const TextStyle(color: blueShade1)),
+                cancelText: Text(getTranslated(context, "CANCEL"), style: const TextStyle(color: blueShade1)),
                 selectedColor: blueShade1,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -394,9 +399,9 @@ class _IndividualPersonalInsuranceSecondScreenState extends State<IndividualPers
                   Icons.keyboard_arrow_down_outlined,
                   color: Colors.black,
                 ),
-                buttonText: const Text(
-                  dangerousActivities,
-                  style: TextStyle(
+                buttonText: Text(
+                  getTranslated(context, dangerousActivities),
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),

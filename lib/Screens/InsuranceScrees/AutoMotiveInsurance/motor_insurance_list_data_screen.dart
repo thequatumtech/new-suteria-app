@@ -8,6 +8,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class MotorInsuranceListDataScreen extends StatefulWidget {
   String screenTitle = '';
@@ -136,7 +137,7 @@ class _MotorInsuranceListDataScreenState extends State<MotorInsuranceListDataScr
                                   const SizedBox(height: 5),
                                   AppText(text: motorInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                   AppText(
-                                      text: "The Quote is: ${motorInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD",
+                                      text: "${getTranslated(context, theQuoteIs)}: ${motorInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} ${getTranslated(context, 'JOD')}",
                                       txtColor: deepBlue,
                                       fontWeight: FontWeight.bold,
                                       size: 15),

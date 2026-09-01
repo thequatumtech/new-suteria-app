@@ -278,55 +278,107 @@ class _MarineInsuranceFirstScreenState extends State<MarineInsuranceFirstScreen>
                                 lable: companyownertele,
                                 controller: marineInsuranceController.companyOwnerTelephoneNoController.value,
                               ),
-                              AppText(text: mariq1, size: 15, txtAlign: TextAlign.center),
+                              AppText(text: mariq1, size: 15, txtAlign: TextAlign.start),
+                              const SizedBox(height: 4),
                               Row(
                                 children: <Widget>[
-                                  Radio(
-                                    value: yesTxt,
-                                    groupValue: marineInsuranceController.selectedPartnerInTheCompanyOption,
-                                    onChanged: (value) {
+                                  InkWell(
+                                    onTap: () {
                                       setState(() {
-                                        marineInsuranceController.selectedPartnerInTheCompanyOption = value!;
+                                        marineInsuranceController.selectedPartnerInTheCompanyOption = yesTxt;
                                       });
                                     },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Radio<String>(
+                                          value: yesTxt,
+                                          groupValue: marineInsuranceController.selectedPartnerInTheCompanyOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              marineInsuranceController.selectedPartnerInTheCompanyOption = value!;
+                                            });
+                                          },
+                                        ),
+                                        AppText(text: yesTxt, size: 15, fontWeight: FontWeight.w500),
+                                      ],
+                                    ),
                                   ),
-                                  AppText(text: yesTxt),
-                                  Radio(
-                                    value: noTxt,
-                                    groupValue: marineInsuranceController.selectedPartnerInTheCompanyOption,
-                                    onChanged: (value) {
+                                  const SizedBox(width: 24),
+                                  InkWell(
+                                    onTap: () {
                                       setState(() {
-                                        marineInsuranceController.selectedPartnerInTheCompanyOption = value!;
+                                        marineInsuranceController.selectedPartnerInTheCompanyOption = noTxt;
                                       });
                                     },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Radio<String>(
+                                          value: noTxt,
+                                          groupValue: marineInsuranceController.selectedPartnerInTheCompanyOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              marineInsuranceController.selectedPartnerInTheCompanyOption = value!;
+                                            });
+                                          },
+                                        ),
+                                        AppText(text: noTxt, size: 15, fontWeight: FontWeight.w500),
+                                      ],
+                                    ),
                                   ),
-                                  AppText(text: noTxt),
                                 ],
                               ),
+                              const SizedBox(height: 10),
                               AppText(text: mariq2, size: 15, txtAlign: TextAlign.start),
+                              const SizedBox(height: 4),
                               Row(
                                 children: <Widget>[
-                                  Radio(
-                                    value: yesTxt,
-                                    groupValue: marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption,
-                                    onChanged: (value) {
+                                  InkWell(
+                                    onTap: () {
                                       setState(() {
-                                        marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption = value!;
+                                        marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption = yesTxt;
                                       });
                                     },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Radio<String>(
+                                          value: yesTxt,
+                                          groupValue: marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption = value!;
+                                            });
+                                          },
+                                        ),
+                                        AppText(text: yesTxt, size: 15, fontWeight: FontWeight.w500),
+                                      ],
+                                    ),
                                   ),
-                                  AppText(text: yesTxt),
-                                  Radio(
-                                    value: noTxt,
-                                    groupValue: marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption,
-                                    onChanged: (value) {
+                                  const SizedBox(width: 24),
+                                  InkWell(
+                                    onTap: () {
                                       setState(() {
-                                        marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption = value!;
+                                        marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption = noTxt;
                                       });
-                                     /* ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));*/
                                     },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Radio<String>(
+                                          value: noTxt,
+                                          groupValue: marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption = value!;
+                                            });
+                                          },
+                                        ),
+                                        AppText(text: noTxt, size: 15, fontWeight: FontWeight.w500),
+                                      ],
+                                    ),
                                   ),
-                                  AppText(text: noTxt),
                                 ],
                               ),
                               if (marineInsuranceController.selectedAuthorizedToIssueInsurancePolicyOption == yesTxt)
@@ -342,30 +394,56 @@ class _MarineInsuranceFirstScreenState extends State<MarineInsuranceFirstScreen>
                                     ),
                                   ],
                                 ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               AppText(text: mariq5, size: 15, txtAlign: TextAlign.start),
+                              const SizedBox(height: 4),
                               Row(
                                 children: <Widget>[
-                                  Radio(
-                                    value: yesTxt,
-                                    groupValue: marineInsuranceController.selectedCompanyRegistrationOption,
-                                    onChanged: (value) {
+                                  InkWell(
+                                    onTap: () {
                                       setState(() {
-                                        marineInsuranceController.selectedCompanyRegistrationOption = value!;
+                                        marineInsuranceController.selectedCompanyRegistrationOption = yesTxt;
                                       });
                                     },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Radio<String>(
+                                          value: yesTxt,
+                                          groupValue: marineInsuranceController.selectedCompanyRegistrationOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              marineInsuranceController.selectedCompanyRegistrationOption = value!;
+                                            });
+                                          },
+                                        ),
+                                        AppText(text: yesTxt, size: 15, fontWeight: FontWeight.w500),
+                                      ],
+                                    ),
                                   ),
-                                  AppText(text: yesTxt),
-                                  Radio(
-                                    value: noTxt,
-                                    groupValue: marineInsuranceController.selectedCompanyRegistrationOption,
-                                    onChanged: (value) {
+                                  const SizedBox(width: 24),
+                                  InkWell(
+                                    onTap: () {
                                       setState(() {
-                                        marineInsuranceController.selectedCompanyRegistrationOption = value!;
+                                        marineInsuranceController.selectedCompanyRegistrationOption = noTxt;
                                       });
                                     },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Radio<String>(
+                                          value: noTxt,
+                                          groupValue: marineInsuranceController.selectedCompanyRegistrationOption,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              marineInsuranceController.selectedCompanyRegistrationOption = value!;
+                                            });
+                                          },
+                                        ),
+                                        AppText(text: noTxt, size: 15, fontWeight: FontWeight.w500),
+                                      ],
+                                    ),
                                   ),
-                                  AppText(text: noTxt),
                                 ],
                               ),
                               if (marineInsuranceController.selectedCompanyRegistrationOption == noTxt)

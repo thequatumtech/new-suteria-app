@@ -10,6 +10,7 @@ import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/app_utils/custom_dropdown_button.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_dangerous_activities_model.dart';
 import 'package:soperia_user/model_class/get_geographical_area_model.dart';
@@ -78,7 +79,7 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                         });
                       },
                       items: travelInsuranceController.departureFromList
-                          .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: TextStyle(fontSize: 15, color: primaryBlack))))
+                          .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack))))
                           .toList(),
                       selectedValue: travelInsuranceController.departureFromList.any((element) => element.id == travelInsuranceController.selectDepartureFrom.value.id)
                           ? travelInsuranceController.selectDepartureFrom.value.id ?? 0
@@ -101,7 +102,7 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                         );
                       },
                       items: filteredDestinationList
-                          .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack))))
+                          .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack))))
                           .toList(),
                       selectedValue: filteredDestinationList.any((element) => element.id == travelInsuranceController.selectDestination.value.id)
                           ? travelInsuranceController.selectDestination.value.id ?? 0
@@ -138,8 +139,10 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                     ),
                     travelInsuranceController.selectedMultipleCountry == yesTxt
                         ? MultiSelectDialogField<GetCountryList>(
-                            items: travelInsuranceController.additionalDestinationList.map((e) => MultiSelectItem<GetCountryList>(e, e.name ?? '')).toList(),
-                            title: const Text(selectMultipleDestination),
+                            items: travelInsuranceController.additionalDestinationList.map((e) => MultiSelectItem<GetCountryList>(e, getTranslated(context, e.name ?? ''))).toList(),
+                            title: Text(getTranslated(context, selectMultipleDestination)),
+                            confirmText: Text(getTranslated(context, "OK"), style: const TextStyle(color: blueShade1)),
+                            cancelText: Text(getTranslated(context, "CANCEL"), style: const TextStyle(color: blueShade1)),
                             selectedColor: blueShade1,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
@@ -149,9 +152,9 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                               Icons.keyboard_arrow_down_rounded,
                               color: Colors.black,
                             ),
-                            buttonText: const Text(
-                              selectMultipleDestination,
-                              style: TextStyle(
+                            buttonText: Text(
+                              getTranslated(context, selectMultipleDestination),
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
                               ),
@@ -197,8 +200,10 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                     ),
                     travelInsuranceController.selectedDangerousActivity == yesTxt
                         ? MultiSelectDialogField<GetDangerousActivitiesList>(
-                            items: travelInsuranceController.getDangerousActivitiesList.map((e) => MultiSelectItem<GetDangerousActivitiesList>(e, e.name ?? '')).toList(),
-                            title: const Text(dangerousActivities),
+                            items: travelInsuranceController.getDangerousActivitiesList.map((e) => MultiSelectItem<GetDangerousActivitiesList>(e, getTranslated(context, e.name ?? ''))).toList(),
+                            title: Text(getTranslated(context, dangerousActivities)),
+                            confirmText: Text(getTranslated(context, "OK"), style: const TextStyle(color: blueShade1)),
+                            cancelText: Text(getTranslated(context, "CANCEL"), style: const TextStyle(color: blueShade1)),
                             selectedColor: blueShade1,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
@@ -208,9 +213,9 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                               Icons.keyboard_arrow_down_rounded,
                               color: Colors.black,
                             ),
-                            buttonText: const Text(
-                              dangerousActivities,
-                              style: TextStyle(
+                            buttonText: Text(
+                              getTranslated(context, dangerousActivities),
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
                               ),
@@ -239,7 +244,7 @@ class _TravelInsuranceSecondScreenState extends State<TravelInsuranceSecondScree
                         );
                       },
                       items: travelInsuranceController.geoGraphicalAreaList
-                          .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack))))
+                          .map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack))))
                           .toList(),
                       selectedValue: travelInsuranceController.geoGraphicalAreaList.any((element) => element.id == travelInsuranceController.selectGeographicalArea.value.id)
                           ? travelInsuranceController.selectGeographicalArea.value.id ?? 0

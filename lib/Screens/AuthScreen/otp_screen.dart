@@ -12,6 +12,7 @@ import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class OtpScreen extends StatefulWidget {
   final bool isFromSignup;
@@ -190,13 +191,14 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill {
                                     : null,
                                 child: Text.rich(
                                     maxLines: 3,
-                                    style: const TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 12, fontFamily: "Montserrat_Regular"),
                                     TextSpan(children: [
-                                      const TextSpan(
-                                        text: didnTReceiveTheCode,
-                                      ),
                                       TextSpan(
-                                        text: resend,
+                                        text: getTranslated(context, didnTReceiveTheCode),
+                                      ),
+                                      const TextSpan(text: "  "),
+                                      TextSpan(
+                                        text: getTranslated(context, resend),
                                         style: TextStyle(
                                           color: duration <= 0 ? Colors.blue : Colors.grey,
                                           fontWeight: duration <= 0 ? FontWeight.bold : FontWeight.normal,
@@ -269,7 +271,7 @@ class _OtpScreenState extends State<OtpScreen> with CodeAutoFill {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: otpIsWrongPleaseEnterValidOtp, txtColor: primaryWhite, size: 12)));
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "Something went wrong please try again", txtColor: primaryWhite, size: 12)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: somethingWentWrongPleaseTryAgain, txtColor: primaryWhite, size: 12)));
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterOTP, txtColor: primaryWhite, size: 12)));

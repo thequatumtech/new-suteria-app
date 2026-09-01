@@ -88,8 +88,12 @@ class _WorkDetailSingupScreenState extends State<WorkDetailProfileScreen> {
                               });
                             },
                           ),
-                          const Expanded(
-                            child: Text.rich(maxLines: 3, style: TextStyle(fontSize: 14), TextSpan(children: [TextSpan(text: areYouResidingInTheSameCountry)])),
+                          Expanded(
+                            child: AppText(
+                              text: areYouResidingInTheSameCountry,
+                              size: 14,
+                              maxLine: 3,
+                            ),
                           ),
                         ],
                       ),

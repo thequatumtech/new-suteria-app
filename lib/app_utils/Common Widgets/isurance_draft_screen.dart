@@ -8,6 +8,7 @@ import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class InsuranceDraftPdfScreen extends StatefulWidget {
@@ -58,7 +59,9 @@ class _InsuranceDraftPdfScreenState extends State<InsuranceDraftPdfScreen> {
               },
               child: const Icon(Icons.keyboard_backspace_outlined)),
           title: AppText(
-            text: "${widget.screenTitle} Draft Policy",
+            text: (Localizations.localeOf(context).languageCode == 'ar' || Get.locale?.languageCode == 'ar')
+                ? "${getTranslated(context, draftPolicy)} ${getTranslated(context, widget.screenTitle)}"
+                : "${getTranslated(context, widget.screenTitle)} ${getTranslated(context, draftPolicy)}",
             size: 16,
             fontWeight: FontWeight.bold,
             maxLine: 1,
@@ -90,15 +93,12 @@ class _InsuranceDraftPdfScreenState extends State<InsuranceDraftPdfScreen> {
                                 });
                               },
                             ),
-                            const Expanded(
-                              child: Text.rich(
-                                  maxLines: 3,
-                                  style: TextStyle(fontSize: 14),
-                                  TextSpan(children: [
-                                    TextSpan(
-                                      text: iAcceptAllTerms,
-                                    ),
-                                  ])),
+                            Expanded(
+                              child: AppText(
+                                text: iAcceptAllTerms,
+                                size: 14,
+                                maxLine: 3,
+                              ),
                             ),
                           ],
                         ),

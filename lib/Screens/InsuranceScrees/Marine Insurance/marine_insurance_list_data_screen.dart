@@ -8,6 +8,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_dangerous_activities_model.dart';
 
@@ -148,7 +149,7 @@ class _MarineInsuranceListDataScreenState extends State<MarineInsuranceListDataS
                                   ),
                                   const SizedBox(height: 5),
                                   AppText(text: marineInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
-                                  AppText(text: "The Quote is:  ${marineInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} JOD", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
+                                  AppText(text: "${getTranslated(context, theQuoteIs)}: ${marineInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} ${getTranslated(context, 'JOD')}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                 //  AppText(text: "Starting from ₹${marineInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),

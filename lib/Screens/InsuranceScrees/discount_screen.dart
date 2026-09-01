@@ -205,89 +205,30 @@ class _DiscountScreenState extends State<DiscountScreen> {
                       ),
                       draftPdfController.getDiscountAmountModel.value.data != null
                           ? Padding(
-                              padding: const EdgeInsets.only(top: 26, left: 14, right: 14),
-                              child: Row(
+                              padding: const EdgeInsets.only(top: 20, left: 14, right: 14),
+                              child: Column(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      textWidget(netPremium, grayshad400),
-                                      textWidget(issuanceFees, grayshad400),
-                                      textWidget(salesTax, grayshad400),
-                                      textWidget(cbjTxt, grayshad400),
-                                      textWidget(salesTaxCbjTxt, grayshad400),
-                                      textWidget(stamps, grayshad400),
-                                      textWidget(totalPremium, grayshad400),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      textWidget(
-                                          draftPdfController.getDiscountAmountModel.value.data!.netPremium.toString(),
-                                          deepBluedark),
-                                      textWidget(draftPdfController.getDiscountAmountModel.value.data!.fees.toString(),
-                                          deepBluedark),
-                                      textWidget(
-                                          draftPdfController.getDiscountAmountModel.value.data!.salesTax.toString(),
-                                          deepBluedark),
-                                      textWidget(
-                                          draftPdfController.getDiscountAmountModel.value.data!.cbj.toString(),
-                                          deepBluedark),
-                                      textWidget(
-                                          draftPdfController.getDiscountAmountModel.value.data!.salesTaxCbj.toString(),
-                                          deepBluedark),
-                                      textWidget(
-                                          draftPdfController.getDiscountAmountModel.value.data!.stamps.toString(),
-                                          deepBluedark),
-                                      textWidget(
-                                          draftPdfController.getDiscountAmountModel.value.data!.totalNetPremium
-                                              .toString(),
-                                          deepBluedark),
-                                    ],
-                                  ),
+                                  _buildSummaryRow(netPremium, draftPdfController.getDiscountAmountModel.value.data!.netPremium.toString()),
+                                  _buildSummaryRow(issuanceFees, draftPdfController.getDiscountAmountModel.value.data!.fees.toString()),
+                                  _buildSummaryRow(salesTax, draftPdfController.getDiscountAmountModel.value.data!.salesTax.toString()),
+                                  _buildSummaryRow(cbjTxt, draftPdfController.getDiscountAmountModel.value.data!.cbj.toString()),
+                                  _buildSummaryRow(salesTaxCbjTxt, draftPdfController.getDiscountAmountModel.value.data!.salesTaxCbj.toString()),
+                                  _buildSummaryRow(stamps, draftPdfController.getDiscountAmountModel.value.data!.stamps.toString()),
+                                  _buildSummaryRow(totalPremium, draftPdfController.getDiscountAmountModel.value.data!.totalNetPremium.toString()),
                                 ],
                               ),
                             )
                           : Padding(
-                              padding: const EdgeInsets.only(top: 26, left: 14, right: 14),
-                              child: Row(
+                              padding: const EdgeInsets.only(top: 20, left: 14, right: 14),
+                              child: Column(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      textWidget(netPremium, grayshad400),
-                                      textWidget(issuanceFees, grayshad400),
-                                      textWidget(salesTax, grayshad400),
-                                      textWidget(cbjTxt, grayshad400),
-                                      textWidget(salesTaxCbjTxt, grayshad400),
-                                      textWidget(stamps, grayshad400),
-                                      textWidget(totalPremium, grayshad400),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      textWidget(
-                                          draftPdfController.postInsuranceModel.value.data?.netPremium.toString()??'',
-                                          deepBluedark),
-                                      textWidget(draftPdfController.postInsuranceModel.value.data?.fees.toString()??'',
-                                          deepBluedark),
-                                      textWidget(draftPdfController.postInsuranceModel.value.data?.salesTax.toString()??'',
-                                          deepBluedark),
-                                      textWidget(draftPdfController.postInsuranceModel.value.data?.cbj.toString()??'',
-                                          deepBluedark),
-                                      textWidget(draftPdfController.postInsuranceModel.value.data?.salesTaxCbj.toString()??'',
-                                          deepBluedark),
-                                      textWidget(draftPdfController.postInsuranceModel.value.data?.stamps.toString()??'',
-                                          deepBluedark),
-                                      textWidget(
-                                          draftPdfController.postInsuranceModel.value.data?.grossPremium.toString()??'',
-                                          deepBluedark),
-                                    ],
-                                  ),
+                                  _buildSummaryRow(netPremium, draftPdfController.postInsuranceModel.value.data?.netPremium.toString() ?? ''),
+                                  _buildSummaryRow(issuanceFees, draftPdfController.postInsuranceModel.value.data?.fees.toString() ?? ''),
+                                  _buildSummaryRow(salesTax, draftPdfController.postInsuranceModel.value.data?.salesTax.toString() ?? ''),
+                                  _buildSummaryRow(cbjTxt, draftPdfController.postInsuranceModel.value.data?.cbj.toString() ?? ''),
+                                  _buildSummaryRow(salesTaxCbjTxt, draftPdfController.postInsuranceModel.value.data?.salesTaxCbj.toString() ?? ''),
+                                  _buildSummaryRow(stamps, draftPdfController.postInsuranceModel.value.data?.stamps.toString() ?? ''),
+                                  _buildSummaryRow(totalPremium, draftPdfController.postInsuranceModel.value.data?.grossPremium.toString() ?? ''),
                                 ],
                               ),
                             )
@@ -464,6 +405,34 @@ class _DiscountScreenState extends State<DiscountScreen> {
         }
       });
     });
+  }
+
+  Widget _buildSummaryRow(String name, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: AppText(
+              text: name,
+              size: 14,
+              txtColor: grayshad400,
+              fontWeight: FontWeight.bold,
+              txtAlign: TextAlign.start,
+            ),
+          ),
+          const SizedBox(width: 8),
+          AppText(
+            text: value,
+            size: 15,
+            txtColor: deepBluedark,
+            fontWeight: FontWeight.bold,
+            txtAlign: TextAlign.end,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget textWidget(String name, Color color) {

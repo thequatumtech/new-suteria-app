@@ -8,6 +8,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 import 'package:soperia_user/model_class/personal_accident_insurance_model.dart';
 
@@ -124,7 +125,7 @@ class _PersonalAccidentInsuranceListDataScreenState extends State<PersonalAccide
                                   AppText(text: item.planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                   item.limit != null && item.limit.toString().isNotEmpty
                                       ? AppText(
-                                          text: "The Quote is: ${item.grossPremium ?? ''} JOD",
+                                          text: "${getTranslated(context, theQuoteIs)}: ${item.grossPremium ?? ''} ${getTranslated(context, 'JOD')}",
                                           txtColor: deepBlue,
                                           fontWeight: FontWeight.bold,
                                           size: 15)

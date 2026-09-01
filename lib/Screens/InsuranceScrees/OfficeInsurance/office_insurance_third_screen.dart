@@ -11,6 +11,7 @@ import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/image_upload_widget.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class OfficeInsuranceThirdScreen extends StatefulWidget {
   Function onNext;
@@ -312,7 +313,7 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                           borderSide: BorderSide(color: skyBlueShade1),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        hintText: pleaseChooseFromTheList,
+                        hintText: getTranslated(context, pleaseChooseFromTheList),
                       ),
                       chipDecoration: const ChipDecoration(wrap: true),
                       dropdownDecoration: const DropdownDecoration(maxHeight: 200),

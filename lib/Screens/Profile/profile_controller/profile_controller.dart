@@ -276,7 +276,7 @@ class ProfileController extends GetxController {
       isLoadingPost.value = false;
     } on DioException catch (e) {
       isLoadingPost.value = false;
-      String errorMsg = "Something went wrong";
+      String errorMsg = somethingWentWrong;
       if (e.response?.data is Map && e.response?.data['message'] != null) {
         errorMsg = e.response?.data['message'].toString() ?? '';
       } else if (e.response?.statusMessage != null) {
@@ -286,7 +286,7 @@ class ProfileController extends GetxController {
       print(e);
     } catch (e) {
       isLoadingPost.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.toString(), txtColor: primaryWhite, size: 12)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: somethingWentWrong, txtColor: primaryWhite, size: 12)));
       print(e);
     }
   }

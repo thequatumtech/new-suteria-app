@@ -12,6 +12,8 @@ import 'package:soperia_user/app_utils/custome.dart';
 import 'package:soperia_user/app_utils/file_upload_gallary.dart';
 import 'package:soperia_user/app_utils/image_upload_widget.dart';
 
+import 'package:soperia_user/language/language_constants.dart';
+
 import '../../app_utils/Common Widgets/webview_title_url.dart';
 
 class UploadSingUpDocumentsScreen extends StatefulWidget {
@@ -93,50 +95,50 @@ class _UploadSingUpDocumentsScreenState extends State<UploadSingUpDocumentsScree
                                 },
                               ),
                                Expanded(
-                                child: Text.rich(
-                                    maxLines: 3,
-                                    style: TextStyle(fontSize: 10),
-                                    TextSpan(children: [
-                                      TextSpan(
-                                        text: bySigningUpYouAgree,
-                                      ),
-                                    TextSpan(text: termsConditions,
-                                        recognizer:
+                                  child: Text.rich(
+                                      maxLines: 3,
+                                      style: const TextStyle(fontSize: 10, fontFamily: "Montserrat_Regular"),
+                                      TextSpan(children: [
+                                        TextSpan(
+                                          text: getTranslated(context, bySigningUpAgreeTo),
+                                        ),
+                                      TextSpan(text: getTranslated(context, termsConditions),
+                                          recognizer:
 
-                                        TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => const PrivacyPolicyScreen(
-                                              id: 5,
-                                              url: 'https://www.sisirbc.com/terms-conditions.php', title: termsConditions,
+                                          TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PrivacyPolicyScreen(
+                                                id: 5,
+                                                url: 'https://www.sisirbc.com/terms-conditions.php', title: getTranslated(context, termsConditions),
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
+                                          );
+                                        },
 
-                                    style: TextStyle(color: Colors.blue)),
-                                      TextSpan(text: and),
-                                    TextSpan(text: privacyPolicyTxt,
+                                      style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600)),
+                                        TextSpan(text: " ${getTranslated(context, and)} "),
+                                      TextSpan(text: getTranslated(context, privacyPolicyTxt),
 
-                                        recognizer:
+                                          recognizer:
 
-                                        TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => const PrivacyPolicyScreen(
-                                              id: 6,
-                                              url: 'https://www.sisirbc.com/privacy-policy.php', title: privacyPolicyTxt,
+                                          TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PrivacyPolicyScreen(
+                                                id: 6,
+                                                url: 'https://www.sisirbc.com/privacy-policy.php', title: getTranslated(context, privacyPolicyTxt),
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    style: TextStyle(color: Colors.blue)),
-                                    ])),
-                              ),
+                                          );
+                                        },
+                                      style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600)),
+                                      ])),
+                                ),
                             ],
                           ),
                         ),

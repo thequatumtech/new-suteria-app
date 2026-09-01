@@ -97,26 +97,51 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
               ),
               Row(
                 children: <Widget>[
-                  Radio(
-                    value: yesTxt,
-                    groupValue: marineInsuranceController.selectedMultipleCountry,
-                    onChanged: (value) {
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedMultipleCountry = value!;
+                        marineInsuranceController.selectedMultipleCountry = yesTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: yesTxt,
+                          groupValue: marineInsuranceController.selectedMultipleCountry,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedMultipleCountry = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: yesTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: yesTxt),
-                  Radio(
-                    value: noTxt,
-                    groupValue: marineInsuranceController.selectedMultipleCountry,
-                    onChanged: (value) {
+                  const SizedBox(width: 24),
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedMultipleCountry = value!;
+                        marineInsuranceController.selectedMultipleCountry = noTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: noTxt,
+                          groupValue: marineInsuranceController.selectedMultipleCountry,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedMultipleCountry = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: noTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: noTxt),
                 ],
               ),
               marineInsuranceController.selectedMultipleCountry == yesTxt
@@ -155,27 +180,53 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
               AppText(text: areYouShippingDangerousGoods, size: 15),
               Row(
                 children: <Widget>[
-                  Radio(
-                    value: yesTxt,
-                    groupValue: marineInsuranceController.selectedDangerousActivity,
-                    onChanged: (value) {
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedDangerousActivity = value!;
+                        marineInsuranceController.selectedDangerousActivity = yesTxt;
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: yesTxt,
+                          groupValue: marineInsuranceController.selectedDangerousActivity,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedDangerousActivity = value!;
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));
+                            });
+                          },
+                        ),
+                        AppText(text: yesTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: yesTxt),
-                  Radio(
-                    value: noTxt,
-                    groupValue: marineInsuranceController.selectedDangerousActivity,
-                    onChanged: (value) {
+                  const SizedBox(width: 24),
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedDangerousActivity = value!;
+                        marineInsuranceController.selectedDangerousActivity = noTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: noTxt,
+                          groupValue: marineInsuranceController.selectedDangerousActivity,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedDangerousActivity = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: noTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: noTxt),
                 ],
               ),
 
@@ -286,79 +337,118 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
               ),
               const SizedBox(height: 12),
               Align(
-                alignment: Alignment.topLeft,
+                alignment: AlignmentDirectional.topStart,
                 child: AppText(
                   text: marineq4,
                   size: 15,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 4),
               Row(
                 children: <Widget>[
-                  Radio(
-                    value: yesTxt,
-                    groupValue: marineInsuranceController.selectedExistingInsurancePolicyOption,
-                    onChanged: (value) {
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedExistingInsurancePolicyOption = value!;
-                       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: dangerousGoodsErrorMSG, txtColor: primaryWhite, size: 12)));
+                        marineInsuranceController.selectedExistingInsurancePolicyOption = yesTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: yesTxt,
+                          groupValue: marineInsuranceController.selectedExistingInsurancePolicyOption,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedExistingInsurancePolicyOption = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: yesTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: yesTxt),
-                  Radio(
-                    value: noTxt,
-                    groupValue: marineInsuranceController.selectedExistingInsurancePolicyOption,
-                    onChanged: (value) {
+                  const SizedBox(width: 24),
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedExistingInsurancePolicyOption = value!;
+                        marineInsuranceController.selectedExistingInsurancePolicyOption = noTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: noTxt,
+                          groupValue: marineInsuranceController.selectedExistingInsurancePolicyOption,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedExistingInsurancePolicyOption = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: noTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: noTxt),
                 ],
               ),
-           /*   if (marineInsuranceController.selectedExistingInsurancePolicyOption == yesTxt)
-                Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    AppTextfield(
-                      controller: marineInsuranceController.nameOfInsuranceCompanyAndExpiryController.value,
-                      hint: homen1,
-                      lable: homen1,
-                    ),
-                  ],
-                ),*/
               const SizedBox(height: 10),
               Align(
-                alignment: Alignment.topLeft,
+                alignment: AlignmentDirectional.topStart,
                 child: AppText(
                   text: mariq4,
                   size: 15,
                 ),
               ),
+              const SizedBox(height: 4),
               Row(
                 children: <Widget>[
-                  Radio(
-                    value: yesTxt,
-                    groupValue: marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption,
-                    onChanged: (value) {
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption = value!;
+                        marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption = yesTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: yesTxt,
+                          groupValue: marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: yesTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: yesTxt),
-                  Radio(
-                    value: noTxt,
-                    groupValue: marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption,
-                    onChanged: (value) {
+                  const SizedBox(width: 24),
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption = value!;
+                        marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption = noTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: noTxt,
+                          groupValue: marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: noTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: noTxt),
                 ],
               ),
               if (marineInsuranceController.selectedInsuranceCompanyDeclinedToIssueOption == yesTxt)
@@ -373,35 +463,62 @@ class _MarineInsuranceThridScreenState extends State<MarineInsuranceThridScreen>
                     ),
                   ],
                 ),
+              const SizedBox(height: 10),
               Align(
-                alignment: Alignment.topLeft,
+                alignment: AlignmentDirectional.topStart,
                 child: AppText(
                   text: homeq3,
                   size: 15,
                 ),
               ),
+              const SizedBox(height: 4),
               Row(
                 children: <Widget>[
-                  Radio(
-                    value: yesTxt,
-                    groupValue: marineInsuranceController.selectedClaimsAccidentsInPastYearOption,
-                    onChanged: (value) {
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedClaimsAccidentsInPastYearOption = value!;
+                        marineInsuranceController.selectedClaimsAccidentsInPastYearOption = yesTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: yesTxt,
+                          groupValue: marineInsuranceController.selectedClaimsAccidentsInPastYearOption,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedClaimsAccidentsInPastYearOption = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: yesTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: yesTxt),
-                  Radio(
-                    value: noTxt,
-                    groupValue: marineInsuranceController.selectedClaimsAccidentsInPastYearOption,
-                    onChanged: (value) {
+                  const SizedBox(width: 24),
+                  InkWell(
+                    onTap: () {
                       setState(() {
-                        marineInsuranceController.selectedClaimsAccidentsInPastYearOption = value!;
+                        marineInsuranceController.selectedClaimsAccidentsInPastYearOption = noTxt;
                       });
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(
+                          value: noTxt,
+                          groupValue: marineInsuranceController.selectedClaimsAccidentsInPastYearOption,
+                          onChanged: (value) {
+                            setState(() {
+                              marineInsuranceController.selectedClaimsAccidentsInPastYearOption = value!;
+                            });
+                          },
+                        ),
+                        AppText(text: noTxt, size: 15, fontWeight: FontWeight.w500),
+                      ],
+                    ),
                   ),
-                  AppText(text: noTxt),
                 ],
               ),
               if (marineInsuranceController.selectedClaimsAccidentsInPastYearOption == yesTxt)

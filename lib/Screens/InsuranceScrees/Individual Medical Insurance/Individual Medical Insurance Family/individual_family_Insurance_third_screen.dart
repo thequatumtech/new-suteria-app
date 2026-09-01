@@ -9,6 +9,7 @@ import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/app_utils/custom_dropdown_button.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_in_patient_deductible_model.dart';
 import 'package:soperia_user/model_class/get_number_of_visit_model.dart';
 import 'package:soperia_user/model_class/get_out_patient_deductible_model.dart';
@@ -122,7 +123,7 @@ class _IndividualFamilyInsuranceThirdScreenState extends State<IndividualFamilyI
                             // profileController.selectNationality = newValue;
                           });
                         },
-                        items: familyMedicalInsuranceController.getInPatientList.map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
+                        items: familyMedicalInsuranceController.getInPatientList.map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
                         selectedValue: familyMedicalInsuranceController.getInPatientList.any((element) => element.id == familyMedicalInsuranceController.selectInPatient.value.id) ? familyMedicalInsuranceController.selectInPatient.value.id ?? 0 : null,
                       )
                     ],
@@ -145,7 +146,7 @@ class _IndividualFamilyInsuranceThirdScreenState extends State<IndividualFamilyI
                             // profileController.selectNationality = newValue;
                           });
                         },
-                        items: familyMedicalInsuranceController.getOutPatientList.map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
+                        items: familyMedicalInsuranceController.getOutPatientList.map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
                         selectedValue: familyMedicalInsuranceController.getOutPatientList.any((element) => element.id == familyMedicalInsuranceController.selectOutPatient.value.id) ? familyMedicalInsuranceController.selectOutPatient.value.id ?? 0 : null,
                       ),
                       CustomDropDownBorder1(
@@ -161,7 +162,7 @@ class _IndividualFamilyInsuranceThirdScreenState extends State<IndividualFamilyI
                             // profileController.selectNationality = newValue;
                           });
                         },
-                        items: familyMedicalInsuranceController.getNoOfVisitsList.map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(item.name.toString() ?? '', style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
+                        items: familyMedicalInsuranceController.getNoOfVisitsList.map((item) => DropdownMenuItem(value: item.id ?? 0, child: Text(getTranslated(context, item.name.toString() ?? ''), style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),
                         selectedValue: familyMedicalInsuranceController.getNoOfVisitsList.any((element) => element.id == familyMedicalInsuranceController.selectNoOfVisits.value.id) ? familyMedicalInsuranceController.selectNoOfVisits.value.id ?? 0 : null,
                       ),
                     ],
@@ -184,7 +185,7 @@ class _IndividualFamilyInsuranceThirdScreenState extends State<IndividualFamilyI
                   .toSet()  // remove duplicate planName
                   .map((name) => DropdownMenuItem(
                 value: name,
-                child: Text(name!, style: const TextStyle(fontSize: 15, color: primaryBlack)),
+                child: Text(getTranslated(context, name!), style: const TextStyle(fontSize: 15, color: primaryBlack)),
               ))
                   .toList(),
               /* items: familyMedicalInsuranceController.insuranceLimitList.map((item) => DropdownMenuItem(value: item.limit ?? 0, child: Text(item.limit.toString() ?? '0', style: const TextStyle(fontSize: 15, color: primaryBlack)))).toList(),

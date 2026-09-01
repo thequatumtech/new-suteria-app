@@ -14,6 +14,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_city_model.dart';
 import 'package:soperia_user/model_class/get_district_model.dart';
 import 'package:soperia_user/model_class/get_insurance_current_model.dart';
@@ -357,7 +358,7 @@ class OfficeInsuranceController extends GetxController {
       for (int i = 0; i < protectionSystemList.length; i++) {
         final id = protectionSystemList.value[i].id ?? 0;
         if (seenIds.add(id)) {
-          protectionSystemListDrop.add(DropdownItem(label: protectionSystemList[i].name ?? '', value: id));
+          protectionSystemListDrop.add(DropdownItem(label: getTranslated(context, protectionSystemList[i].name ?? ''), value: id));
         }
       }
     } on DioError catch (e) {

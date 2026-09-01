@@ -7,6 +7,7 @@ import 'package:soperia_user/app_utils/app_button.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class InsurancePdfScreen extends StatefulWidget {
@@ -52,7 +53,7 @@ class _InsurancePdfScreenState extends State<InsurancePdfScreen> {
               },
               child: const Icon(Icons.keyboard_backspace_outlined)),
           title: AppText(
-            text: "${widget.screenTitle} $termsConditionsPolicy",
+            text: "${getTranslated(context, widget.screenTitle)} - ${getTranslated(context, termsConditionsPolicy)}",
             size: 14,
             fontWeight: FontWeight.bold,
             maxLine: 1,
@@ -88,15 +89,12 @@ class _InsurancePdfScreenState extends State<InsurancePdfScreen> {
                               });
                             },
                           ),
-                          const Expanded(
-                            child: Text.rich(
-                                maxLines: 3,
-                                style: TextStyle(fontSize: 14),
-                                TextSpan(children: [
-                                  TextSpan(
-                                    text: iAcceptAllTermsConditions,
-                                  ),
-                                ])),
+                          Expanded(
+                            child: AppText(
+                              text: iAcceptAllTermsConditions,
+                              size: 14,
+                              maxLine: 3,
+                            ),
                           ),
                         ],
                       ),

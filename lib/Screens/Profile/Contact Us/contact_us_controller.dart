@@ -14,6 +14,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/file_upload_gallary.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/chat_model.dart';
 import 'package:dio/dio.dart' as m;
 
@@ -525,7 +526,7 @@ class ContactUsController extends GetxController {
   }
 
   // WhatsApp-style Date & Time Formatters (converts UTC to local device region/time)
-  String formatDateLabel(String createdAt) {
+  String formatDateLabel(String createdAt, [BuildContext? context]) {
     if (createdAt.isEmpty) return '';
     try {
       final msgDate = parseUtcToLocal(createdAt);
@@ -535,8 +536,8 @@ class ContactUsController extends GetxController {
       bool isSameDay(DateTime a, DateTime b) =>
           a.year == b.year && a.month == b.month && a.day == b.day;
 
-      if (isSameDay(msgDate, now)) return 'Today';
-      if (isSameDay(msgDate, yesterday)) return 'Yesterday';
+      if (isSameDay(msgDate, now)) return getTranslated(context, 'Today');
+      if (isSameDay(msgDate, yesterday)) return getTranslated(context, 'Yesterday');
 
       return '${msgDate.day.toString().padLeft(2, '0')}/'
           '${msgDate.month.toString().padLeft(2, '0')}/'
@@ -546,13 +547,13 @@ class ContactUsController extends GetxController {
     }
   }
 
-  String formatTimeLabel(String createdAt) {
+  String formatTimeLabel(String createdAt, [BuildContext? context]) {
     if (createdAt.isEmpty) return '';
     try {
       final d = parseUtcToLocal(createdAt);
       final hour = d.hour % 12 == 0 ? 12 : d.hour % 12;
       final minute = d.minute.toString().padLeft(2, '0');
-      final ampm = d.hour >= 12 ? 'PM' : 'AM';
+      final ampm = d.hour >= 12 ? getTranslated(context, 'PM') : getTranslated(context, 'AM');
       return '$hour:$minute $ampm';
     } catch (e) {
       return createdAt;

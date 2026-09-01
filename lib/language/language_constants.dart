@@ -87,11 +87,27 @@ String getTranslated(BuildContext? context, String key) {
   value = _localizedValues[trimmed];
   if (value != null && value.isNotEmpty) return value;
 
-  // 3. Lowercase match
+  // 3. Dynamic Deductible Pattern: e.g. "0% Deductible", "5% Deductible", "Deductible 0%", "Deductible 10%"
+  final deductibleRegex1 = RegExp(r'^(\d+\.?\d*%\s*)deductible$', caseSensitive: false);
+  final deductibleRegex2 = RegExp(r'^deductible\s*(\d+\.?\d*%\s*)$', caseSensitive: false);
+  final match1 = deductibleRegex1.firstMatch(trimmed);
+  final match2 = deductibleRegex2.firstMatch(trimmed);
+  if (match1 != null || match2 != null) {
+    String percent = (match1?.group(1) ?? match2?.group(1) ?? '').trim();
+    String deductibleWord = _localizedValues['Deductible'] ?? _localizedValues['deductible'] ?? 'Deductible';
+    bool isAr = (languageCode == 'ar') || (context != null && Localizations.localeOf(context).languageCode == 'ar') || deductibleWord.contains(RegExp(r'[\u0600-\u06FF]'));
+    if (isAr) {
+      return "$deductibleWord $percent";
+    } else {
+      return "$percent $deductibleWord";
+    }
+  }
+
+  // 4. Lowercase match
   value = _localizedValues[trimmed.toLowerCase()];
   if (value != null && value.isNotEmpty) return value;
 
-  // 4. Normalized whitespace match
+  // 5. Normalized whitespace match
   String singleSpaced = trimmed.replaceAll(RegExp(r'\s+'), ' ');
   value = _localizedValues[singleSpaced];
   if (value != null && value.isNotEmpty) return value;

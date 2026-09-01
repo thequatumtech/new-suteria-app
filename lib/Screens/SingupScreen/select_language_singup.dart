@@ -7,6 +7,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class SingupSelectLanguage extends StatefulWidget {
   const SingupSelectLanguage({super.key});
@@ -148,11 +149,12 @@ class _SingupSelectLanguageState extends State<SingupSelectLanguage> {
                             builder: (context) => const MobileregisterScreen(),
                           ),
                           (route) => false),
-                      child: const Text.rich(
+                      child: Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(text: passwordnotee, style: TextStyle(color: primaryGrey)),
-                            TextSpan(text: login, style: TextStyle(color: blue500)),
+                            TextSpan(text: getTranslated(context, passwordnotee).trim(), style: const TextStyle(color: primaryGrey, fontFamily: "Montserrat_Regular")),
+                            const TextSpan(text: "  "),
+                            TextSpan(text: getTranslated(context, login).trim(), style: const TextStyle(color: blue500, fontWeight: FontWeight.bold, fontFamily: "Montserrat_Regular")),
                           ],
                         ),
                       ),

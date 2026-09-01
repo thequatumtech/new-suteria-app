@@ -5,6 +5,7 @@ import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class ImageUploadWidget extends StatelessWidget {
   String? txt;
@@ -101,20 +102,28 @@ class ImageUploadWidgetSubText extends StatelessWidget {
 
 
           RichText(
+            textAlign: TextAlign.center,
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: txt ?? uploadYourDocumentHere,
-                  style: TextStyle(fontWeight: FontWeight.w100,color: Colors.black),
-                ),
-                TextSpan(
-                  text: "   (${subTxt})",
-                  style: TextStyle(
-                    color: Colors.black,
+                  text: getTranslated(context, txt ?? uploadYourDocumentHere),
+                  style: const TextStyle(
                     fontWeight: FontWeight.w100,
-                    /*fontSize: 11,*/
+                    color: Colors.black,
+                    fontFamily: "Montserrat_Regular",
+                    fontSize: 14,
                   ),
                 ),
+                if (subTxt != null && subTxt!.isNotEmpty)
+                  TextSpan(
+                    text: "   (${getTranslated(context, subTxt!)})",
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w100,
+                      fontFamily: "Montserrat_Regular",
+                      fontSize: 14,
+                    ),
+                  ),
               ],
             ),
           ),

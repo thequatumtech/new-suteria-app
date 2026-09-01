@@ -38,7 +38,7 @@ class _IndividualFamilyInsuranceForthScreenState extends State<IndividualFamilyI
                   });
                 },
               ),
-              AppText(text: yesTxt),
+              AppText(text: yesTxt, size: 14),
               Radio(
                 value: noTxt,
                 groupValue: _selectedOption,
@@ -48,7 +48,7 @@ class _IndividualFamilyInsuranceForthScreenState extends State<IndividualFamilyI
                   });
                 },
               ),
-              AppText(text: noTxt),
+              AppText(text: noTxt, size: 14),
             ],
           ),
           if (_selectedOption == yesTxt)

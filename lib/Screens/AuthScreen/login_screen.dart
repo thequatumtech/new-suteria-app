@@ -12,6 +12,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -35,58 +36,42 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 50,
                 ),
-                Row(
-                  children: [
-                    Container(
-                      height: 40,
-                      width: 35,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(image: AssetImage(splashImg)),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 35,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(image: AssetImage(splashImg)),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    AppText(
-                      text: sis,
-                      txtColor: Colors.blue.shade700,
-                      size: 25,
-                      fontWeight: FontWeight.bold,
-                    )
-                  ],
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      AppText(
+                        text: sis,
+                        txtColor: Colors.blue.shade700,
+                        size: 25,
+                        fontWeight: FontWeight.bold,
+                      )
+                    ],
+                  ),
                 ),
                 const SizedBox(
                   height: 30,
                 ),
-                Row(
-                  children: [
-                    AppText(text: welcome, size: 25, fontWeight: FontWeight.bold),
-                  ],
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: AppText(text: welcome, size: 25, fontWeight: FontWeight.bold),
                 ),
-                Row(
-                  children: [
-                    AppText(text: note, size: 15, maxLine: 2, fontWeight: FontWeight.w200),
-                  ],
+                const SizedBox(height: 6),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: AppText(text: note, size: 15, maxLine: 3, fontWeight: FontWeight.w300),
                 ),
-                /*      const SizedBox(
-                  height: 18,
-                ),
-                IntlPhoneField(
-                  controller: loginController.phoneno,
-                  decoration: InputDecoration(
-                    hintText: entermobileno,
-                    border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black12), borderRadius: BorderRadius.circular(10)),
-                  ),
-                  initialCountryCode: 'JO',
-                  onChanged: (phone) {
-                    print(phone.completeNumber);
-                  },
-                ),*/
-                /*AppText(
-                  text: or,
-                  size: 15,
-                  fontWeight: FontWeight.bold,
-                ),*/
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   child: AppTextfield(controller: loginController.emailController, hint: enterEmailId, lable: enterEmailId),
@@ -108,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 12),
                 Align(
-                    alignment: Alignment.centerRight,
+                    alignment: AlignmentDirectional.centerEnd,
                     child: InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ResetPasswordScreen()));
@@ -118,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Checkbox(
                         value: loginController.check.value,
@@ -130,44 +116,44 @@ class _LoginScreenState extends State<LoginScreen> {
                       Expanded(
                         child: Text.rich(
                             maxLines: 3,
-                            style: TextStyle(fontSize: 11),
+                            style: const TextStyle(fontSize: 11, fontFamily: "Montserrat_Regular"),
                             TextSpan(children: [
                               TextSpan(
-                                text: bySigningUpYouAgree,
+                                text: getTranslated(context, bySigningUpAgreeTo),
                               ),
                               TextSpan(
-                                  text: termsConditions,
+                                  text: getTranslated(context, termsConditions),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const PrivacyPolicyScreen(
+                                          builder: (context) => PrivacyPolicyScreen(
                                             id: 5,
                                             url: 'https://www.sisirbc.com/terms-conditions.php',
-                                            title: termsConditions,
+                                            title: getTranslated(context, termsConditions),
                                           ),
                                         ),
                                       );
                                     },
-                                  style: TextStyle(color: Colors.blue)),
-                              TextSpan(text: and),
+                                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600)),
+                              TextSpan(text: " ${getTranslated(context, and)} "),
                               TextSpan(
-                                  text: privacyPolicyTxt,
+                                  text: getTranslated(context, privacyPolicyTxt),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const PrivacyPolicyScreen(
+                                          builder: (context) => PrivacyPolicyScreen(
                                             id: 6,
                                             url: 'https://www.sisirbc.com/privacy-policy.php',
-                                            title: privacyPolicyTxt,
+                                            title: getTranslated(context, privacyPolicyTxt),
                                           ),
                                         ),
                                       );
                                     },
-                                  style: TextStyle(color: Colors.blue)),
+                                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600)),
                             ])),
                       ),
                     ],
@@ -176,17 +162,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 Obx(
                   () => AppBtnWithColorShades(
                     onTap: () async {
-                      /* if (loginController.phoneno.text == "" && loginController.emailController.text == "") {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "Please enter phoneno or Email",txtColor: primaryWhite,size: 12,)));
-                      } else if (loginController.passwordController.text == "") {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text:  "Please enter Password",txtColor: primaryWhite,size: 12,)));
-                      }
-                      else if (loginController.check.value==false) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text:  "Please Accept Terms and Conditions",txtColor: primaryWhite,size: 12,)));
-                      }
-                      else {
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePageBottomNav()), (route) => false);
-                      }*/
                       if (!loginController.isLoadingButton.value) {
                         loginController.isLoading.value ? null : loginController.loginValidation(context);
                         loginController.isLoadingButton.value = true;
@@ -203,64 +178,26 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                /*   Row(
-                  children: [
-                    Expanded(child: Divider()),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: AppText(text: loginwith, size: 12, txtColor: primaryGreyShade3),
-                    ),
-                    Expanded(child: Divider()),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: AssetImage(google)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(image: AssetImage(fblogo)),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: AssetImage(applelogo)),
-                      ),
-                    ),
-                  ],
-                ),*/
-
                 InkWell(
                   onTap:
-                      () => /*Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MobileregisterScreen(),
-                      ),
-                       (route) => false),*/
+                      () =>
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => SingupScreen(),
                               )),
-                  child: const Text.rich(
+                  child: Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(text: donTHaveAnAccount, style: TextStyle(color: primaryGrey)),
-                        TextSpan(text: singUp, style: TextStyle(color: blue500)),
+                        TextSpan(
+                          text: getTranslated(context, donTHaveAnAccount).trim(),
+                          style: const TextStyle(color: primaryGrey, fontFamily: "Montserrat_Regular"),
+                        ),
+                        const TextSpan(text: "  "),
+                        TextSpan(
+                          text: getTranslated(context, singUp).trim(),
+                          style: const TextStyle(color: blue500, fontWeight: FontWeight.bold, fontFamily: "Montserrat_Regular"),
+                        ),
                       ],
                     ),
                   ),

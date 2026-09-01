@@ -10,6 +10,7 @@ import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/app_textfileds.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/custome.dart';
+import 'package:soperia_user/language/language_constants.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -72,9 +73,23 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                         IntlPhoneField(
                           controller: authController.mobileNoController.value,
+                          disableLengthCheck: true,
+                          dropdownIconPosition: IconPosition.trailing,
+                          invalidNumberMessage: getTranslated(context, invalidMobileNumber),
+                          dropdownTextStyle: const TextStyle(fontSize: 14, fontFamily: "Montserrat_Regular"),
+                          style: const TextStyle(fontSize: 14, fontFamily: "Montserrat_Regular"),
+                          flagsButtonMargin: const EdgeInsets.symmetric(horizontal: 8),
                           decoration: InputDecoration(
-                            hintText: entermobileno,
-                            border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black12), borderRadius: BorderRadius.circular(10)),
+                            filled: true,
+                            fillColor: primaryWhite,
+                            hintText: getTranslated(context, entermobileno),
+                            hintStyle: TextStyle(color: skyBlueShade3, fontSize: 14, fontFamily: "Montserrat_Regular"),
+                            errorStyle: const TextStyle(fontSize: 12, fontFamily: "Montserrat_Regular"),
+                            border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: skyBlueShade1), borderRadius: BorderRadius.circular(10)),
+                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: 1, color: skyBlueShade1), borderRadius: BorderRadius.circular(10)),
+                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(width: 1, color: skyBlueShade1), borderRadius: BorderRadius.circular(10)),
+                            errorBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1, color: Colors.red), borderRadius: BorderRadius.circular(10)),
+                            focusedErrorBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1, color: Colors.red), borderRadius: BorderRadius.circular(10)),
                           ),
                           initialCountryCode: 'JO',
                           onChanged: (phone) {

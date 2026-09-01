@@ -14,6 +14,7 @@ import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/app_utils/custom_dropdown_button.dart';
 import 'package:soperia_user/app_utils/image_upload_widget.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_nationality_model.dart';
 
@@ -195,7 +196,7 @@ class _TraveInsuranceFirstScreenState extends State<TraveInsuranceFirstScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: AppText(
-                            text: "$member ${i + 1} $detail",
+                            text: "${getTranslated(context, member)} ${i + 1} ${getTranslated(context, detail)}",
                             size: 16,
                             fontWeight: FontWeight.bold,
                             txtAlign: TextAlign.start,

@@ -6,6 +6,7 @@ import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/chat_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -104,7 +105,7 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
-                      item.fileName ?? 'Attachment',
+                      item.fileName ?? getTranslated(context, 'Attachment'),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -188,13 +189,12 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final ChatMessageItem item = liveMessages[index];
-                                    final String currentDateLabel = contactUsController.formatDateLabel(item.createdAt);
-                                    final String prevDateLabel = index > 0 ? contactUsController.formatDateLabel(liveMessages[index - 1].createdAt) : '';
+                                    final String currentDateLabel = contactUsController.formatDateLabel(item.createdAt, context);
+                                    final String prevDateLabel = index > 0 ? contactUsController.formatDateLabel(liveMessages[index - 1].createdAt, context) : '';
                                     final bool showDateHeader = index == 0 || (currentDateLabel.isNotEmpty && currentDateLabel != prevDateLabel);
-                                    final String timeLabel = contactUsController.formatTimeLabel(item.createdAt);
+                                    final String timeLabel = contactUsController.formatTimeLabel(item.createdAt, context);
 
                                     return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         if (showDateHeader)
                                           Padding(
@@ -215,69 +215,49 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                                               ),
                                             ),
                                           ),
-                                        const SizedBox(height: 4),
-                                        item.isClientMessage
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(right: 5, left: 45, top: 4, bottom: 4),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                  children: [
-                                                    Align(
-                                                      alignment: Alignment.topRight,
-                                                      child: Container(
-                                                        decoration: const BoxDecoration(
-                                                          color: deepBluedark,
-                                                          borderRadius: BorderRadius.only(
-                                                            bottomLeft: Radius.circular(12),
-                                                            bottomRight: Radius.circular(12),
-                                                            topLeft: Radius.circular(12),
-                                                          ),
-                                                        ),
-                                                        padding: const EdgeInsets.all(12),
-                                                        child: _buildBubbleContent(item),
-                                                      ),
+                                        Align(
+                                          alignment: item.isClientMessage
+                                              ? AlignmentDirectional.centerEnd
+                                              : AlignmentDirectional.centerStart,
+                                          child: Container(
+                                            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                            constraints: BoxConstraints(
+                                              maxWidth: MediaQuery.of(context).size.width * 0.78,
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: item.isClientMessage
+                                                  ? CrossAxisAlignment.end
+                                                  : CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: item.isClientMessage ? deepBluedark : grayshad200,
+                                                    borderRadius: BorderRadiusDirectional.only(
+                                                      topStart: const Radius.circular(14),
+                                                      topEnd: const Radius.circular(14),
+                                                      bottomStart: item.isClientMessage ? const Radius.circular(14) : const Radius.circular(2),
+                                                      bottomEnd: item.isClientMessage ? const Radius.circular(2) : const Radius.circular(14),
                                                     ),
-                                                    const SizedBox(height: 2),
-                                                    Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                      child: AppText(
-                                                        text: timeLabel,
-                                                        size: 11,
-                                                        txtColor: primaryGrayShade,
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
+                                                  padding: const EdgeInsets.all(12),
+                                                  child: _buildBubbleContent(item),
                                                 ),
-                                              )
-                                            : Padding(
-                                                padding: const EdgeInsets.only(left: 5, right: 45, top: 4, bottom: 4),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      decoration: const BoxDecoration(
-                                                        color: grayshad200,
-                                                        borderRadius: BorderRadius.only(
-                                                          bottomLeft: Radius.circular(12),
-                                                          bottomRight: Radius.circular(12),
-                                                          topRight: Radius.circular(12),
-                                                        ),
-                                                      ),
-                                                      padding: const EdgeInsets.all(12),
-                                                      child: _buildBubbleContent(item),
+                                                const SizedBox(height: 2),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                  child: Text(
+                                                    timeLabel,
+                                                    style: const TextStyle(
+                                                      fontSize: 11,
+                                                      color: primaryGrayShade,
                                                     ),
-                                                    const SizedBox(height: 2),
-                                                    Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                      child: AppText(
-                                                        text: timeLabel,
-                                                        size: 11,
-                                                        txtColor: primaryGrayShade,
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     );
                                   },
@@ -319,9 +299,9 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                           child: TextField(
                             controller: contactUsController.messageController.value,
                             textCapitalization: TextCapitalization.sentences,
-                            decoration: const InputDecoration(
-                              hintText: enterMessage,
-                              hintStyle: TextStyle(color: deepBluedark, fontWeight: FontWeight.w500, fontSize: 15),
+                            decoration: InputDecoration(
+                              hintText: getTranslated(context, enterMessage),
+                              hintStyle: const TextStyle(color: deepBluedark, fontWeight: FontWeight.w500, fontSize: 15),
                               border: InputBorder.none,
                             ),
                           ),
@@ -336,7 +316,10 @@ class _ContactUsMessageScreenState extends State<ContactUsMessageScreen> with Si
                                 ),
                               )
                             : IconButton(
-                                icon: const Icon(Icons.send, color: deepBluedark, size: 26),
+                                icon: Transform.flip(
+                                  flipX: Directionality.of(context) == TextDirection.rtl,
+                                  child: const Icon(Icons.send, color: deepBluedark, size: 26),
+                                ),
                                 onPressed: () {
                                   if (contactUsController.messageController.value.text.trim().isEmpty &&
                                       contactUsController.selectedFileDocuments.path.isEmpty) {
