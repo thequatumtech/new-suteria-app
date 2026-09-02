@@ -39,6 +39,19 @@ class DemoLocalization {
     String singleSpaced = trimmed.replaceAll(RegExp(r'\s+'), ' ');
     val = _localizedValues[singleSpaced];
     if (val != null && val.isNotEmpty) return val;
+
+    final loadingRegex = RegExp(r'^Loading\s*(.*?)(\.{0,3})$', caseSensitive: false);
+    final loadingMatch = loadingRegex.firstMatch(trimmed);
+    if (loadingMatch != null) {
+      String inner = loadingMatch.group(1)?.trim() ?? '';
+      bool isAr = (locale.languageCode == 'ar') || (_localizedValues['termsConditions'] == 'الشروط والأحكام') || (_localizedValues['home'] == 'الرئيسية');
+      if (inner.isEmpty) {
+        return isAr ? "جارٍ التحميل..." : "Loading...";
+      } else {
+        String translatedInner = translate(inner) ?? inner;
+        return isAr ? "جارٍ تحميل $translatedInner..." : "Loading $translatedInner...";
+      }
+    }
     return key;
   }
 

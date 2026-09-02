@@ -707,13 +707,15 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    increment == 1
+                                  AppText(
+                                    text: increment == 1
                                         ? welcomeHome
                                         : increment == 2
                                             ? manageYourPolicies
                                             : manageYourProfile,
-                                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                                    size: 18,
+                                    txtColor: Colors.white,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                   const Spacer(),
                                   InkWell(
@@ -729,6 +731,7 @@ class _HomePageState extends State<HomePage> {
                                           child: Icon(
                                         Icons.clear,
                                         size: 14,
+                                        color: Color(0xFF2255A4),
                                       )),
                                     ),
                                   )
@@ -736,13 +739,14 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 12.0),
-                                child: Text(
-                                  increment == 1
+                                child: AppText(
+                                  text: increment == 1
                                       ? getDailyUpdatesBuyNewInsurancePoliciesServicesFromSoteria
                                       : increment == 2
                                           ? getDailyUpdatesBuyNewInsurancePoliciesServicesFromSoteria
                                           : manageYourProfilePoliciesCheckRewardsGetConnectWithUs,
-                                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                                  size: 12,
+                                  txtColor: Colors.white,
                                 ),
                               ),
                               const Spacer(),
@@ -765,13 +769,13 @@ class _HomePageState extends State<HomePage> {
                                     radius: 5,
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 4.0),
+                                    padding: const EdgeInsetsDirectional.only(start: 4.0),
                                     child: CircleAvatar(
                                       backgroundColor: increment == 4 ? Colors.white : const Color(0xFF6E95C0),
                                       radius: 5,
                                     ),
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   SizedBox(
                                     height: 34,
                                     child: ElevatedButton(
@@ -785,7 +789,12 @@ class _HomePageState extends State<HomePage> {
                                             });
                                           }
                                         },
-                                        child: Text(increment == 4 ? gotIt : next)),
+                                        child: AppText(
+                                          text: increment == 4 ? gotIt : next,
+                                          size: 14,
+                                          fontWeight: FontWeight.w600,
+                                          txtColor: const Color(0xff2569AF),
+                                        )),
                                   ),
                                 ],
                               ),
@@ -794,7 +803,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: increment == 1 ? 32 : 0, right: increment == 3 || increment == 4 ? 32 : 0),
+                        padding: EdgeInsetsDirectional.only(
+                          start: increment == 1 ? 32 : 0,
+                          end: increment == 3 || increment == 4 ? 32 : 0,
+                        ),
                         child: ClipPath(
                           clipper: TriangleClipper(),
                           child: Container(

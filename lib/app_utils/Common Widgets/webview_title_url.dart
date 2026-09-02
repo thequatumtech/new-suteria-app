@@ -6,6 +6,7 @@ import 'package:soperia_user/app_utils/api_set_up/header_file.dart';
 import 'package:soperia_user/app_utils/api_set_up/service_locator.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+import 'package:soperia_user/language/language_constants.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -260,7 +261,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           if (_resolvedFileUrl.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.open_in_browser_rounded),
-              tooltip: 'Open in browser',
+              tooltip: getTranslated(context, 'Open in browser'),
               onPressed: _openExternal,
             ),
         ],

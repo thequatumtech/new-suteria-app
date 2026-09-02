@@ -7,7 +7,6 @@ import 'package:soperia_user/Screens/Profile/My%20Policies/get_policy_details_mo
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
-import 'package:soperia_user/language/language_constants.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:soperia_user/app_utils/app_button.dart';
@@ -82,14 +81,14 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
       if (await file.exists() && await file.length() > 0) {
         await Share.shareXFiles(
           [XFile(tempFilePath, mimeType: 'application/pdf')],
-          text: widget.policyData.policyType ?? getTranslated(context, 'Policy Document'),
+          text: widget.policyData.policyType ?? 'Policy Document',
         );
       } else {
-        await Share.share(pdfUrl, subject: widget.policyData.policyType ?? getTranslated(context, 'Policy Document'));
+        await Share.share(pdfUrl, subject: widget.policyData.policyType ?? 'Policy Document');
       }
     } catch (e) {
       debugPrint('Error downloading PDF for sharing: $e');
-      await Share.share(pdfUrl, subject: widget.policyData.policyType ?? getTranslated(context, 'Policy Document'));
+      await Share.share(pdfUrl, subject: widget.policyData.policyType ?? 'Policy Document');
     } finally {
       if (mounted) {
         setState(() {
@@ -153,7 +152,7 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
                         child: Row(
                           children: [
                             AppText(
-                              text: '${getTranslated(context, 'Policy No:')} ${widget.policyData.policyNo ?? ''}',
+                              text: 'Policy No: ${widget.policyData.policyNo ?? ''}',
                               txtColor: primaryWhite,
                               size: 16,
                               fontWeight: FontWeight.bold,
@@ -186,9 +185,9 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
                             const SizedBox(height: 10),
                             _buildDetailRow('Company', widget.policyData.companyName ?? '-'),
                             const SizedBox(height: 10),
-                            _buildDetailRow('Plan Limit', widget.policyData.policyPlanLimit != null ? '${widget.policyData.policyPlanLimit} ${getTranslated(context, 'JOD')}' : '-'),
+                            _buildDetailRow('Plan Limit', widget.policyData.policyPlanLimit != null ? '${widget.policyData.policyPlanLimit} JOD' : '-'),
                             const SizedBox(height: 10),
-                            _buildDetailRow('Gross Premium', widget.policyData.grossPremium != null ? '${widget.policyData.grossPremium} ${getTranslated(context, 'JOD')}' : '-'),
+                            _buildDetailRow('Gross Premium', widget.policyData.grossPremium != null ? '${widget.policyData.grossPremium} JOD' : '-'),
                             const SizedBox(height: 10),
                             _buildDetailRow('Inception Date', widget.policyData.inceptionDate != null ? commonDateFormat(widget.policyData.inceptionDate!) : '-'),
                             const SizedBox(height: 10),

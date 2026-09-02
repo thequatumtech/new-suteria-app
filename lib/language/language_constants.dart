@@ -112,7 +112,21 @@ String getTranslated(BuildContext? context, String key) {
   value = _localizedValues[singleSpaced];
   if (value != null && value.isNotEmpty) return value;
 
-  // 5. Try DemoLocalization if context is available
+  // 6. Dynamic Loading Pattern: e.g. "Loading Terms & Conditions...", "Loading...", "Loading"
+  final loadingRegex = RegExp(r'^Loading\s*(.*?)(\.{0,3})$', caseSensitive: false);
+  final loadingMatch = loadingRegex.firstMatch(trimmed);
+  if (loadingMatch != null) {
+    String inner = loadingMatch.group(1)?.trim() ?? '';
+    bool isAr = (languageCode == 'ar') || (context != null && Localizations.localeOf(context).languageCode == 'ar') || (_localizedValues['home'] == 'الرئيسية') || (_localizedValues['termsConditions'] == 'الشروط والأحكام');
+    if (inner.isEmpty) {
+      return isAr ? "جارٍ التحميل..." : "Loading...";
+    } else {
+      String translatedInner = getTranslated(context, inner);
+      return isAr ? "جارٍ تحميل $translatedInner..." : "Loading $translatedInner...";
+    }
+  }
+
+  // 7. Try DemoLocalization if context is available
   if (context != null) {
     try {
       String? demoVal = DemoLocalization.of(context)?.translate(key);
