@@ -15,6 +15,7 @@ const String editIcon = 'assets/images/edit_icon.svg';
 const String homeinsurancepdf = 'assets/images/homeinsurancepdf.png';
 const String clock = 'assets/images/clock.png';
 const String translate = 'assets/images/language_translate.png';
+const String notificationIcon = 'assets/images/notification.png';
 const String right = 'assets/images/right_symbole.png';
 const String alert = 'assets/images/alertsymbol.png';
 const String slider = 'assets/images/slider.png';

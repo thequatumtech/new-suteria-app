@@ -35,15 +35,25 @@ class BannerData {
   String? title;
   String? image;
   String? type;
+  int? runtime;
   String? redirectUrl;
 
-  BannerData({this.id, this.title, this.image, this.type, this.redirectUrl});
+  BannerData({this.id, this.title, this.image, this.type, this.runtime, this.redirectUrl});
 
   BannerData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     image = json['image'];
     type = json['type'];
+    if (json['runtime'] != null) {
+      if (json['runtime'] is int) {
+        runtime = json['runtime'];
+      } else if (json['runtime'] is num) {
+        runtime = (json['runtime'] as num).toInt();
+      } else {
+        runtime = int.tryParse(json['runtime'].toString());
+      }
+    }
     redirectUrl = json['redirect_url'];
   }
 
@@ -53,6 +63,7 @@ class BannerData {
     data['title'] = title;
     data['image'] = image;
     data['type'] = type;
+    data['runtime'] = runtime;
     data['redirect_url'] = redirectUrl;
     return data;
   }

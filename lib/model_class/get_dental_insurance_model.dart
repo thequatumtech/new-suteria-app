@@ -45,12 +45,12 @@ class Data {
   String? restrictedDistrictIds;
   String? restrictedAgeIds;
   int? limit;
-  int? netPremium;
+  double? netPremium;
   double? fees;
-  int? stamps;
-  int? salesTax;
+  double? stamps;
+  double? salesTax;
   double? grossPremium;
-  int? commissionPercentage;
+  double? commissionPercentage;
   double? commissionAmount;
   String? createdAt;
   String? updatedAt;
@@ -84,29 +84,29 @@ class Data {
         this.policyCovers});
 
   Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    insuranceCompanyId = json['insurance_company_id'];
-    lineOfBusinessId = json['line_of_business_id'];
-    planName = json['plan_name'];
-    startDate = json['start_date'];
-    endDate = json['end_date'];
-    insurancePolicyText = json['insurance_policy_text'];
-    insurancePolicyPdf = json['insurance_policy_pdf'];
-    restrictedCountryIds = json['restricted_country_ids'];
-    restrictedCityIds = json['restricted_city_ids'];
-    restrictedDistrictIds = json['restricted_district_ids'];
-    restrictedAgeIds = json['restricted_age_ids'];
-    limit = json['limit'];
-    netPremium = json['net_premium'];
-    fees = json['fees'];
-    stamps = json['stamps'];
-    salesTax = json['sales_tax'];
-    grossPremium = json['gross_premium'];
-    commissionPercentage = json['commission_percentage'];
-    commissionAmount = json['commission_amount'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    insuranceCompanyId = json['insurance_company_id'] != null ? int.tryParse(json['insurance_company_id'].toString()) : null;
+    lineOfBusinessId = json['line_of_business_id'] != null ? int.tryParse(json['line_of_business_id'].toString()) : null;
+    planName = json['plan_name']?.toString();
+    startDate = json['start_date']?.toString();
+    endDate = json['end_date']?.toString();
+    insurancePolicyText = json['insurance_policy_text']?.toString();
+    insurancePolicyPdf = json['insurance_policy_pdf']?.toString();
+    restrictedCountryIds = json['restricted_country_ids']?.toString();
+    restrictedCityIds = json['restricted_city_ids']?.toString();
+    restrictedDistrictIds = json['restricted_district_ids']?.toString();
+    restrictedAgeIds = json['restricted_age_ids']?.toString();
+    limit = json['limit'] != null ? int.tryParse(json['limit'].toString()) : null;
+    netPremium = json['net_premium'] != null ? double.tryParse(json['net_premium'].toString()) : null;
+    fees = json['fees'] != null ? double.tryParse(json['fees'].toString()) : null;
+    stamps = json['stamps'] != null ? double.tryParse(json['stamps'].toString()) : null;
+    salesTax = json['sales_tax'] != null ? double.tryParse(json['sales_tax'].toString()) : null;
+    grossPremium = json['gross_premium'] != null ? double.tryParse(json['gross_premium'].toString()) : null;
+    commissionPercentage = json['commission_percentage'] != null ? double.tryParse(json['commission_percentage'].toString()) : null;
+    commissionAmount = json['commission_amount'] != null ? double.tryParse(json['commission_amount'].toString()) : null;
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+    deletedAt = json['deleted_at']?.toString();
     if (json['policy_covers'] != null) {
       policyCovers = <PolicyCovers>[];
       json['policy_covers'].forEach((v) {
@@ -152,9 +152,9 @@ class PolicyCovers {
   int? id;
   int? dentalPlanId;
   String? coverName;
-  int? coverLimit;
+  String? coverLimit;
   String? coverLimitType;
-  int? coverDeductible;
+  String? coverDeductible;
   String? coverDeductibleType;
   String? createdAt;
   String? updatedAt;
@@ -173,16 +173,16 @@ class PolicyCovers {
         this.deletedAt});
 
   PolicyCovers.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    dentalPlanId = json['dental_plan_id'];
-    coverName = json['cover_name'];
-    coverLimit = json['cover_limit'];
-    coverLimitType = json['cover_limit_type'];
-    coverDeductible = json['cover_deductible'];
-    coverDeductibleType = json['cover_deductible_type'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    dentalPlanId = json['dental_plan_id'] != null ? int.tryParse(json['dental_plan_id'].toString()) : null;
+    coverName = json['cover_name']?.toString();
+    coverLimit = json['cover_limit']?.toString();
+    coverLimitType = json['cover_limit_type']?.toString();
+    coverDeductible = json['cover_deductible']?.toString();
+    coverDeductibleType = json['cover_deductible_type']?.toString();
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+    deletedAt = json['deleted_at']?.toString();
   }
 
   Map<String, dynamic> toJson() {

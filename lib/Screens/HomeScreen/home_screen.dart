@@ -45,14 +45,18 @@ class _HomePageState extends State<HomePage> {
 
   void _startAutoScrollTimer(List<BannerData> banners) {
     _bannerAutoScrollTimer?.cancel();
-    if (banners.length <= 1) return;
+    if (!mounted || banners.length <= 1) return;
 
-    if (sliderCurrentIndex < banners.length && banners[sliderCurrentIndex].isVideo) {
-      // Do not auto-scroll while playing a video banner
-      return;
+    int validIndex = sliderCurrentIndex;
+    if (validIndex < 0 || validIndex >= banners.length) {
+      validIndex = 0;
     }
 
-    _bannerAutoScrollTimer = Timer(const Duration(seconds: 5), () {
+    final currentBanner = banners[validIndex];
+    int runtimeSeconds = currentBanner.runtime ?? 5;
+    if (runtimeSeconds <= 0) runtimeSeconds = 5;
+
+    _bannerAutoScrollTimer = Timer(Duration(seconds: runtimeSeconds), () {
       if (mounted && banners.length > 1) {
         _bannerCarouselController.nextPage(
           duration: const Duration(milliseconds: 500),
@@ -424,6 +428,18 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(width: 10),
+                            InkWell(
+                              onTap: () {
+                                // Notification click handler
+                              },
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.asset(
+                                  notificationIcon,
+                                  width: 37,
+                                  height: 37, 
+                              ),
+                            ),
+                            const SizedBox(width: 8),
                             InkWell(
                               onTap: () => _showLanguageBottomSheet(context),
                               borderRadius: BorderRadius.circular(20),
@@ -879,7 +895,7 @@ class _VideoBannerWidgetState extends State<VideoBannerWidget> {
       print("Initializing video banner: ${widget.videoUrl}");
       _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
       await _controller.initialize();
-      _controller.setLooping(false);
+      _controller.setLooping(true);
       _controller.setVolume(_isMuted ? 0.0 : 1.0);
       _controller.addListener(_videoListener);
 

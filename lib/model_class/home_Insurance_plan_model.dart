@@ -86,29 +86,29 @@ class Data {
         this.insuranceCompany});
 
   Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    insuranceCompanyId = json['insurance_company_id']!= null ? double.parse(json['insurance_company_id'].toString()) : 0;
-    lineOfBusinessId = json['line_of_business_id']!= null ? double.parse(json['line_of_business_id'].toString()) : 0;
-    planName = json['plan_name'];
-    startDate = json['start_date'];
-    endDate = json['end_date'];
-    insurancePolicyText = json['insurance_policy_text'];
-    insurancePolicyPdf = json['insurance_policy_pdf'];
-    restrictedCountryIds = json['restricted_country_ids'];
-    restrictedCityIds = json['restricted_city_ids'];
-    restrictedDistrictIds = json['restricted_district_ids'];
-    restrictedAgeIds = json['restricted_age_ids'];
-    limit = json['limit'].toString()??'';
-    netPremium = json['net_premium']!= null ? double.parse(json['net_premium'].toString()) : 0;
-    fees = json['fees']!= null ? double.parse(json['fees'].toString()) : 0;
-    stamps = json['stamps']!= null ? double.parse(json['stamps'].toString()) : 0;
-    salesTax = json['sales_tax']!= null ? double.parse(json['sales_tax'].toString()) : 0;
-    grossPremium = json['gross_premium']!= null ? double.parse(json['gross_premium'].toString()) : 0;
-    commissionPercentage = json['commission_percentage']!= null ? double.parse(json['commission_percentage'].toString()) : 0;
-    commissionAmount = json['commission_amount']!= null ? double.parse(json['commission_amount'].toString()) : 0;
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    insuranceCompanyId = json['insurance_company_id'] != null ? double.tryParse(json['insurance_company_id'].toString()) : 0;
+    lineOfBusinessId = json['line_of_business_id'] != null ? double.tryParse(json['line_of_business_id'].toString()) : 0;
+    planName = json['plan_name']?.toString();
+    startDate = json['start_date']?.toString();
+    endDate = json['end_date']?.toString();
+    insurancePolicyText = json['insurance_policy_text']?.toString();
+    insurancePolicyPdf = json['insurance_policy_pdf']?.toString();
+    restrictedCountryIds = json['restricted_country_ids']?.toString();
+    restrictedCityIds = json['restricted_city_ids']?.toString();
+    restrictedDistrictIds = json['restricted_district_ids']?.toString();
+    restrictedAgeIds = json['restricted_age_ids']?.toString();
+    limit = json['limit']?.toString() ?? '';
+    netPremium = json['net_premium'] != null ? double.tryParse(json['net_premium'].toString()) : 0;
+    fees = json['fees'] != null ? double.tryParse(json['fees'].toString()) : 0;
+    stamps = json['stamps'] != null ? double.tryParse(json['stamps'].toString()) : 0;
+    salesTax = json['sales_tax'] != null ? double.tryParse(json['sales_tax'].toString()) : 0;
+    grossPremium = json['gross_premium'] != null ? double.tryParse(json['gross_premium'].toString()) : 0;
+    commissionPercentage = json['commission_percentage'] != null ? double.tryParse(json['commission_percentage'].toString()) : 0;
+    commissionAmount = json['commission_amount'] != null ? double.tryParse(json['commission_amount'].toString()) : 0;
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+    deletedAt = json['deleted_at']?.toString();
     if (json['policy_covers'] != null) {
       policyCovers = <PolicyCovers>[];
       json['policy_covers'].forEach((v) {
@@ -187,19 +187,21 @@ class PolicyCovers {
         this.deletedAt});
 
   PolicyCovers.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    homePlanId = json['home_plan_id']!= null ? double.parse(json['home_plan_id'].toString()) : 0;
-    coverName = json['cover_name'];
-    coverLimit = json['cover_limit'].toString()??'';
-    coverLimitType = json['cover_limit_type'].toString();
-    coverDeductible = json['cover_deductible']!= null ? double.parse(json['cover_deductible'].toString()) : 0;
-    coverDeductibleType = json['cover_deductible_type'];
-    coverRate = json['cover_rate'].toString()??'';
-    coverRateType = json['cover_rate_type'];
-    coverPremium = json['cover_premium']!= null ? double.parse(json['cover_premium'].toString()) : 0;
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    homePlanId = json['home_plan_id'] != null
+        ? double.tryParse(json['home_plan_id'].toString())
+        : (json['dental_plan_id'] != null ? double.tryParse(json['dental_plan_id'].toString()) : 0);
+    coverName = json['cover_name']?.toString();
+    coverLimit = json['cover_limit']?.toString() ?? '';
+    coverLimitType = json['cover_limit_type']?.toString();
+    coverDeductible = json['cover_deductible'] != null ? double.tryParse(json['cover_deductible'].toString()) : 0;
+    coverDeductibleType = json['cover_deductible_type']?.toString();
+    coverRate = json['cover_rate']?.toString() ?? '';
+    coverRateType = json['cover_rate_type']?.toString();
+    coverPremium = json['cover_premium'] != null ? double.tryParse(json['cover_premium'].toString()) : 0;
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+    deletedAt = json['deleted_at']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -272,29 +274,29 @@ class InsuranceCompany {
         this.deletedAt});
 
   InsuranceCompany.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    companyName = json['company_name'];
-    lineOfBusinessId = json['line_of_business_id'];
-    nationalId = json['national_id'];
-    registerNumber = json['register_number'];
-    taxNumber = json['tax_number'];
-    email = json['email'];
-    email1 = json['email_1'];
-    email2 = json['email_2'];
-    claimEmail = json['claim_email'];
-    mobileNumber = json['mobile_number'];
-    telephoneNumber = json['telephone_number'];
-    joiningDate = json['joining_date'];
-    countryId = json['country_id']!= null ? double.parse(json['country_id'].toString()) : 0;
-    cityId = json['city_id']!= null ? double.parse(json['city_id'].toString()) : 0;
-    districtId = json['district_id']!= null ? double.parse(json['district_id'].toString()) : 0;
-    streetName = json['street_name'];
-    buildingNo = json['building_no'];
-    privacyPolicy = json['privacy_policy'];
-    status = json['status']!= null ? double.parse(json['status'].toString()) : 0;
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    companyName = json['company_name']?.toString();
+    lineOfBusinessId = json['line_of_business_id']?.toString();
+    nationalId = json['national_id']?.toString();
+    registerNumber = json['register_number']?.toString();
+    taxNumber = json['tax_number']?.toString();
+    email = json['email']?.toString();
+    email1 = json['email_1']?.toString();
+    email2 = json['email_2']?.toString();
+    claimEmail = json['claim_email']?.toString();
+    mobileNumber = json['mobile_number']?.toString();
+    telephoneNumber = json['telephone_number']?.toString();
+    joiningDate = json['joining_date']?.toString();
+    countryId = json['country_id'] != null ? double.tryParse(json['country_id'].toString()) : 0;
+    cityId = json['city_id'] != null ? double.tryParse(json['city_id'].toString()) : 0;
+    districtId = json['district_id'] != null ? double.tryParse(json['district_id'].toString()) : 0;
+    streetName = json['street_name']?.toString();
+    buildingNo = json['building_no']?.toString();
+    privacyPolicy = json['privacy_policy']?.toString();
+    status = json['status'] != null ? double.tryParse(json['status'].toString()) : 0;
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+    deletedAt = json['deleted_at']?.toString();
   }
 
   Map<String, dynamic> toJson() {
