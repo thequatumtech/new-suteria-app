@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
 
 void logPrintFull(Object? object) {
@@ -88,7 +89,15 @@ class DioClient {
       ..options.responseType = ResponseType.json
       ..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (options, handler) {
+          onRequest: (options, handler) async {
+            try {
+              final prefs = await SharedPreferences.getInstance();
+              final lang = prefs.getString('selected_language') ?? prefs.getString('LAGUAGE_CODE') ?? 'en';
+              options.headers['Accept-Language'] ??= lang;
+              options.headers['lang'] ??= lang;
+              options.headers['Accept'] ??= 'application/json';
+            } catch (_) {}
+
             logPrintFull("==================== API REQUEST ====================");
             logPrintFull("--> ${options.method.toUpperCase()} ${options.uri}");
             logPrintFull("Headers: ${options.headers}");
