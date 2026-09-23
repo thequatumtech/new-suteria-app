@@ -2,7 +2,7 @@ class GetAgesModelClass {
   bool? status;
   int? statusCode;
   String? message;
-  List<Data>? data;
+  List<AgeData>? data;
 
   GetAgesModelClass({this.status, this.statusCode, this.message, this.data});
 
@@ -11,18 +11,18 @@ class GetAgesModelClass {
     statusCode = json['status_code'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <AgeData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(AgeData.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['status_code'] = this.statusCode;
-    data['message'] = this.message;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['status_code'] = statusCode;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -30,30 +30,33 @@ class GetAgesModelClass {
   }
 }
 
-class Data {
+class AgeData {
   int? id;
   int? age;
+  String? type;
   Null? deletedAt;
   String? createdAt;
   String? updatedAt;
 
-  Data({this.id, this.age, this.deletedAt, this.createdAt, this.updatedAt});
+  AgeData({this.id, this.age, this.type, this.deletedAt, this.createdAt, this.updatedAt});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  AgeData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     age = json['age'];
+    type = json['type'];
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['age'] = this.age;
-    data['deleted_at'] = this.deletedAt;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['age'] = age;
+    data['type'] = type;
+    data['deleted_at'] = deletedAt;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

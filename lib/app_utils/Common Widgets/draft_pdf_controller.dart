@@ -85,33 +85,84 @@ class DraftPdfController extends GetxController {
     } catch (f) {}
   }
 
+  String _extractErrorMessage(dynamic error) {
+    if (error is DioException) {
+      if (error.response?.data != null) {
+        if (error.response!.data is Map) {
+          final data = error.response!.data as Map;
+          final msg = data['message']?.toString();
+          if (msg != null && msg.trim().isNotEmpty) return msg;
+          final err = data['error']?.toString();
+          if (err != null && err.trim().isNotEmpty) return err;
+          final errors = data['errors'];
+          if (errors is Map && errors.isNotEmpty) {
+            final firstVal = errors.values.first;
+            if (firstVal is List && firstVal.isNotEmpty) {
+              return firstVal.first.toString();
+            }
+            return firstVal.toString();
+          }
+        } else if (error.response!.data is String) {
+          try {
+            final decoded = jsonDecode(error.response!.data as String);
+            if (decoded is Map) {
+              final msg = decoded['message']?.toString();
+              if (msg != null && msg.trim().isNotEmpty) return msg;
+              final err = decoded['error']?.toString();
+              if (err != null && err.trim().isNotEmpty) return err;
+            }
+          } catch (_) {
+            if ((error.response!.data as String).trim().isNotEmpty) {
+              return error.response!.data as String;
+            }
+          }
+        }
+      }
+      return error.response?.statusMessage ?? error.message ?? 'An error occurred';
+    }
+    return error.toString();
+  }
+
   postInsuranceApi(context, Map<String, dynamic> data, String apiUrl) async {
     isButtonLoading.value = true;
+    statusCodeapp.value = '';
+    statusMsg.value = '';
     try {
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: apiUrl, body: (data), options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         postInsuranceModel.value = PostInsuranceModel.fromJson(response);
-        statusCodeapp.value=postInsuranceModel.value.statusCode.toString();
-        statusMsg.value=postInsuranceModel.value.message.toString();
+        statusCodeapp.value = postInsuranceModel.value.statusCode.toString();
+        statusMsg.value = postInsuranceModel.value.message.toString();
         // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       } else {
-        statusCodeapp.value=response[statusCode].toString();
-        statusMsg.value=response[messageKey].toString();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
+        statusCodeapp.value = response[statusCode]?.toString() ?? 'error';
+        statusMsg.value = response[messageKey]?.toString() ?? '';
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: AppText(text: statusMsg.value, txtColor: primaryWhite, size: 12),
+          backgroundColor: Colors.red.shade700,
+        ));
       }
       isButtonLoading.value = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       isButtonLoading.value = false;
       print(e.response);
-       statusCodeapp.value=e.response?.statusCode.toString()??'';
-       statusMsg.value=e.response?.data?["message"]?.toString() ?? '';
-      /*postInsuranceModel.value = PostInsuranceModel.fromJson(e.response as Map<String, dynamic>);*/
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      statusCodeapp.value = e.response?.statusCode?.toString() ?? 'error';
+      final errorMsg = _extractErrorMessage(e);
+      statusMsg.value = errorMsg;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: AppText(text: errorMsg, txtColor: primaryWhite, size: 12),
+        backgroundColor: Colors.red.shade700,
+      ));
     } catch (f) {
       print(f);
       isButtonLoading.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));
+      statusCodeapp.value = 'error';
+      statusMsg.value = "$f";
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: AppText(text: "$f", txtColor: primaryWhite, size: 12),
+        backgroundColor: Colors.red.shade700,
+      ));
     }
   }
 
@@ -165,10 +216,11 @@ class DraftPdfController extends GetxController {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }
       isLoadingStoreTransaction.value = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       isLoadingStoreTransaction.value = false;
       print(e.response);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      final errorMsg = _extractErrorMessage(e);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: errorMsg, txtColor: primaryWhite, size: 12)));
     } catch (f) {
       print(f);
       isLoadingStoreTransaction.value = false;
@@ -200,9 +252,10 @@ class DraftPdfController extends GetxController {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
       }
       isLoadingDiscountAmount.value = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       isLoadingDiscountAmount.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      final errorMsg = _extractErrorMessage(e);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: errorMsg, txtColor: primaryWhite, size: 12)));
     } catch (f) {
       isLoadingDiscountAmount.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));

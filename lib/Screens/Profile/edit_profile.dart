@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -109,18 +110,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               hint: firstname,
                               lable: firstname,
                               controller: profileController.firstNameController.value,
+                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\p{L}\s]', unicode: true))],
                             ),
                             const SizedBox(height: 10),
-                            AppTextfield(width: 15, hint: secondname, lable: secondname, controller: profileController.secondNameController.value),
+                            AppTextfield(
+                              width: 15,
+                              hint: secondname,
+                              lable: secondname,
+                              controller: profileController.secondNameController.value,
+                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\p{L}\s]', unicode: true))],
+                            ),
                             const SizedBox(height: 10),
                             AppTextfield(
                               width: 15,
                               hint: thirdname,
                               lable: thirdname,
                               controller: profileController.thirdNameController.value,
+                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\p{L}\s]', unicode: true))],
                             ),
                             const SizedBox(height: 10),
-                            AppTextfield(width: 15, hint: familyname, lable: familyname, controller: profileController.familyNameController.value),
+                            AppTextfield(
+                              width: 15,
+                              hint: familyname,
+                              lable: familyname,
+                              controller: profileController.familyNameController.value,
+                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\p{L}\s]', unicode: true))],
+                            ),
                             const SizedBox(height: 10),
                             CustomDropDownBorder1(
                               dropdownTitle: selectNationality,

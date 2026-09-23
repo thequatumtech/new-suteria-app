@@ -13,6 +13,9 @@ import 'package:soperia_user/model_class/get_city_model.dart';
 import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_district_model.dart';
 
+import 'package:soperia_user/language/language_constants.dart';
+import 'package:soperia_user/model_class/get_ages_model.dart';
+
 class OfficeInsuranceSecondScreen extends StatefulWidget {
   Function onNext;
 
@@ -25,6 +28,14 @@ class OfficeInsuranceSecondScreen extends StatefulWidget {
 class _OfficeInsuranceSecondScreenState extends State<OfficeInsuranceSecondScreen> {
   OfficeInsuranceController officeInsuranceController = Get.put(OfficeInsuranceController());
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      officeInsuranceController.getAgesMethod(context);
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +46,7 @@ class _OfficeInsuranceSecondScreenState extends State<OfficeInsuranceSecondScree
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(alignment: Alignment.topLeft, child: AppText(text: companyAddress, size: 16,fontWeight: FontWeight.w500)),
+              Align(alignment: AlignmentDirectional.topStart, child: AppText(text: companyAddress, size: 16, fontWeight: FontWeight.w500, txtAlign: TextAlign.start)),
               const SizedBox(height: 10),
 
               AppTextfield(
@@ -77,7 +88,7 @@ class _OfficeInsuranceSecondScreenState extends State<OfficeInsuranceSecondScree
                     officeInsuranceController.selectNoOfFloor = newValue!;
                   });
                 },
-                items: const [' 1 ', ' 2', ' 3', ' 4 ', ' 5', ' 6'],
+                items: const ['1', '2', '3', '4', '5', '6'],
                 selectedValue: officeInsuranceController.selectNoOfFloor,
                 dropdownTitle: selectNoOfFloorsForBuildingVilla,
               ),
@@ -87,20 +98,54 @@ class _OfficeInsuranceSecondScreenState extends State<OfficeInsuranceSecondScree
                     officeInsuranceController.selectedroomsItem = newValue!;
                   });
                 },
-                items: const [' 1 ', ' 2', ' 3', ' 4 ', ' 5', ' 6', ' 7 ', ' 8', ' 9'],
+                items: const ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
                 selectedValue: officeInsuranceController.selectedroomsItem,
                 dropdownTitle: selectNoOfRoomsForOfficeVilla,
               ),
-              CustomDropDownBorder(
-                onchage: (newValue) {
-                  setState(() {
-                    officeInsuranceController.selectAgeOfBuilding = newValue!;
-                  });
-                },
-                items: const [' 1 ', ' 2', ' 3', ' 4 ', ' 5', ' 6', ' 7 ', ' 8', ' 9', "10", ' 11 ', ' 12', ' 13', ' 14 ', ' 15', ' 16', ' 17 ', ' 18', ' 19', "20", ' 21 ', ' 22', ' 23', ' 24 ', ' 25', '26', ' 27 ', ' 28', ' 29', "30"],
-                selectedValue: officeInsuranceController.selectAgeOfBuilding,
-                dropdownTitle: selectAgeOfBuildingVilla,
-              ),
+              Obx(() {
+                if (officeInsuranceController.isLoadingAges.value) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                final List<AgeData> ageYears = officeInsuranceController.agesList
+                    .where((item) => (item.type == null || item.type?.toLowerCase() == 'year') && item.id != null)
+                    .toList();
+
+                final currentSelectedId = officeInsuranceController.selectedAgeId ??
+                    int.tryParse(officeInsuranceController.selectAgeOfBuilding ?? '');
+
+                return CustomDropDownBorder1(
+                  onchage: (newValue) {
+                    setState(() {
+                      officeInsuranceController.selectedAgeId = newValue as int?;
+                      officeInsuranceController.selectAgeOfBuilding = newValue?.toString();
+                      try {
+                        officeInsuranceController.selectedAgeModel.value =
+                            ageYears.firstWhere((element) => element.id == newValue);
+                      } catch (e) {}
+                    });
+                  },
+                  items: ageYears.map((item) {
+                    final int id = item.id ?? 0;
+                    final int age = item.age ?? 0;
+                    return DropdownMenuItem<int>(
+                      value: id,
+                      child: Text(
+                        "$age ${getTranslated(context, age == 1 ? 'Year' : 'Years')}",
+                        style: const TextStyle(fontSize: 15, color: primaryBlack),
+                      ),
+                    );
+                  }).toList(),
+                  selectedValue: (currentSelectedId != null &&
+                          ageYears.any((element) => element.id == currentSelectedId))
+                      ? currentSelectedId
+                      : null,
+                  dropdownTitle: selectAgeOfBuildingVilla,
+                  hintText: selectAgeOfBuildingVilla,
+                );
+              }),
               AppTextfield(
                 keyboardType: TextInputType.number,
                 hint: sizeOfOfficeVillaInSqm,
@@ -299,7 +344,7 @@ class _OfficeInsuranceSecondScreenState extends State<OfficeInsuranceSecondScree
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectNoOfFloorsForBuildingVilla, txtColor: primaryWhite, size: 12)));
                   } else if (officeInsuranceController.selectedroomsItem == null) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectNoOfRoomsForOfficeVilla, txtColor: primaryWhite, size: 12)));
-                  } else if (officeInsuranceController.selectAgeOfBuilding == null) {
+                  } else if (officeInsuranceController.selectedAgeId == null && (officeInsuranceController.selectAgeOfBuilding == null || officeInsuranceController.selectAgeOfBuilding!.isEmpty)) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectAgeOfBuildingVilla, txtColor: primaryWhite, size: 12)));
                   } else if (officeInsuranceController.officeSizeController.value.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterSizeOfOfficeSpaceVillaInSqm, txtColor: primaryWhite, size: 12)));

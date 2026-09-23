@@ -101,11 +101,12 @@ class _IndividualFamilyInsuranceFirstScreenState extends State<IndividualFamilyI
                   ),
                   const SizedBox(height: 10),
                   Align(
-                      alignment: Alignment.topLeft,
+                      alignment: AlignmentDirectional.topStart,
                       child: AppText(
                         text: homeaddress,
                         size: 16,
                         fontWeight: FontWeight.bold,
+                        txtAlign: TextAlign.start,
                       )),
                   CustomDropDownBorderDisable(
                     onchage: (newValue) {

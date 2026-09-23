@@ -107,11 +107,12 @@ class _DentalInsuranceThirdScreenState extends State<DentalInsuranceThirdScreen>
                     ),
                     const SizedBox(height: 20),
                     Align(
-                      alignment: Alignment.topLeft,
+                      alignment: AlignmentDirectional.topStart,
                       child: AppText(
                         text: uploadDocumentUpTo10,
                         size: 16,
                         fontWeight: FontWeight.bold,
+                        txtAlign: TextAlign.start,
                       ),
                     ),
 

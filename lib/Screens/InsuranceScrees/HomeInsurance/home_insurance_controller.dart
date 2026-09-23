@@ -26,6 +26,7 @@ import 'package:soperia_user/model_class/get_nationality_model.dart';
 import 'package:soperia_user/model_class/get_occupation_modelClass.dart';
 import 'package:soperia_user/model_class/get_protection_system_model.dart';
 import 'package:soperia_user/model_class/home_Insurance_plan_model.dart';
+import 'package:soperia_user/model_class/get_ages_model.dart';
 import 'package:soperia_user/model_class/insurance_limit_model.dart';
 
 class HomeInsuranceController extends GetxController {
@@ -61,6 +62,10 @@ class HomeInsuranceController extends GetxController {
   String? selectNoOfFloors;
   String? selectedroomsItem;
   String? selectedAgeItem;
+  int? selectedAgeId;
+  Rx<AgeData> selectedAgeModel = AgeData().obs;
+  RxList<AgeData> agesList = <AgeData>[].obs;
+  RxBool isLoadingAges = false.obs;
   //String? noOfResidence;
   TextEditingController noOfResidence1=TextEditingController();
   String? selectedOwnership;
@@ -76,6 +81,7 @@ class HomeInsuranceController extends GetxController {
   RxList<DropdownItem<int>> selectProtectionSystemList = <DropdownItem<int>>[].obs;
   RxList<DropdownItem<int>> protectionSystemListDrop = <DropdownItem<int>>[].obs;
   final controller = MultiSelectController<int>();
+  RxBool isLoadingProtectionSystem = false.obs;
   Rx<OccuptionList> selectOccupation = OccuptionList().obs;
   RxList<OccuptionList> occupationList = <OccuptionList>[].obs;
   Rx<DistrictList> selectDistrict = DistrictList().obs;
@@ -123,7 +129,6 @@ class HomeInsuranceController extends GetxController {
       getCountryMethod(context),
       getNationality(context),
       getDistrictMethod(context),
-      getProtectionSystemMethod(context),
       getOccupations(context),
     ]);
     await setDataTextField();
@@ -169,7 +174,9 @@ class HomeInsuranceController extends GetxController {
     selectedroomsItem = null;
     selectedroomsItem = null;
     selectedAgeItem = null;
-    selectedAgeItem = null;
+    selectedAgeId = null;
+    selectedAgeModel.value = AgeData();
+    agesList.clear();
     noOfResidence1.clear();
     selectedOwnership = null;
     selectNatonality.value = GetNationalityList();
@@ -191,7 +198,9 @@ class HomeInsuranceController extends GetxController {
     planDd = '';
     effectiveDateController.value.clear();
     expiryDateController.value.clear();
-    controller.clearAll();
+    try {
+      controller.clearAll();
+    } catch (e) {}
     draftPdfController.postInsuranceModel.value = PostInsuranceModel();
   }
 
@@ -364,6 +373,7 @@ class HomeInsuranceController extends GetxController {
 
   getProtectionSystemMethod(context) async {
     try {
+      isLoadingProtectionSystem.value = true;
       protectionSystemList.clear();
       protectionSystemListDrop.clear();
       await adminBasicAllApiController.getProtectionSystemApi(context);
@@ -373,11 +383,29 @@ class HomeInsuranceController extends GetxController {
       for (int i = 0; i < protectionSystemList.length; i++) {
         final id = protectionSystemList[i].id ?? 0;
         if (seenIds.add(id)) {
-          protectionSystemListDrop.add(DropdownItem(label: getTranslated(context, protectionSystemList[i].name ?? ''), value: id));
+          final isSelected = selectProtectionSystemList.any((e) => e.value == id);
+          protectionSystemListDrop.add(DropdownItem(
+            label: getTranslated(context, protectionSystemList[i].name ?? ''),
+            value: id,
+            selected: isSelected,
+          ));
         }
       }
+      try {
+        controller.setItems(protectionSystemListDrop.toList());
+        if (selectProtectionSystemList.isNotEmpty) {
+          final selectedVals = selectProtectionSystemList.map((e) => e.value).toList();
+          controller.selectWhere((item) => selectedVals.contains(item.value));
+        }
+      } catch (e) {
+        print("controller.setItems error: $e");
+      }
+      isLoadingProtectionSystem.value = false;
     } on DioError catch (e) {
-    } catch (f) {}
+      isLoadingProtectionSystem.value = false;
+    } catch (f) {
+      isLoadingProtectionSystem.value = false;
+    }
   }
 
   getOccupations(context) async {
@@ -387,6 +415,20 @@ class HomeInsuranceController extends GetxController {
       occupationList.addAll(adminBasicAllApiController.getOccupationModelClass.data ?? []);
     } on DioError catch (e) {
     } catch (f) {}
+  }
+
+  getAgesMethod(context) async {
+    try {
+      isLoadingAges.value = true;
+      agesList.clear();
+      await adminBasicAllApiController.getAgesApi(context);
+      agesList.addAll(adminBasicAllApiController.getAgesModelClass.value.data ?? []);
+      isLoadingAges.value = false;
+    } on DioError catch (e) {
+      isLoadingAges.value = false;
+    } catch (f) {
+      isLoadingAges.value = false;
+    }
   }
 
   final repo = getIt.get<ApiCall>();

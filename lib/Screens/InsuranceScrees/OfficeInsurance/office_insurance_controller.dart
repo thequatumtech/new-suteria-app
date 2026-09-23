@@ -22,6 +22,7 @@ import 'package:soperia_user/model_class/get_nationality_model.dart';
 import 'package:soperia_user/model_class/get_protection_system_model.dart';
 import 'package:soperia_user/model_class/insurance_limit_model.dart';
 import 'package:soperia_user/model_class/office_insurance_plan_model.dart';
+import 'package:soperia_user/model_class/get_ages_model.dart';
 
 import '../../../model_class/get_country_model.dart';
 
@@ -62,6 +63,10 @@ class OfficeInsuranceController extends GetxController {
   String? selectNoOfFloor;
   String? selectedroomsItem;
   String? selectAgeOfBuilding;
+  int? selectedAgeId;
+  Rx<AgeData> selectedAgeModel = AgeData().obs;
+  RxList<AgeData> agesList = <AgeData>[].obs;
+  RxBool isLoadingAges = false.obs;
   String? selectedOfficeCategory;
   String? selectNoOfEmployee;
   String selectedPartnerInTheCompany = noTxt;
@@ -170,6 +175,9 @@ class OfficeInsuranceController extends GetxController {
     selectedroomsItem = null;
     officeSizeController.value.clear();
     selectAgeOfBuilding = null;
+    selectedAgeId = null;
+    selectedAgeModel.value = AgeData();
+    agesList.clear();
     idOrResidenceNoController.value.clear();
     selectedOfficeCategory = null;
     blockNoController.value.clear();
@@ -386,6 +394,20 @@ class OfficeInsuranceController extends GetxController {
     } catch (f) {
       isLoadingOfficeInsurancePlan.value = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));
+    }
+  }
+
+  getAgesMethod(context) async {
+    try {
+      isLoadingAges.value = true;
+      agesList.clear();
+      await adminBasicAllApiController.getAgesApi(context);
+      agesList.addAll(adminBasicAllApiController.getAgesModelClass.value.data ?? []);
+      isLoadingAges.value = false;
+    } on DioError catch (e) {
+      isLoadingAges.value = false;
+    } catch (f) {
+      isLoadingAges.value = false;
     }
   }
 }

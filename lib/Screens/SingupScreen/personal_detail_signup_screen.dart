@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -89,13 +90,37 @@ class _SingupScreenState extends State<SingupScreen> {
                           selectedValue: signUpController.selectLanguage,
                         ),
 
-                        AppTextfield(width: 15, hint: firstname, lable: firstname, controller: signUpController.firstNameController.value),
+                        AppTextfield(
+                          width: 15,
+                          hint: firstname,
+                          lable: firstname,
+                          controller: signUpController.firstNameController.value,
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\p{L}\s]', unicode: true))],
+                        ),
                         const SizedBox(height: 10),
-                        AppTextfield(width: 15, hint: secondname, lable: secondname, controller: signUpController.secondNameController.value),
+                        AppTextfield(
+                          width: 15,
+                          hint: secondname,
+                          lable: secondname,
+                          controller: signUpController.secondNameController.value,
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\p{L}\s]', unicode: true))],
+                        ),
                         const SizedBox(height: 10),
-                        AppTextfield(width: 15, hint: thirdname, lable: thirdname, controller: signUpController.thirdNameController.value),
+                        AppTextfield(
+                          width: 15,
+                          hint: thirdname,
+                          lable: thirdname,
+                          controller: signUpController.thirdNameController.value,
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\p{L}\s]', unicode: true))],
+                        ),
                         const SizedBox(height: 10),
-                        AppTextfield(width: 15, hint: familyname, lable: familyname, controller: signUpController.familyNameController.value),
+                        AppTextfield(
+                          width: 15,
+                          hint: familyname,
+                          lable: familyname,
+                          controller: signUpController.familyNameController.value,
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\p{L}\s]', unicode: true))],
+                        ),
                         const SizedBox(height: 10),
                         /* CustomDropDownBorder(
                       dropdownTitle: 'Select Nationality',

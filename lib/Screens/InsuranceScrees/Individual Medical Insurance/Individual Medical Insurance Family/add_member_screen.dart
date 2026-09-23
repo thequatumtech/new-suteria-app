@@ -358,7 +358,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Align(alignment: Alignment.topLeft, child: AppText(text: indiq2, size: 15)),
+                  Align(alignment: AlignmentDirectional.topStart, child: AppText(text: indiq2, size: 15, txtAlign: TextAlign.start)),
                   Row(
                     children: <Widget>[
                       Radio(
@@ -486,8 +486,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: Align(
-                            alignment: Alignment.topLeft,
-                            child: AppText(text: dangerousActivities, size: 14),
+                            alignment: AlignmentDirectional.topStart,
+                            child: AppText(text: dangerousActivities, size: 14, txtAlign: TextAlign.start),
                           ),
                         ),
                         CustomDropDownBorder1(

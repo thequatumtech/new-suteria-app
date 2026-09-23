@@ -79,7 +79,7 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
                                   "birth_date": commonApiDateFormat(travelInsuranceController.memberBirthDateController[i].text),
                                   "gender": travelInsuranceController.selectMemberGender[i],
                                   "place_residence": travelInsuranceController.memberSelectPlaceResidence[i].name,
-                                  "passport_document": travelInsuranceController.selectedMembers[i],
+                                  "passport_document": travelInsuranceController.selectedMembers[i].join(','),
                                 },
                             ];
 
@@ -104,11 +104,14 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
                                       'gender': travelInsuranceController.selectedGender ?? '',
                                       'marital_status': travelInsuranceController.selectedMaritalStatus ?? '',
                                       'place_residence': travelInsuranceController.selectPlaceResidence.value.name ?? '',
-                                      'passport_document': travelInsuranceController.selectedPassport,
-                                      'departure_from_country_id': travelInsuranceController.selectDepartureFrom.value.id ?? 0,
-                                      'destination_country_id': travelInsuranceController.selectDestination.value.id ?? 0,
-                                      'additional_destination_country_id': travelInsuranceController.selectAdditionalDestination.value.id ?? 0,
-                                      'geographical_area_id': travelInsuranceController.selectGeographicalArea.value.id ?? 0,
+                                      'passport_document': travelInsuranceController.selectedPassport.join(','),
+                                      'departure_from_country_id': travelInsuranceController.selectDepartureFrom.value.id ?? '',
+                                      'destination_country_id': travelInsuranceController.selectDestination.value.id ?? '',
+                                      'additional_destination_country_id': travelInsuranceController.selectedMultiDestinationList.isNotEmpty
+                                          ? (travelInsuranceController.selectedMultiDestinationList.first.id ?? '')
+                                          : (travelInsuranceController.selectAdditionalDestination.value.id ?? ''),
+                                      'geographical_countries': travelInsuranceController.selectedMultiDestinationList.map((e) => e.id).join(','),
+                                      'geographical_area_id': travelInsuranceController.selectGeographicalArea.value.id ?? '',
                                       'effective_date': commonApiDateFormat(travelInsuranceController.effectiveDateController.value.text),
                                       'travel_days': travelInsuranceController.noOfDaysController.value.text,
                                       'expiry_date': commonApiDateFormat(travelInsuranceController.expiryDateController.value.text),
@@ -120,7 +123,7 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
                                       'payment_status': 1,
                                       'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
                                       'members': members,
-                                      'dangerous_activities': chronicIdList(travelInsuranceController.selectedDangerousActivitiesList),
+                                      'dangerous_activities': travelInsuranceController.selectedDangerousActivitiesList.map((e) => e.id).join(','),
                                       'multiple_destination': multipleDestList(travelInsuranceController.selectedMultiDestinationList),
                                     },
                                     apiUrl: addTravelInsurance,

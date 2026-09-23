@@ -19,4 +19,3 @@ private func registerPlugins(registry: FlutterPluginRegistry) {
     FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin")!)
   }
 }
-

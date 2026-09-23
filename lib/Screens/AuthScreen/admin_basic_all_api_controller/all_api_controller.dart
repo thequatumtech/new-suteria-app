@@ -32,6 +32,7 @@ import 'package:soperia_user/model_class/get_out_patient_deductible_model.dart';
 import 'package:soperia_user/model_class/get_protection_system_model.dart';
 import 'package:soperia_user/model_class/get_vehicle_brand_model.dart';
 import 'package:soperia_user/model_class/get_vehicle_color_model.dart';
+import 'package:soperia_user/model_class/get_language_model.dart';
 import 'package:soperia_user/model_class/get_vehicle_type_model.dart';
 import '../../../app_utils/api_set_up/header_file.dart';
 
@@ -39,6 +40,7 @@ class AdminBasicAllApiController extends GetxController {
   RxBool isLoading = false.obs;
   final repo = getIt.get<ApiCall>();
 
+  Rx<GetLanguageModelClass> getLanguageModelClass = GetLanguageModelClass().obs;
   Rx<GetAgesModelClass> getAgesModelClass = GetAgesModelClass().obs;
   Rx<GetChronicDiseaseModelClass> getChronicDiseaseModelClass = GetChronicDiseaseModelClass().obs;
   Rx<GetComplaintStatusModelClass> getComplaintStatusModelClass = GetComplaintStatusModelClass().obs;
@@ -65,6 +67,28 @@ class AdminBasicAllApiController extends GetxController {
   Rx<GetCountryModelClass> getCountryModelClass = GetCountryModelClass().obs;
   Rx<GetInsuranceTypeModel> getInsuranceTypeModel = GetInsuranceTypeModel().obs;
   Rx<GetInsuranceCurrentModel> getInsuranceCurrentModel = GetInsuranceCurrentModel().obs;
+
+  getLanguageApi(context) async {
+    try {
+      isLoading.value = true;
+      Map<String, String> header = await getHeader();
+      Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).getRequest(context: context, endpoint: getLanguage, options: Options(headers: header));
+      if (response[statusCode] == 200 || response[statusCode] == 201) {
+        getLanguageModelClass.value = GetLanguageModelClass.fromJson(response);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: response[messageKey].toString(), txtColor: primaryWhite, size: 12)));
+      }
+      isLoading.value = false;
+    } on DioError catch (e) {
+      isLoading.value = false;
+      if (e.response != null && e.response!.statusMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: e.response!.statusMessage!, txtColor: primaryWhite, size: 12)));
+      }
+    } catch (f) {
+      isLoading.value = false;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: "$f", txtColor: primaryWhite, size: 12)));
+    }
+  }
 
   getAgesApi(context) async {
     try {

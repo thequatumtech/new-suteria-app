@@ -244,7 +244,7 @@ class _IndividualFamilyInsuranceSecondScreenState extends State<IndividualFamily
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(alignment: Alignment.topLeft, child: AppText(text: indiq2, size: 15)),
+                Align(alignment: AlignmentDirectional.topStart, child: AppText(text: indiq2, size: 15, txtAlign: TextAlign.start)),
                 Row(
                   children: <Widget>[
                     Radio(

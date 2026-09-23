@@ -9,14 +9,18 @@ import 'package:soperia_user/app_utils/demo_localization.dart';
 import 'package:soperia_user/main.dart';
 
 const String LAGUAGE_CODE = 'LAGUAGE_CODE';
+const String LANGUAGE_ID = 'selected_language_id';
 
 const String ENGLISH = 'en';
 const String ARBIC = 'ar';
 
-Future<Locale> setLocale(String langCode, [BuildContext? context]) async {
+Future<Locale> setLocale(String langCode, [BuildContext? context, int? langId]) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString(LAGUAGE_CODE, langCode);
   await prefs.setString('selected_language', langCode);
+  if (langId != null) {
+    await prefs.setInt(LANGUAGE_ID, langId);
+  }
   languageCode = langCode;
   Locale locale = getLangFromCode(langCode == "ar" ? 'ar' : 'en');
   try {
@@ -43,6 +47,11 @@ Future<String> getLocale() async {
   }
   String systemLang = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
   return (systemLang == 'ar') ? 'ar' : 'en';
+}
+
+Future<int?> getSavedLanguageId() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getInt(LANGUAGE_ID);
 }
 
 Locale getLangFromCode(String langCode) {

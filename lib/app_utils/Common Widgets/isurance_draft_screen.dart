@@ -32,6 +32,8 @@ class _InsuranceDraftPdfScreenState extends State<InsuranceDraftPdfScreen> {
   @override
   void initState() {
     draftPdfController.postInsuranceModel.value = PostInsuranceModel();
+    draftPdfController.statusCodeapp.value = '';
+    draftPdfController.statusMsg.value = '';
     draftPdfController.postInsuranceApi(context, widget.data, widget.apiUrl);
     draftPdfController.apiMethod(context);
     insurancePdfController.resetTerms();
@@ -202,7 +204,42 @@ class _InsuranceDraftPdfScreenState extends State<InsuranceDraftPdfScreen> {
                   )*/
                     ],
                   )
-                : Padding(padding: const EdgeInsets.all(15.0), child: AppText(text: "${draftPdfController.statusMsg.value}", size: 20, txtColor: Colors.red, fontWeight: FontWeight.w600));
+                : Center(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 30.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.error_outline_rounded,
+                              color: Colors.red,
+                              size: 52,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          AppText(
+                            text: draftPdfController.statusMsg.value.isNotEmpty
+                                ? draftPdfController.statusMsg.value
+                                : (draftPdfController.statusCodeapp.value.isNotEmpty
+                                    ? "Error: ${draftPdfController.statusCodeapp.value}"
+                                    : "Something went wrong"),
+                            size: 16,
+                            txtColor: darkBlue2,
+                            fontWeight: FontWeight.w600,
+                            txtAlign: TextAlign.center,
+                            maxLine: 6,
+                          ),
+                          const SizedBox(height: 28),
+                        ],
+                      ),
+                    ),
+                  );
       }),
       ),
     );

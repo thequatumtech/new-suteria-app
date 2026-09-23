@@ -182,10 +182,11 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                     if (officeInsuranceController.selectedAuthorizedIsStated == yesTxt) AppTextfield(controller: officeInsuranceController.previousInsurancePolicyController.value, hint: homen1, lable: homen1),
                     SizedBox(height: 20),
                     Align(
-                      alignment: Alignment.topLeft,
+                      alignment: AlignmentDirectional.topStart,
                       child: AppText(
                         text: officeq1,
                         size: 15,
+                        txtAlign: TextAlign.start,
                       ),
                     ),
                     Row(
@@ -225,10 +226,11 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                       ),
                     const SizedBox(height: 20),
                     Align(
-                      alignment: Alignment.topLeft,
+                      alignment: AlignmentDirectional.topStart,
                       child: AppText(
                         text: homeq3,
                         size: 15,
+                        txtAlign: TextAlign.start,
                       ),
                     ),
                     Row(
@@ -281,10 +283,11 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
             ),*/
                     const SizedBox(height: 20),
                     Align(
-                      alignment: Alignment.topLeft,
+                      alignment: AlignmentDirectional.topStart,
                       child: AppText(
                         text: officespace,
                         size: 15,
+                        txtAlign: TextAlign.start,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -295,7 +298,9 @@ class _OfficeInsuranceThirdScreenState extends State<OfficeInsuranceThirdScreen>
                             officeInsuranceController.protectionSystemListDrop
                                 .where((item) => selectedValues.contains(item.value))
                                 .toList();
-                        setState(() {});
+                        if (mounted) {
+                          setState(() {});
+                        }
                       },
                       items: officeInsuranceController.protectionSystemListDrop.map((item) {
                         return DropdownItem<int>(

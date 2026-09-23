@@ -12,7 +12,8 @@ import 'package:soperia_user/app_utils/app_constrint.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
-import 'package:soperia_user/language/language_constants.dart';
+import 'package:soperia_user/language/language_controller.dart';
+import 'package:soperia_user/model_class/get_language_model.dart';
 import '../../app_utils/Common Widgets/webview_title_url.dart';
 import 'profile_controller/profile_controller.dart';
 
@@ -33,12 +34,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showLanguageBottomSheet(BuildContext context) {
+    final LanguageController langController = Get.isRegistered<LanguageController>()
+        ? Get.find<LanguageController>()
+        : Get.put(LanguageController());
+    langController.fetchLanguages(context);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (BuildContext sheetContext) {
-        String tempSelected = languageCode ?? 'en';
+        String tempSelected = languageCode ?? langController.selectedLanguageCode.value;
         return StatefulBuilder(
           builder: (context, setSheetState) {
             return Container(
@@ -96,39 +102,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // English Option
-                    _buildLanguageItem(
-                      title: 'English',
-                      subtitle: 'English',
-                      code: 'en',
-                      isSelected: tempSelected == 'en',
-                      onTap: () {
-                        setSheetState(() {
-                          tempSelected = 'en';
-                        });
-                      },
-                    ),
+                    // Dynamic Language Options from API
+                    Obx(() {
+                      return Column(
+                        children: langController.languages.map((LanguageData item) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _buildLanguageItem(
+                              title: item.displayName,
+                              subtitle: item.subtitle,
+                              code: item.code,
+                              isSelected: tempSelected == item.code,
+                              onTap: () {
+                                setSheetState(() {
+                                  tempSelected = item.code;
+                                });
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }),
                     const SizedBox(height: 12),
-
-                    // Arabic Option
-                    _buildLanguageItem(
-                      title: 'العربية',
-                      subtitle: 'Arabic',
-                      code: 'ar',
-                      isSelected: tempSelected == 'ar',
-                      onTap: () {
-                        setSheetState(() {
-                          tempSelected = 'ar';
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 24),
 
                     // Confirm Button
                     AppBtnWithColorShades(
                       onTap: () async {
                         try {
-                          await setLocale(tempSelected, context);
+                          await langController.changeLanguageByCode(tempSelected, context);
                         } catch (_) {}
 
                         if (!mounted) return;

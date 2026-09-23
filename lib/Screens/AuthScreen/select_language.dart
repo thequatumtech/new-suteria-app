@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:soperia_user/Screens/AuthScreen/login_screen.dart';
 import 'package:soperia_user/Screens/SingupScreen/personal_detail_signup_screen.dart';
 import 'package:soperia_user/app_utils/app_button.dart';
@@ -7,6 +8,8 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/language/language_constants.dart';
+import 'package:soperia_user/language/language_controller.dart';
+import 'package:soperia_user/model_class/get_language_model.dart';
 
 class SelectLanguage extends StatefulWidget {
   const SelectLanguage({super.key});
@@ -16,19 +19,17 @@ class SelectLanguage extends StatefulWidget {
 }
 
 class _SelectLanguageState extends State<SelectLanguage> {
-  bool check = false;
-  bool isSelectEn = true;
+  late final LanguageController _languageController;
 
   @override
   void initState() {
     super.initState();
-    getLocale().then((code) {
-      if (mounted) {
-        setState(() {
-          isSelectEn = (code != 'ar');
-        });
-      }
-    });
+    if (Get.isRegistered<LanguageController>()) {
+      _languageController = Get.find<LanguageController>();
+    } else {
+      _languageController = Get.put(LanguageController());
+    }
+    _languageController.fetchLanguages(context);
   }
 
   @override
@@ -78,61 +79,84 @@ class _SelectLanguageState extends State<SelectLanguage> {
               const SizedBox(
                 height: 30,
               ),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    isSelectEn = false;
-                  });
-                },
-                child: Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: yellowShade1,
-                      ),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      children: [
-                        AppText(text: arbic, size: 15),
-                        const Spacer(),
-                        isSelectEn ? const SizedBox() : const Icon(Icons.check),
-                      ],
-                    ),
-                  ),
-                ),
+              Expanded(
+                child: Obx(() {
+                  if (_languageController.isLoading.value && _languageController.languages.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  return ListView.separated(
+                    itemCount: _languageController.languages.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 16),
+                    itemBuilder: (context, index) {
+                      LanguageData item = _languageController.languages[index];
+                      bool isSelected = _languageController.selectedLanguageCode.value == item.code;
+
+                      return InkWell(
+                        onTap: () {
+                          _languageController.changeLanguage(item, context);
+                        },
+                        borderRadius: BorderRadius.circular(10),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          height: 60,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isSelected ? deepBlue : yellowShade1,
+                              width: isSelected ? 1.8 : 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                            color: isSelected ? deepBlue.withValues(alpha: 0.05) : Colors.transparent,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 34,
+                                  height: 34,
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? deepBlue : primaryWhite,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected ? deepBlue : primaryGreyShade,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      item.shortLabel,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: isSelected ? primaryWhite : deepBluedark,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                AppText(
+                                  text: item.displayName,
+                                  size: 15,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                ),
+                                const Spacer(),
+                                if (isSelected)
+                                  const Icon(Icons.check_circle_rounded, color: deepBlue, size: 22)
+                                else
+                                  const SizedBox(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }),
               ),
-              const SizedBox(height: 20),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    isSelectEn = true;
-                  });
-                },
-                child: Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: yellowShade1,
-                      ),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      children: [
-                        AppText(text: english, size: 15),
-                        const Spacer(),
-                        !isSelectEn ? const SizedBox() : const Icon(Icons.check),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const Spacer(),
               AppBtnWithColorShades(
                 onTap: () async {
-                  await setLocale(isSelectEn ? 'en' : 'ar', context);
+                  await _languageController.changeLanguageByCode(_languageController.selectedLanguageCode.value, context);
                   if (!mounted) return;
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                 },
@@ -145,14 +169,15 @@ class _SelectLanguageState extends State<SelectLanguage> {
               ),
               InkWell(
                 onTap: () async {
-                  await setLocale(isSelectEn ? 'en' : 'ar', context);
+                  await _languageController.changeLanguageByCode(_languageController.selectedLanguageCode.value, context);
                   if (!mounted) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SingupScreen(
-                              isEng: isSelectEn,
-                            )),
+                      builder: (context) => SingupScreen(
+                        isEng: _languageController.selectedLanguageCode.value != 'ar',
+                      ),
+                    ),
                   );
                 },
                 child: Text.rich(

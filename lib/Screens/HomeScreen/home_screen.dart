@@ -27,9 +27,13 @@ import 'package:soperia_user/app_utils/app_imgs.dart';
 import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/language/language_constants.dart';
+import 'package:soperia_user/language/language_controller.dart';
+import 'package:soperia_user/model_class/get_language_model.dart';
 import 'package:soperia_user/app_utils/app_constrint.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/Screens/HomeScreen/home_screen_bottom.dart';
+import 'package:soperia_user/Screens/Notifications/notification_controller.dart';
+import 'package:soperia_user/Screens/Notifications/notification_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -67,6 +71,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showLanguageBottomSheet(BuildContext context) {
+    final LanguageController langController = Get.isRegistered<LanguageController>()
+        ? Get.find<LanguageController>()
+        : Get.put(LanguageController());
+    langController.fetchLanguages(context);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -130,33 +139,28 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // English Option
-                    _buildLanguageItem(
-                      title: 'English',
-                      subtitle: 'English',
-                      code: 'en',
-                      isSelected: tempSelected == 'en',
-                      onTap: () {
-                        setSheetState(() {
-                          tempSelected = 'en';
-                        });
-                      },
-                    ),
+                    // Dynamic Language Options from API
+                    Obx(() {
+                      return Column(
+                        children: langController.languages.map((LanguageData item) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _buildLanguageItem(
+                              title: item.displayName,
+                              subtitle: item.subtitle,
+                              code: item.code,
+                              isSelected: tempSelected == item.code,
+                              onTap: () {
+                                setSheetState(() {
+                                  tempSelected = item.code;
+                                });
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }),
                     const SizedBox(height: 12),
-
-                    // Arabic Option
-                    _buildLanguageItem(
-                      title: 'العربية',
-                      subtitle: 'Arabic',
-                      code: 'ar',
-                      isSelected: tempSelected == 'ar',
-                      onTap: () {
-                        setSheetState(() {
-                          tempSelected = 'ar';
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 24),
 
                     // Confirm Button
                     AppBtnWithColorShades(
@@ -165,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                           _selectedLanguage = tempSelected;
                         });
                         try {
-                          await setLocale(tempSelected, context);
+                          await langController.changeLanguageByCode(tempSelected, context);
                         } catch (_) {}
 
                         if (!mounted) return;
@@ -350,12 +354,14 @@ class _HomePageState extends State<HomePage> {
   bool isShoHome = true;
 
   HomeController homeController = Get.put(HomeController());
+  NotificationController notificationController = NotificationController.instance;
 
   @override
   void initState() {
     getPref();
     homeController.getProfile(context);
     homeController.getBanners(context);
+    notificationController.initNotificationSystem();
     super.initState();
   }
 
@@ -428,17 +434,56 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(width: 10),
-                            InkWell(
-                              onTap: () {
-                                // Notification click handler
-                              },
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.asset(
-                                  notificationIcon,
-                                  width: 37,
-                                  height: 37, 
-                              ),
-                            ),
+                            Obx(() {
+                              final count = notificationController.unreadCount.value;
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const NotificationScreen()),
+                                  );
+                                },
+                                borderRadius: BorderRadius.circular(20),
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Image.asset(
+                                      notificationIcon,
+                                      width: 37,
+                                      height: 37,
+                                    ),
+                                    if (count > 0)
+                                      Positioned(
+                                        right: -2,
+                                        top: -2,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: brightRed,
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: primaryWhite, width: 1.5),
+                                          ),
+                                          constraints: const BoxConstraints(
+                                            minWidth: 18,
+                                            minHeight: 18,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              count > 99 ? '99+' : count.toString(),
+                                              style: const TextStyle(
+                                                color: primaryWhite,
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.bold,
+                                                height: 1,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              );
+                            }),
                             const SizedBox(width: 8),
                             InkWell(
                               onTap: () => _showLanguageBottomSheet(context),

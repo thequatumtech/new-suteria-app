@@ -127,36 +127,43 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                   ),*/
 
                   const SizedBox(height: 20),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(text: doYouAnyChronicDisease, size: 15, txtAlign: TextAlign.start),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Radio(
-                        value: yesTxt,
-                        groupValue: lifeInsuranceController.selectedChronicDisease,
-                        onChanged: (value) {
-                          setState(() {
-                            lifeInsuranceController.selectedChronicDisease = value!;
-                          });
-                        },
-                      ),
-                      AppText(text: yesTxt),
-                      Radio(
-                        value: noTxt,
-                        groupValue: lifeInsuranceController.selectedChronicDisease,
-                        onChanged: (value) {
-                          setState(() {
-                            lifeInsuranceController.selectedChronicDisease = value!;
-                            lifeInsuranceController.selectedChronicDiseasesList.value = [];
-                          });
-                        },
-                      ),
-                      AppText(text: noTxt),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: AlignmentDirectional.topStart,
+                          child: AppText(text: doYouAnyChronicDisease, size: 15, txtAlign: TextAlign.start),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Radio(
+                              value: yesTxt,
+                              groupValue: lifeInsuranceController.selectedChronicDisease,
+                              onChanged: (value) {
+                                setState(() {
+                                  lifeInsuranceController.selectedChronicDisease = value!;
+                                });
+                              },
+                            ),
+                            AppText(text: yesTxt),
+                            const SizedBox(width: 16),
+                            Radio(
+                              value: noTxt,
+                              groupValue: lifeInsuranceController.selectedChronicDisease,
+                              onChanged: (value) {
+                                setState(() {
+                                  lifeInsuranceController.selectedChronicDisease = value!;
+                                  lifeInsuranceController.selectedChronicDiseasesList.value = [];
+                                });
+                              },
+                            ),
+                            AppText(text: noTxt),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   if (lifeInsuranceController.selectedChronicDisease != null && lifeInsuranceController.selectedChronicDisease == yesTxt) ...[
                     MultiSelectDialogField<GetChronicDiseasesList>(
@@ -194,10 +201,14 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                     ),
                   ],
                   Padding(
-                    padding: const EdgeInsets.only(top: 16, left: 8),
+                    padding: const EdgeInsets.only(top: 16, left: 12, right: 12),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Align(alignment: Alignment.topLeft, child: AppText(text: indiq2, size: 15)),
+                        Align(
+                          alignment: AlignmentDirectional.topStart,
+                          child: AppText(text: indiq2, size: 15, txtAlign: TextAlign.start),
+                        ),
                         Row(
                           children: <Widget>[
                             Radio(
@@ -210,6 +221,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                               },
                             ),
                             AppText(text: yesTxt),
+                            const SizedBox(width: 16),
                             Radio(
                               value: noTxt,
                               groupValue: lifeInsuranceController.selectedAnyOperation,
@@ -231,10 +243,14 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                       child: AppTextfield(controller: lifeInsuranceController.previousOperationDetailsController.value, hint: indiqnote, lable: indiqnote),
                     ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 12, right: 12),
+                    padding: const EdgeInsets.only(left: 12, right: 12, top: 8),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Align(alignment: Alignment.topLeft, child: AppText(text: lifeq3, size: 15)),
+                        Align(
+                          alignment: AlignmentDirectional.topStart,
+                          child: AppText(text: lifeq3, size: 15, txtAlign: TextAlign.start),
+                        ),
                         Row(
                           children: <Widget>[
                             Radio(
@@ -247,6 +263,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                               },
                             ),
                             AppText(text: yesTxt),
+                            const SizedBox(width: 16),
                             Radio(
                               value: noTxt,
                               groupValue: lifeInsuranceController.selectedDescline,
@@ -268,10 +285,14 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                       child: AppTextfield(controller: lifeInsuranceController.companyDeclinedIssueController.value, maxLine: 2, hint: lifeqnote1, lable: lifeqnote1),
                     ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 12, right: 12),
+                    padding: const EdgeInsets.only(left: 12, right: 12, top: 8),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Align(alignment: Alignment.topLeft, child: AppText(text: lifeq4, size: 15)),
+                        Align(
+                          alignment: AlignmentDirectional.topStart,
+                          child: AppText(text: lifeq4, size: 15, txtAlign: TextAlign.start),
+                        ),
                         Row(
                           children: <Widget>[
                             Radio(
@@ -284,6 +305,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                               },
                             ),
                             AppText(text: yesTxt),
+                            const SizedBox(width: 16),
                             Radio(
                               value: noTxt,
                               groupValue: lifeInsuranceController.selectedNowAnyPolicy,
@@ -301,7 +323,7 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                   ),
                   if (lifeInsuranceController.selectedNowAnyPolicy == yesTxt)
                     Padding(
-                      padding: const EdgeInsets.only(left: 12, right: 12),
+                      padding: const EdgeInsets.only(left: 12, right: 12, top: 8),
                       child: AppTextfield(controller: lifeInsuranceController.existingLifeInsuranceController.value, maxLine: 2, hint: lifeqnote1, lable: lifeqnote1),
                     ),
                   Column(
@@ -370,21 +392,38 @@ class _LifeInsuranceThirdScreenState extends State<LifeInsuranceThirdScreen> {
                             )),
                       ),
                       const SizedBox(height: 15),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: AppText(
-                          text: uploaddocument,
-                          size: 16,
-                          fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: AlignmentDirectional.topStart,
+                              child: AppText(
+                                text: uploaddocument,
+                                size: 16,
+                                fontWeight: FontWeight.bold,
+                                txtAlign: TextAlign.start,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Image.asset(uploadlogo, height: 28, width: 28),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: AppText(
+                                    text: uploadPhotosUpTo20,
+                                    size: 16,
+                                    txtAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      Row(
-                        children: [
-                          Image.asset(uploadlogo, height: 28, width: 28),
-                          const SizedBox(width: 8),
-                          AppText(text: uploadPhotosUpTo20, size: 16),
-                        ],
-                      ),
+                      const SizedBox(height: 8),
                       lifeInsuranceController.photoDoc.isEmpty
                           ? InkWell(
                               onTap: () {

@@ -7,6 +7,8 @@ import 'package:soperia_user/app_utils/api_set_up/header_file.dart';
 import 'package:soperia_user/model_class/get_banner_model.dart';
 import 'package:soperia_user/model_class/get_profile_model.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soperia_user/Screens/Notifications/notification_controller.dart';
 import '../../app_utils/api_set_up/service_locator.dart';
 
 class HomeController extends GetxController {
@@ -29,6 +31,13 @@ class HomeController extends GetxController {
       if (response[statusCode] == 200 || response[statusCode] == 201) {
         getProfileModelGlobal = GetProfileModel.fromJson(response);
         rxGetProfileModel.value = getProfileModelGlobal;
+
+        if (getProfileModelGlobal.data?.id != null) {
+          final clientId = getProfileModelGlobal.data!.id!;
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          await preferences.setInt('client_id', clientId);
+          NotificationController.instance.initNotificationSystem(clientId: clientId);
+        }
       }
     } catch (e) {
       print(e);

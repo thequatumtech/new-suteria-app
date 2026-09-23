@@ -96,6 +96,12 @@ String markChatReadURL(int chatId) => 'chat/$chatId/mark-read';
 const String saveSignatureUrl = 'save-signature';
 const String generateFinalPdf = 'generate-final-pdf';
 const String getTermsAndConditions = 'terms-and-conditions?id=';
+const String notificationsBaseURL = 'notifications';
+String notificationsListURL(int page, {int perPage = 20}) => 'notifications?page=$page&per_page=$perPage';
+const String notificationsUnreadCountURL = 'notifications/unread-count';
+String notificationsReadURL(int id) => 'notifications/$id/read';
+const String notificationsReadAllURL = 'notifications/read-all';
+const String getLanguage = 'get-language';
 
 
 

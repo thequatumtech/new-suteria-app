@@ -4202,9 +4202,14 @@
   "Dry Sprinkler System": "Dry Sprinkler System",
   "CCTV Camera's": "CCTV Cameras",
   "CCTV Cameras": "CCTV Cameras",
+  "360 CCTV Camera's": "360 CCTV Cameras",
+  "360 CCTV Cameras": "360 CCTV Cameras",
   "24/7 Security Guard": "24/7 Security Guard",
   "Theft Alarm": "Theft Alarm",
   "PLEASE CHOOSE FROM THE LIST": "PLEASE CHOOSE FROM THE LIST",
+  "Years": "Years",
+  "years": "Years",
+  "year": "Year",
   "policyAcceptanceAndESignature": "Policy Acceptance & E-Signature",
   "Policy Acceptance & E-Signature": "Policy Acceptance & E-Signature",
   "Details": "Details",
@@ -4264,5 +4269,11 @@
   "downloadFailedPleaseTryAgain": "Download failed. Please try again.",
   "Failed to share PDF. Please try again.": "Failed to share PDF. Please try again.",
   "failedToSharePdfPleaseTryAgain": "Failed to share PDF. Please try again.",
-  "policyDocument": "Policy Document"
+  "policyDocument": "Policy Document",
+  "notifications": "Notifications",
+  "mark_all_read": "Mark all as read",
+  "no_notifications": "No notifications yet",
+  "no_notifications_desc": "We will notify you when something important arrives",
+  "just_now": "Just now",
+  "ago": "ago"
 }

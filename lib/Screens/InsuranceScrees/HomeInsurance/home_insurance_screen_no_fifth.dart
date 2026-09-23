@@ -23,8 +23,10 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
 
   @override
   void initState() {
-    /* homeInsuranceController.init(context);*/
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      homeInsuranceController.getProtectionSystemMethod(context);
+    });
   }
 
   @override
@@ -147,33 +149,53 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           txtAlign: TextAlign.start,
                         ),
                       ),
-                      MultiDropdown<int>(
-                        controller: homeInsuranceController.controller,
-                        onSelectionChange: (List<int> selectedValues) {
-                          homeInsuranceController.selectProtectionSystemList.value =
-                              homeInsuranceController.protectionSystemListDrop
-                                  .where((item) => selectedValues.contains(item.value))
-                                  .toList();
-                          setState(() {});
-                        },
-                        items: homeInsuranceController.protectionSystemListDrop,
-                        fieldDecoration: FieldDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: skyBlueShade1),
-                            borderRadius: BorderRadius.circular(8),
+                      Obx(() {
+                        if (homeInsuranceController.isLoadingProtectionSystem.value) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        return MultiDropdown<int>(
+                          key: ValueKey(homeInsuranceController.protectionSystemListDrop
+                              .map((e) => e.value)
+                              .join(',')),
+                          controller: homeInsuranceController.controller,
+                          onSelectionChange: (List<int> selectedValues) {
+                            homeInsuranceController.selectProtectionSystemList.value =
+                                homeInsuranceController.protectionSystemListDrop
+                                    .where((item) => selectedValues.contains(item.value))
+                                    .toList();
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          },
+                          items: homeInsuranceController.protectionSystemListDrop.map((item) {
+                            return DropdownItem<int>(
+                              label: item.label,
+                              value: item.value,
+                              selected: homeInsuranceController.selectProtectionSystemList
+                                  .any((element) => element.value == item.value),
+                            );
+                          }).toList(),
+                          fieldDecoration: FieldDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: skyBlueShade1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: skyBlueShade1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            hintText: getTranslated(context, pleaseChooseFromTheList),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: skyBlueShade1),
-                            borderRadius: BorderRadius.circular(8),
+                          chipDecoration: const ChipDecoration(wrap: true),
+                          dropdownDecoration: const DropdownDecoration(maxHeight: 200),
+                          dropdownItemDecoration: const DropdownItemDecoration(
+                            selectedIcon: Icon(Icons.check_circle),
                           ),
-                          hintText: getTranslated(context, pleaseChooseFromTheList),
-                        ),
-                        chipDecoration: const ChipDecoration(wrap: true),
-                        dropdownDecoration: const DropdownDecoration(maxHeight: 200),
-                        dropdownItemDecoration: const DropdownItemDecoration(
-                          selectedIcon: Icon(Icons.check_circle),
-                        ),
-                      ),
+                        );
+                      }),
                     ],
                   ),
                   Padding(
@@ -192,7 +214,7 @@ class _HomeScreenFithState extends State<HomeScreenFith> {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectAccidentsOption, txtColor: primaryWhite, size: 12)));
                         } else if (homeInsuranceController.selectedOption3 == yesTxt && homeInsuranceController.claimIn5yearController.value.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseEnterDetailsTheClamAccident, txtColor: primaryWhite, size: 12)));
-                        } else if (homeInsuranceController.selectedOption3 == noTxt && homeInsuranceController.selectProtectionSystemList.isEmpty) {
+                        } else if (homeInsuranceController.selectProtectionSystemList.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: AppText(text: pleaseSelectProtectionSystem, txtColor: primaryWhite, size: 12)));
                         } else {
                           widget.onNext();
