@@ -44,3 +44,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Android signing keys & certificates
+*.jks
+*.keystore
+*.p12
+key.properties
+
