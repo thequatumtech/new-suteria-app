@@ -17,6 +17,7 @@ import 'package:soperia_user/model_class/get_city_model.dart';
 import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_discount_amount_model.dart';
 import 'package:soperia_user/model_class/get_district_model.dart';
+import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
 
 class DraftPdfController extends GetxController {
   RxBool isButtonLoading = false.obs;
@@ -128,6 +129,12 @@ class DraftPdfController extends GetxController {
     statusCodeapp.value = '';
     statusMsg.value = '';
     try {
+      if (!data.containsKey('old_policy_id_for_renew')) {
+        data['old_policy_id_for_renew'] = PolicyRenewalState.isRenewing ? PolicyRenewalState.oldPolicyId : '';
+      }
+      if (!data.containsKey('renew')) {
+        data['renew'] = PolicyRenewalState.isRenewing ? 1 : 0;
+      }
       Map<String, String> header = await getHeader();
       Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(context: context, endpoint: apiUrl, body: (data), options: Options(headers: header));
       if (response[statusCode] == 200 || response[statusCode] == 201) {

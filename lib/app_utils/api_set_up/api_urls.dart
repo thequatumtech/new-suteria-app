@@ -102,6 +102,7 @@ const String notificationsUnreadCountURL = 'notifications/unread-count';
 String notificationsReadURL(int id) => 'notifications/$id/read';
 const String notificationsReadAllURL = 'notifications/read-all';
 const String getLanguage = 'get-language';
+const String checkPolicyRenewal = 'check-policy-renewal';
 
 
 

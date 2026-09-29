@@ -8,6 +8,7 @@ import 'package:soperia_user/app_utils/app_string.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
+import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
 
 class DentalInsuranceListData extends StatefulWidget {
   String screenTitle = '';
@@ -88,6 +89,8 @@ class _DentalInsuranceListDataState extends State<DentalInsuranceListData> {
                                             'plan_id': dentalInsuranceController.planDd,
                                             'payment_status': 1,
                                             'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
+                                            'old_policy_id_for_renew': PolicyRenewalState.isRenewing ? PolicyRenewalState.oldPolicyId : '',
+                                            'renew': PolicyRenewalState.isRenewing ? 1 : 0,
                                           },
                                           apiUrl: addDentalInsurance, insuranceType: dentalInsuranceTxt,
                                         )));

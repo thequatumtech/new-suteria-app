@@ -10,6 +10,7 @@ import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_chronic_disease_model.dart';
+import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
 
 class FamilyMedicalInsuranceListDataScreen extends StatefulWidget {
   String screenTitle = '';
@@ -159,6 +160,8 @@ class _FamilyMedicalInsuranceListDataScreenState extends State<FamilyMedicalInsu
                                       'insurance_type_status': 2,
                                       'members': members,
                                       'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
+                                      'old_policy_id_for_renew': PolicyRenewalState.isRenewing ? PolicyRenewalState.oldPolicyId : '',
+                                      'renew': PolicyRenewalState.isRenewing ? 1 : 0,
                                     },
                                     apiUrl: addFamilyMedicalInsurance, insuranceType: medicalInsuranceTxt,
                                   ),

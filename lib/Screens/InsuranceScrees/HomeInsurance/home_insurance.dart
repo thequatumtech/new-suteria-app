@@ -9,6 +9,7 @@ import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
 import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/language/language_constants.dart';
+import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
 
 class HomeInsurance extends StatefulWidget {
   String screenTitle = '';
@@ -101,7 +102,8 @@ class _HomeInsuranceState extends State<HomeInsurance> {
                                       'expiry_date': commonApiDateFormat(homeInsuranceController.expiryDateController.value.text),
                                       'payment_status': 1,
                                       'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
-
+                                      'old_policy_id_for_renew': PolicyRenewalState.isRenewing ? PolicyRenewalState.oldPolicyId : '',
+                                      'renew': PolicyRenewalState.isRenewing ? 1 : 0,
                                     },
                                     apiUrl: addHomeInsurance, insuranceType: homeInsuranceTxt,
                                   ),

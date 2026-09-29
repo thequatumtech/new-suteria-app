@@ -13,6 +13,7 @@ import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/personal_accident_insurance_model.dart';
 
 import '../../../model_class/get_dangerous_activities_model.dart';
+import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
 
 class PersonalAccidentInsuranceListDataScreen extends StatefulWidget {
   PersonalAccidentInsuranceListDataScreen({super.key});
@@ -100,6 +101,8 @@ class _PersonalAccidentInsuranceListDataScreenState extends State<PersonalAccide
                                             'dangerours_field[]': chronicIdList(personalInsuranceController.selectedDangerousActivitiesList),
                                             'payment_status': 1,
                                             'purchase_id': draftPdfController.postInsuranceModel.value.data != null ? draftPdfController.postInsuranceModel.value.data!.purchaseId ?? 0 : 0,
+                                            'old_policy_id_for_renew': PolicyRenewalState.isRenewing ? PolicyRenewalState.oldPolicyId : '',
+                                            'renew': PolicyRenewalState.isRenewing ? 1 : 0,
                                           },
                                           apiUrl: addPersonalAccidentInsurance,
                                           insuranceType: personalAccidentsInsuranceTxt,

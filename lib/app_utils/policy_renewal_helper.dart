@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/AutoMotiveInsurance/automotive_insurance_stepper.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/Critical%20Illness%20Insurance/critical_insurance_stepper.dart';
@@ -12,8 +13,27 @@ import 'package:soperia_user/Screens/InsuranceScrees/Personal%20Accidents%20Insu
 import 'package:soperia_user/Screens/InsuranceScrees/Pet%20Insurance/pet_insurance_stepper.dart';
 import 'package:soperia_user/Screens/InsuranceScrees/Travel%20Insurance/travel_insurance_stepper.dart';
 import 'package:soperia_user/Screens/Profile/My%20Policies/get_policy_details_model.dart';
+import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
+import 'package:soperia_user/app_utils/api_set_up/api_urls.dart';
+import 'package:soperia_user/app_utils/api_set_up/header_file.dart';
+import 'package:soperia_user/app_utils/api_set_up/service_locator.dart';
 import 'package:soperia_user/app_utils/app_text.dart';
 import 'package:soperia_user/app_utils/color_constrint.dart';
+
+class PolicyRenewalState {
+  static bool isRenewing = false;
+  static dynamic oldPolicyId = '';
+
+  static void startRenewal(dynamic policyId) {
+    isRenewing = true;
+    oldPolicyId = policyId ?? '';
+  }
+
+  static void reset() {
+    isRenewing = false;
+    oldPolicyId = '';
+  }
+}
 
 Widget? getLOBStepWidget(PolicyData policyData) {
   final String pType = (policyData.policyType ?? '').toLowerCase().trim();
@@ -77,24 +97,98 @@ Widget? getLOBStepWidget(PolicyData policyData) {
   return null;
 }
 
-void renewPolicy(BuildContext context, PolicyData policyData) {
-  Widget? targetScreen = getLOBStepWidget(policyData);
-  if (targetScreen != null) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => targetScreen,
-      ),
+Future<void> renewPolicy(BuildContext context, PolicyData policyData) async {
+  final String policyIdStr = (policyData.id ?? policyData.id)?.toString() ?? '';
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => const Center(
+      child: CircularProgressIndicator(),
+    ),
+  );
+
+  try {
+    final repo = getIt.get<ApiCall>();
+    Map<String, String> header = await getHeader();
+    if (!context.mounted) return;
+
+    Map<String, dynamic> response = await ApiCall(dioClient: repo.dioClient).postRequestFormData(
+      context: context,
+      endpoint: checkPolicyRenewal,
+      body: {
+        'purchase_policy_id': policyIdStr,
+      },
+      options: Options(headers: header),
     );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: AppText(
-          text: 'Line of business screen not found for this policy.',
-          txtColor: primaryWhite,
-          size: 12,
+
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
+
+    bool isSuccess = response['status'] == true || response['status_code'] == 200 || response['status_code'] == 201;
+    String message = response['message']?.toString() ?? '';
+
+    if (isSuccess) {
+      PolicyRenewalState.startRenewal(policyData.id);
+      if (message.isNotEmpty && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: AppText(
+              text: message,
+              txtColor: primaryWhite,
+              size: 12,
+            ),
+          ),
+        );
+      }
+      if (context.mounted) {
+        Widget? targetScreen = getLOBStepWidget(policyData);
+        if (targetScreen != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => targetScreen,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: AppText(
+                text: 'Line of business screen not found for this policy.',
+                txtColor: primaryWhite,
+                size: 12,
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: AppText(
+              text: message.isNotEmpty ? message : 'Unable to renew policy at this time.',
+              txtColor: primaryWhite,
+              size: 12,
+            ),
+          ),
+        );
+      }
+    }
+  } catch (e) {
+    if (context.mounted) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: AppText(
+            text: e.toString(),
+            txtColor: primaryWhite,
+            size: 12,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
+

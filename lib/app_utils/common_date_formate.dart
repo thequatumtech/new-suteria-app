@@ -19,3 +19,20 @@ commonApiDateFormat(String date){
     return date;
   }
 }
+
+bool isPolicyExpired(String? date) {
+  if (date == null || date.isEmpty) return false;
+  try {
+    final now = DateTime.now();
+    DateTime tempDate = DateFormat("yyyy-MM-dd").parse(date).add(const Duration(days: 1));
+    return tempDate.isBefore(now);
+  } catch (e) {
+    try {
+      final now = DateTime.now();
+      DateTime tempDate = DateFormat("dd/MM/yyyy").parse(date).add(const Duration(days: 1));
+      return tempDate.isBefore(now);
+    } catch (_) {
+      return false;
+    }
+  }
+}

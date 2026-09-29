@@ -1,7 +1,7 @@
 # Keep WorkManager internal classes and database
 -keep class androidx.work.impl.WorkDatabase** { *; }
 -keep class * extends androidx.work.impl.WorkDatabase { *; }
--keep class com.soteria.MainActivity { *; }
+-keep class com.iInsure.soteria.MainActivity { *; }
 
 # Keep Room generated implementations
 -keep class * extends androidx.room.RoomDatabase { *; }

@@ -11,6 +11,7 @@ import 'package:soperia_user/app_utils/common_date_formate.dart';
 import 'package:soperia_user/language/language_constants.dart';
 import 'package:soperia_user/model_class/get_country_model.dart';
 import 'package:soperia_user/model_class/get_dangerous_activities_model.dart';
+import 'package:soperia_user/app_utils/policy_renewal_helper.dart';
 
 class TravelInsuranceListDataScreen extends StatefulWidget {
   String screenTitle = '';
@@ -125,6 +126,8 @@ class _TravelInsuranceListDataScreenState extends State<TravelInsuranceListDataS
                                       'members': members,
                                       'dangerous_activities': travelInsuranceController.selectedDangerousActivitiesList.map((e) => e.id).join(','),
                                       'multiple_destination': multipleDestList(travelInsuranceController.selectedMultiDestinationList),
+                                      'old_policy_id_for_renew': PolicyRenewalState.isRenewing ? PolicyRenewalState.oldPolicyId : '',
+                                      'renew': PolicyRenewalState.isRenewing ? 1 : 0,
                                     },
                                     apiUrl: addTravelInsurance,
                                     insuranceType: travelInsuranceTxt,

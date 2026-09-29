@@ -265,20 +265,22 @@ class _PolicyDetailsScreenState extends State<PolicyDetailsScreen> {
                               ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: AppBtnWithColorShades(
-                    textSize: 14,
-                    paddingSize: 12,
-                    onTap: () {
-                      renewPolicy(context, widget.policyData);
-                    },
-                    btnTxt: renew,
-                    color1: darkBlue2,
-                    color2: darkBlue1,
+                 if (isPolicyExpired(widget.policyData.expiryDate)) ...[
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: AppBtnWithColorShades(
+                      textSize: 14,
+                      paddingSize: 12,
+                      onTap: () {
+                        renewPolicy(context, widget.policyData);
+                      },
+                      btnTxt: renew,
+                      color1: darkBlue2,
+                      color2: darkBlue1,
+                    ),
                   ),
-                ),
+                ],
                 const SizedBox(height: 20),
               ],
             ),

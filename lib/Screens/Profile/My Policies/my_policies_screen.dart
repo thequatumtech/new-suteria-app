@@ -385,27 +385,9 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    SizedBox(
-                      width: 120,
-                      child: AppBtnWithColorShades(
-                        textSize: 12,
-                        paddingSize: 8,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PolicyDetailsScreen(policyData: policyItem),
-                            ),
-                          );
-                        },
-                        btnTxt: viewDetails,
-                        color1: darkBlue2,
-                        color2: darkBlue1,
-                      ),
-                    ),
-                    const SizedBox(width: 14),
+                    
                     SizedBox(
                       width: 120,
                       child: AppBtnWithColorShades(
@@ -419,6 +401,7 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
                         color2: darkBlue1,
                       ),
                     ),
+                    const SizedBox(width: 14),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -431,11 +414,7 @@ class _MyPoliciesState extends State<MyPolicies> with SingleTickerProviderStateM
   }
 
   isActiveOrExpiredDataCheck(String date) {
-    if (date.isEmpty) return false;
-    final now = DateTime.now();
-    DateTime tempDate = DateFormat("yyyy-MM-dd").parse(date).add(const Duration(days: 1));
-    final bool isExpired = tempDate.isBefore(now);
-    return isExpired;
+    return isPolicyExpired(date);
   }
 }
 
