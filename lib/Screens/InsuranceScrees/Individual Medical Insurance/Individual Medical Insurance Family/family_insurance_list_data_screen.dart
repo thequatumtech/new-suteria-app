@@ -186,7 +186,6 @@ class _FamilyMedicalInsuranceListDataScreenState extends State<FamilyMedicalInsu
                                   const SizedBox(height: 5),
                                   AppText(text: familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                   familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=null &&familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit!=''?  AppText(text: "${getTranslated(context, theQuoteIs)}: ${familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} ${getTranslated(context, 'JOD')}", txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15):const SizedBox(),
-                                 // AppText(text: "Starting from ₹${familyMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''}/month", txtColor: gold, fontWeight: FontWeight.bold, size: 12),
                                 ],
                               ),
                             ),

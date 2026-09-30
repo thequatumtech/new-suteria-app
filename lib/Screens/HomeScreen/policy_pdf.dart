@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:soperia_user/Screens/HomeScreen/home_screen_bottom.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
@@ -29,11 +29,11 @@ void downloadCallback(String id, int status, int progress) {
 }
 
 class PolicyPdf extends StatefulWidget {
-  String screenTitle = '';
-  String pdfUrl = '';
-  dynamic purchasePolicyId;
+  final String screenTitle;
+  final String pdfUrl;
+  final dynamic purchasePolicyId;
 
-  PolicyPdf({super.key, required this.screenTitle, required this.pdfUrl, this.purchasePolicyId});
+  const PolicyPdf({super.key, required this.screenTitle, required this.pdfUrl, this.purchasePolicyId});
 
   @override
   State<PolicyPdf> createState() => _PolicyPdfState();
@@ -44,6 +44,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
   String fileName = '';
   bool isLoadingPrint = false;
   bool isLoadingSave = false;
+  bool isLoadingPdf = true;
   String generatedPdfUrl = '';
   final GlobalKey _shareButtonKey = GlobalKey();
 
@@ -62,6 +63,17 @@ class _PolicyPdfState extends State<PolicyPdf> {
       FlutterDownloader.registerCallback(downloadCallback);
     } catch (e) {
       debugPrint('Error registering FlutterDownloader callback: $e');
+    }
+    _loadPdfUrl();
+  }
+
+  Future<void> _loadPdfUrl() async {
+    final url = await fetchFinalPdfUrl(widget.pdfUrl);
+    if (mounted) {
+      setState(() {
+        generatedPdfUrl = url;
+        isLoadingPdf = false;
+      });
     }
   }
 
@@ -152,6 +164,20 @@ class _PolicyPdfState extends State<PolicyPdf> {
     return docDir.path;
   }
 
+  Future<void> openPdfUrl(String url) async {
+    if (url.isEmpty) return;
+    try {
+      final Uri webUri = Uri.parse(url);
+      if (await canLaunchUrl(webUri)) {
+        await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      } else {
+        await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      debugPrint('Error opening PDF: $e');
+    }
+  }
+
   /// Save / Download Pdf
   Future<void> getPdf(String url) async {
     if (isLoadingSave) return;
@@ -210,21 +236,7 @@ class _PolicyPdfState extends State<PolicyPdf> {
               action: SnackBarAction(
                 label: getTranslated(context, open),
                 textColor: Colors.amberAccent,
-                onPressed: () async {
-                  try {
-                    final Uri fileUri = Uri.file(saveFilePath);
-                    if (await canLaunchUrl(fileUri)) {
-                      await launchUrl(fileUri);
-                    } else {
-                      final Uri webUri = Uri.parse(targetUrl);
-                      if (await canLaunchUrl(webUri)) {
-                        await launchUrl(webUri, mode: LaunchMode.externalApplication);
-                      }
-                    }
-                  } catch (e) {
-                    debugPrint('Error opening PDF: $e');
-                  }
-                },
+                onPressed: () => openPdfUrl(targetUrl),
               ),
               duration: const Duration(seconds: 4),
             ),
@@ -298,9 +310,12 @@ class _PolicyPdfState extends State<PolicyPdf> {
           debugPrint('Error calculating share origin: $e');
         }
 
+        if (!mounted) return;
+        final shareText = widget.screenTitle.isNotEmpty ? getTranslated(context, widget.screenTitle) : getTranslated(context, policyDocument);
+
         await Share.shareXFiles(
           [XFile(tempFilePath, mimeType: 'application/pdf', name: fileName)],
-          text: widget.screenTitle.isNotEmpty ? getTranslated(context, widget.screenTitle) : getTranslated(context, policyDocument),
+          text: shareText,
           sharePositionOrigin: shareOrigin,
         );
       } else {
@@ -345,127 +360,107 @@ class _PolicyPdfState extends State<PolicyPdf> {
             child: const Icon(Icons.keyboard_backspace_outlined)),
         title: AppText(text: widget.screenTitle, size: 20, fontWeight: FontWeight.bold),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: buttonColorApp,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          getPdf(widget.pdfUrl);
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            isLoadingSave ? const CircularProgressIndicator(color: primaryWhite) : const Icon(Icons.save_alt_outlined, size: 50, color: primaryWhite),
-                            AppText(text: downloadTxt, size: 16, txtAlign: TextAlign.center, txtColor: Colors.white),
-                          ],
-                        ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: buttonColorApp,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        getPdf(widget.pdfUrl);
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          isLoadingSave ? const CircularProgressIndicator(color: primaryWhite) : const Icon(Icons.save_alt_outlined, size: 40, color: primaryWhite),
+                          AppText(text: downloadTxt, size: 14, txtAlign: TextAlign.center, txtColor: Colors.white),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Container(
-                      key: _shareButtonKey,
-                      width: double.infinity,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: buttonColorApp,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          getPdfFile(widget.pdfUrl);
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            isLoadingPrint ? const CircularProgressIndicator(color: primaryWhite) : const Icon(Icons.share_outlined, size: 50, color: primaryWhite),
-                            AppText(text: share, size: 16, txtAlign: TextAlign.center, txtColor: Colors.white),
-                          ],
-                        ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Container(
+                    key: _shareButtonKey,
+                    width: double.infinity,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: buttonColorApp,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        getPdfFile(widget.pdfUrl);
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          isLoadingPrint ? const CircularProgressIndicator(color: primaryWhite) : const Icon(Icons.share_outlined, size: 40, color: primaryWhite),
+                          AppText(text: share, size: 14, txtAlign: TextAlign.center, txtColor: Colors.white),
+                        ],
                       ),
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: isLoadingPdf
+                    ? const Center(child: CircularProgressIndicator())
+                    : (generatedPdfUrl.isNotEmpty
+                        ? SfPdfViewer.network(
+                            generatedPdfUrl,
+                            canShowScrollHead: true,
+                            canShowScrollStatus: true,
+                            onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
+                              debugPrint('SfPdfViewer load failed: ${details.description}');
+                            },
+                          )
+                        : Center(
+                            child: AppText(
+                              text: getTranslated(context, pdfUrlNotFound),
+                              size: 14,
+                              txtColor: primaryGrayShade,
+                            ),
+                          )),
               ),
             ),
-            /* Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: buttonColorApp,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.mail_lock_outlined, size: 50, color: primaryWhite),
-                          AppText(text: "Share Via Email", size: 16, txtAlign: TextAlign.center, txtColor: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: buttonColorApp,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.share, size: 50, color: primaryWhite),
-                          AppText(text: "Share Via Whatsapp", size: 16, txtAlign: TextAlign.center, txtColor: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),*/
-            const Spacer(),
-            InkWell(
-              onTap: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePageBottomNav()), (route) => false),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: buttonColorApp,
-                  ),
-                  child: Center(child: AppText(text: backToHome, fontWeight: FontWeight.bold, txtAlign: TextAlign.center, txtColor: primaryWhite, size: 16)),
+          ),
+          InkWell(
+            onTap: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePageBottomNav()), (route) => false),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                width: double.infinity,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: buttonColorApp,
                 ),
+                child: Center(child: AppText(text: backToHome, fontWeight: FontWeight.bold, txtAlign: TextAlign.center, txtColor: primaryWhite, size: 16)),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
 }
+
