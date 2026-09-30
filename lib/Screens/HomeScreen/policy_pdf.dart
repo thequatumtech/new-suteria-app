@@ -10,6 +10,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:soperia_user/Screens/HomeScreen/home_screen_bottom.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_call.dart';
 import 'package:soperia_user/app_utils/api_set_up/api_keys.dart';
@@ -207,10 +208,22 @@ class _PolicyPdfState extends State<PolicyPdf> {
                 size: 12,
               ),
               action: SnackBarAction(
-                label: getTranslated(context, share),
+                label: getTranslated(context, open),
                 textColor: Colors.amberAccent,
-                onPressed: () {
-                  Share.shareXFiles([XFile(saveFilePath, mimeType: 'application/pdf', name: fileName)], text: getTranslated(context, widget.screenTitle));
+                onPressed: () async {
+                  try {
+                    final Uri fileUri = Uri.file(saveFilePath);
+                    if (await canLaunchUrl(fileUri)) {
+                      await launchUrl(fileUri);
+                    } else {
+                      final Uri webUri = Uri.parse(targetUrl);
+                      if (await canLaunchUrl(webUri)) {
+                        await launchUrl(webUri, mode: LaunchMode.externalApplication);
+                      }
+                    }
+                  } catch (e) {
+                    debugPrint('Error opening PDF: $e');
+                  }
                 },
               ),
               duration: const Duration(seconds: 4),

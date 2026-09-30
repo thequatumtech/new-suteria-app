@@ -281,6 +281,7 @@ class _DiscountScreenState extends State<DiscountScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
               /* Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: AppBtnWithColorShades(

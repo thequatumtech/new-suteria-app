@@ -908,6 +908,8 @@
   "retry": "إعادة المحاولة",
   "Open in browser": "فتح في المتصفح",
   "open_in_browser": "فتح في المتصفح",
+  "Open": "فتح",
+  "open": "فتح",
   "No content found": "لم يتم العثور على محتوى",
   "No URL or ID provided": "لم يتم توفير رابط أو معرّف",
   "Loading Terms & Conditions...": "جارٍ تحميل الشروط والأحكام...",

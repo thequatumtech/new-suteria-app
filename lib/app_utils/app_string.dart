@@ -484,6 +484,7 @@ const String gotIt = "Got It";
 const String data = "data";
 const String fileDownloading = "File downloading...";
 const String share = "Share";
+const String open = "Open";
 const String backToHome = "Back To Home";
 const String clickToObtainVehicleInformation = "CLICK TO OBTAIN VEHICLE INFORMATION";
 const String vehicleInformationIsCorrect = "VEHICLE INFORMATION IS CORRECT";

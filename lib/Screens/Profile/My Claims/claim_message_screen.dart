@@ -131,8 +131,6 @@ class _ClaimMessageScreenState extends State<ClaimMessageScreen> with SingleTick
                                 Expanded(
                                   child: TextField(
                                     controller: claimController.claimMessageController.value,
-                                    textCapitalization: TextCapitalization.characters,
-                                    inputFormatters: [UpperCaseTextFormatter()],
                                     decoration: const InputDecoration(
                                       hintText: enterMessage,
                                       hintStyle: TextStyle(color: deepBluedark, fontWeight: FontWeight.w500, fontSize: 16),

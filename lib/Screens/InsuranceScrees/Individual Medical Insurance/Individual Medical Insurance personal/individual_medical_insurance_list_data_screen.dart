@@ -163,7 +163,7 @@ class _IndividualMedicalInsuranceListDataScreenState extends State<IndividualMed
                                       text: individualMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].planName ?? '', txtColor: deepBlue, fontWeight: FontWeight.bold, size: 15),
                                   (individualMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].limit ?? "").isNotEmpty
                                       ? AppText(
-                                          text: "${getTranslated(context, theQuoteIs)}: ${individualMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].netPremium ?? ''} ${getTranslated(context, 'JOD')}",
+                                          text: "${getTranslated(context, theQuoteIs)}: ${individualMedicalInsuranceController.homeInsurancePlaneModel.value.data?[index].grossPremium ?? ''} ${getTranslated(context, 'JOD')}",
                                           txtColor: deepBlue,
                                           fontWeight: FontWeight.bold,
                                           size: 15)

@@ -124,7 +124,8 @@ class _InsurancePdfScreenState extends State<InsurancePdfScreen> {
                   color1: darkBlue2,
                   color2: darkBlue1,
                 ),
-              )
+              ),
+              SizedBox(height: 20,)
             ],
           );
         },
